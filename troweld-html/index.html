@@ -43,12 +43,15 @@
       <div class="header_bottom">
         <div class="container-fluid">
           <nav class="navbar navbar-expand-lg custom_nav-container ">
-            <img src="images/logo.png" class="small-logo">
+            <img id="logo" class="small-logo" src="images/logo.png" alt="Logo">
             <style>
-              .small-logo {
-  width: 100px;  /* Adjust as needed */
-  height: auto; /* Maintains aspect ratio */
+    .small-logo {
+  width: 110px;  /* Adjust as needed */
+  height: auto;  /* Maintains aspect ratio */
+  filter: brightness(0.7); /* Darken the logo */
+  transition: opacity 0.5s ease-in-out;
 }
+
             </style>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
               <span class=""> </span>
@@ -669,6 +672,12 @@
   <script src="js/custom.js"></script>
   <!-- Google Map -->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
+  <script>window.onload = function() {
+    setTimeout(() => {
+      document.getElementById('logo').src = "images/logo.png"; // Swap logo
+    }, 500); // Adjust timing if needed
+  };
+  </script>
   <!-- End Google Map -->
 
 </body>
