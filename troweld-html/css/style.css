@@ -75,6 +75,14 @@ a:focus {
   -webkit-box-shadow: none;
           box-shadow: none;
 }
+/*logo*/
+.small-logo {
+  width: 100px;  /* Adjust as needed */
+  height: auto;  /* Maintains aspect ratio */
+  filter: brightness(0.7); /* Darken the logo */
+  transition: opacity 0.5s ease-in-out;
+}
+/***/
 
 /*header section*/
 .hero_area {
@@ -94,13 +102,13 @@ a:focus {
 }
 
 .sub_page .header_section .header_bottom {
-  background-color: #003471;
 }
 
 
 
 .header_section .header_top {
-  padding: 15px 0;
+  padding: 5px 0;
+  padding-top: 5px;
 }
 
 .header_section .header_top .header_top_container {
@@ -114,6 +122,10 @@ a:focus {
       -ms-flex-align: center;
           align-items: center;
 }
+
+
+
+
 
 .header_section .header_top .contact_nav {
   display: -webkit-box;
@@ -470,7 +482,7 @@ a:focus {
   background-color: #ffffff;
   opacity: 1;
   border-radius: 100%;
-  color: #003471;
+  color: #714600;
   font-size: 14px;
   -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25);
           box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.25);
@@ -665,7 +677,7 @@ a:focus {
 }
 
 .portfolio_section .portfolio_carousel .owl-nav button:hover {
-  background-color: #003471;
+ 
   color: #ffffff;
 }
 
