@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Objets{% endblock %}
+
+{% block body %}
+<section class="service_section layout_padding bg-light">
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Liste des Objets</h2>
+            </div>
+            <div class="card-body">
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Description</th>
+                            <th>État</th>
+                            <th>Date d'ajout</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for objet in objets %}
+                        <tr>
+                            <td>{{ objet.id_object }}</td>
+                            <td>{{ objet.nom }}</td>
+                            <td>{{ objet.description }}</td>
+                            <td><span class="badge {% if objet.etat == 'actif' %}bg-success{% else %}bg-secondary{% endif %}">{{ objet.etat }}</span></td>
+                            <td>{{ objet.dateAjout ? objet.dateAjout|date('d/m/Y H:i') : '' }}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{{ path('app_objet_show', {'id_object': objet.id_object}) }}" class="btn btn-info btn-sm">Voir</a>
+                                    <a href="{{ path('app_objet_edit', {'id_object': objet.id_object}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center">Aucun objet trouvé</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="text-end mt-3">
+                    <a href="{{ path('app_objet_new') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Ajouter un objet
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    <style>
+        .card {
+            border: none;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+        }
+        .card-header {
+            border-radius: 15px 15px 0 0;
+            padding: 1.5rem;
+        }
+        .table th {
+            border-top: none;
+        }
+        .btn-group .btn {
+            margin: 0 2px;
+        }
+        .badge {
+            padding: 0.5em 1em;
+        }
+    </style>
+{% endblock %}

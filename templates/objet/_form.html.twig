@@ -1,0 +1,53 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+        </div>
+        <div class="col-md-6 mb-3">
+            {{ form_row(form.etat, {'attr': {'class': 'form-control'}}) }}
+        </div>
+    </div>
+    <div class="mb-3">
+        {{ form_row(form.description, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_row(form.date_ajout, {'attr': {'class': 'form-control'}}) }}
+    </div>
+    <div class="mb-3">
+        {{ form_row(form.id_utilisateur, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+    <div class="text-end mt-4">
+        <button class="btn btn-primary">
+            <i class="fas fa-save"></i> {{ button_label|default('Enregistrer') }}
+        </button>
+    </div>
+{{ form_end(form) }}
+
+<style>
+    .form-control {
+        border-radius: 8px;
+        height: auto !important;
+        padding: 0.75rem;
+        width: 100%;
+        display: block;
+    }
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        border-color: #80bdff;
+    }
+    .invalid-feedback {
+        display: block;
+    }
+    .btn-primary {
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+    }
+    /* Add specific styling for select elements */
+    select.form-control {
+        appearance: auto;
+        -webkit-appearance: auto;
+        -moz-appearance: auto;
+        padding-right: 2rem;
+    }
+</style>
