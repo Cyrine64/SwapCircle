@@ -1,53 +1,111 @@
-{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-    <div class="row">
-        <div class="col-md-6 mb-3">
-            {{ form_row(form.nom, {'attr': {'class': 'form-control'}}) }}
+{{ form_start(form, {'attr': {'class': 'needs-validation modern-form', 'novalidate': 'novalidate'}}) }}
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_label(form.nom, 'Nom de l\'objet', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.nom, {'attr': {
+                    'class': 'form-control form-control-lg',
+                    'placeholder': 'Entrez le nom de l\'objet'
+                }}) }}
+                {{ form_errors(form.nom) }}
+            </div>
         </div>
-        <div class="col-md-6 mb-3">
-            {{ form_row(form.etat, {'attr': {'class': 'form-control'}}) }}
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_label(form.etat, 'État', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.etat, {'attr': {
+                    'class': 'form-select form-select-lg'
+                }}) }}
+                {{ form_errors(form.etat) }}
+            </div>
         </div>
-    </div>
-    <div class="mb-3">
-        {{ form_row(form.description, {'attr': {'class': 'form-control', 'rows': '4'}}) }}
-    </div>
-    <div class="mb-3">
-        {{ form_row(form.date_ajout, {'attr': {'class': 'form-control'}}) }}
-    </div>
-    <div class="mb-3">
-        {{ form_row(form.id_utilisateur, {'attr': {'class': 'form-control'}}) }}
+        <div class="col-12">
+            <div class="form-group">
+                {{ form_label(form.description, 'Description', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.description, {'attr': {
+                    'class': 'form-control',
+                    'rows': '4',
+                    'placeholder': 'Décrivez l\'objet en détail'
+                }}) }}
+                {{ form_errors(form.description) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_label(form.date_ajout, 'Date d\'ajout', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.date_ajout, {'attr': {
+                    'class': 'form-control form-control-lg'
+                }}) }}
+                {{ form_errors(form.date_ajout) }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                {{ form_label(form.id_utilisateur, 'Utilisateur', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.id_utilisateur, {'attr': {
+                    'class': 'form-select form-select-lg'
+                }}) }}
+                {{ form_errors(form.id_utilisateur) }}
+            </div>
+        </div>
     </div>
 
     <div class="text-end mt-4">
-        <button class="btn btn-primary">
-            <i class="fas fa-save"></i> {{ button_label|default('Enregistrer') }}
+        <button type="submit" class="btn btn-primary btn-lg">
+            <i class="fas fa-save me-2"></i> {{ button_label|default('Enregistrer') }}
         </button>
     </div>
 {{ form_end(form) }}
 
 <style>
-    .form-control {
-        border-radius: 8px;
-        height: auto !important;
-        padding: 0.75rem;
-        width: 100%;
-        display: block;
+    .modern-form {
+        padding: 1rem;
     }
-    .form-control:focus {
-        box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-        border-color: #80bdff;
+    .form-label {
+        font-weight: 500;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
     }
-    .invalid-feedback {
-        display: block;
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+    }
+    .form-control::placeholder {
+        color: #95a5a6;
+    }
+    .form-control-lg, .form-select-lg {
+        height: auto;
+        padding: 1rem 1.25rem;
     }
     .btn-primary {
-        padding: 0.75rem 1.5rem;
+        background: linear-gradient(45deg, #3498db, #2ecc71);
+        border: none;
+        padding: 1rem 2rem;
         font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
     }
-    /* Add specific styling for select elements */
-    select.form-control {
-        appearance: auto;
-        -webkit-appearance: auto;
-        -moz-appearance: auto;
-        padding-right: 2rem;
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #2980b9, #27ae60);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .invalid-feedback {
+        font-size: 0.875rem;
+        color: #e74c3c;
+        margin-top: 0.5rem;
+    }
+    textarea.form-control {
+        min-height: 120px;
     }
 </style>

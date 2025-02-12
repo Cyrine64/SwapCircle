@@ -3,72 +3,137 @@
 {% block title %}Détails de l'Objet{% endblock %}
 
 {% block body %}
-<section class="service_section layout_padding bg-light">
+<section class="service_section layout_padding bg-light min-vh-100">
     <div class="container mt-5">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Détails de l'Objet</h2>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <tbody>
-                            <tr>
-                                <th class="w-25">ID</th>
-                                <td>{{ objet.id_object }}</td>
-                            </tr>
-                            <tr>
-                                <th>Nom</th>
-                                <td>{{ objet.nom }}</td>
-                            </tr>
-                            <tr>
-                                <th>Description</th>
-                                <td>{{ objet.description }}</td>
-                            </tr>
-                            <tr>
-                                <th>État</th>
-                                <td><span class="badge {% if objet.etat == 'actif' %}bg-success{% else %}bg-secondary{% endif %}">{{ objet.etat }}</span></td>
-                            </tr>
-                            <tr>
-                                <th>Date d'ajout</th>
-                                <td>{{ objet.dateAjout ? objet.dateAjout|date('d/m/Y H:i') : '' }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg fade-in">
+                    <div class="card-header bg-gradient text-white p-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h2 class="mb-0 fw-bold">{{ objet.nom }}</h2>
+                            <span class="badge {% if objet.etat == 'actif' %}bg-success-soft{% else %}bg-secondary-soft{% endif %} fs-6">
+                                <i class="fas {% if objet.etat == 'actif' %}fa-check-circle{% else %}fa-clock{% endif %} me-1"></i>
+                                {{ objet.etat|capitalize }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="detail-section mb-4">
+                            <h5 class="text-primary mb-3">Description</h5>
+                            <p class="text-muted">{{ objet.description }}</p>
+                        </div>
+                        
+                        <div class="detail-section mb-4">
+                            <h5 class="text-primary mb-3">Informations</h5>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">ID</span>
+                                    <span class="info-value">#{{ objet.id_object }}</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Date d'ajout</span>
+                                    <span class="info-value">
+                                        <i class="far fa-calendar-alt me-1"></i>
+                                        {{ objet.dateAjout ? objet.dateAjout|date('d/m/Y H:i') : '' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="d-flex justify-content-between mt-4">
-                    <a href="{{ path('app_objet_index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Retour à la liste
-                    </a>
-                    <div class="btn-group">
-                        <a href="{{ path('app_objet_edit', {'id_object': objet.id_object}) }}" class="btn btn-warning">
-                            <i class="fas fa-edit"></i> Modifier
-                        </a>
-                        {{ include('objet/_delete_form.html.twig') }}
+                        <div class="actions mt-5">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{{ path('app_objet_index') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i> Retour
+                                </a>
+                                <div class="btn-group">
+                                    <a href="{{ path('app_exchange_propose', {'id_object': objet.id_object}) }}" 
+                                    class="btn btn-warning me-2 mr-2">
+                                     <i class="fas fa-edit me-2"></i> Exchange
+                                 </a>
+                                    <a href="{{ path('app_objet_edit', {'id_object': objet.id_object}) }}" 
+                                       class="btn btn-warning me-2 mr-2">
+                                        <i class="fas fa-edit me-2"></i> Modifier
+                                    </a>
+                                    {{ include('objet/_delete_form.html.twig') }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-    <style>
-        .card {
-            border: none;
-            border-radius: 15px;
-        }
-        .card-header {
-            border-radius: 15px 15px 0 0;
-            padding: 1.5rem;
-        }
-        .table th {
-            background-color: #f8f9fa;
-        }
-        .badge {
-            padding: 0.5em 1em;
-        }
-        .btn-group .btn {
-            margin: 0 2px;
-        }
-    </style>
+
+<style>
+    .bg-gradient {
+        background: linear-gradient(45deg, #3498db, #2ecc71);
+    }
+    .card {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+    }
+    .badge {
+        padding: 0.75em 1.2em;
+        font-weight: 500;
+        border-radius: 30px;
+    }
+    .bg-success-soft {
+        background-color: rgba(46, 204, 113, 0.1);
+        color: #2ecc71;
+    }
+    .bg-secondary-soft {
+        background-color: rgba(149, 165, 166, 0.1);
+        color: #95a5a6;
+    }
+    .detail-section {
+        padding: 1.5rem;
+        background: #f8f9fa;
+        border-radius: 12px;
+    }
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+    }
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .info-label {
+        font-size: 0.875rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+    .info-value {
+        font-size: 1rem;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .btn-warning {
+        background: #f1c40f;
+        border: none;
+        color: #2c3e50;
+    }
+    .btn-warning:hover {
+        background: #f39c12;
+        color: #2c3e50;
+        transform: translateY(-2px);
+    }
+    .fade-in {
+        animation: fadeIn 0.6s ease-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
 {% endblock %}

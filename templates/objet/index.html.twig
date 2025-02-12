@@ -3,74 +3,167 @@
 {% block title %}Liste des Objets{% endblock %}
 
 {% block body %}
-<section class="service_section layout_padding bg-light">
+<section class="service_section layout_padding bg-light min-vh-100 fade-in">
     <div class="container mt-5">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">Liste des Objets</h2>
-            </div>
-            <div class="card-body">
-                <table class="table table-hover">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>Nom</th>
-                            <th>Description</th>
-                            <th>État</th>
-                            <th>Date d'ajout</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for objet in objets %}
-                        <tr>
-                            <td>{{ objet.id_object }}</td>
-                            <td>{{ objet.nom }}</td>
-                            <td>{{ objet.description }}</td>
-                            <td><span class="badge {% if objet.etat == 'actif' %}bg-success{% else %}bg-secondary{% endif %}">{{ objet.etat }}</span></td>
-                            <td>{{ objet.dateAjout ? objet.dateAjout|date('d/m/Y H:i') : '' }}</td>
-                            <td>
-                                <div class="btn-group">
-                                    <a href="{{ path('app_objet_show', {'id_object': objet.id_object}) }}" class="btn btn-info btn-sm">Voir</a>
-                                    <a href="{{ path('app_objet_edit', {'id_object': objet.id_object}) }}" class="btn btn-warning btn-sm">Modifier</a>
-                                </div>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="6" class="text-center">Aucun objet trouvé</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-
-                <div class="text-end mt-3">
-                    <a href="{{ path('app_objet_new') }}" class="btn btn-primary">
-                        <i class="fas fa-plus"></i> Ajouter un objet
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="section-header text-center">
+                    <h6 class="text-primary text-uppercase mb-3">Gestion des Objets</h6>
+                    <h2 class="section-title mb-3">Catalogue des Objets</h2>
+                    <div class="divider mx-auto mb-4"></div>
+                </div>
+                <div class="text-end mb-4">
+                    <a href="{{ path('app_objet_new') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus-circle me-2"></i> Nouvel Objet
                     </a>
                 </div>
             </div>
         </div>
+
+        <div class="row g-4">
+            {% for objet in objets %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100 shadow-hover">
+                        <div class="card-body p-4">
+                            <div class="status-badge mb-3">
+                                <span class="badge {% if objet.etat == 'actif' %}bg-success-soft{% else %}bg-secondary-soft{% endif %}">
+                                    <i class="fas {% if objet.etat == 'actif' %}fa-check-circle{% else %}fa-clock{% endif %} me-1"></i>
+                                    {{ objet.etat|capitalize }}
+                                </span>
+                            </div>
+                            <h4 class="card-title mb-3">{{ objet.nom }}</h4>
+                            <p class="card-text text-muted mb-4">{{ objet.description|length > 100 ? objet.description|slice(0, 100) ~ '...' : objet.description }}</p>
+                            <div class="meta-info mb-4">
+                                <span class="text-muted">
+                                    <i class="far fa-calendar-alt me-2"></i>
+                                    {{ objet.dateAjout ? objet.dateAjout|date('d/m/Y H:i') : '' }}
+                                </span>
+                            </div>
+                            <div class="card-actions mt-auto">
+                                <a href="{{ path('app_objet_show', {'id_object': objet.id_object}) }}" 
+                                   class="btn btn-outline-primary btn-sm me-2">
+                                    <i class="fas fa-eye me-1"></i> Voir
+                                </a>
+                                <a href="{{ path('app_objet_edit', {'id_object': objet.id_object}) }}" 
+                                   class="btn btn-outline-warning btn-sm">
+                                    <i class="fas fa-edit me-1"></i> Modifier
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="empty-state text-center py-5">
+                        <div class="empty-state-icon mb-4">
+                            <i class="fas fa-box-open fa-3x text-muted"></i>
+                        </div>
+                        <h3 class="empty-state-title">Aucun objet disponible</h3>
+                        <p class="empty-state-description text-muted">
+                            Commencez par ajouter votre premier objet dans le catalogue.
+                        </p>
+                        <a href="{{ path('app_objet_new') }}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus-circle me-2"></i> Ajouter un objet
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </section>
-    <style>
-        .card {
-            border: none;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-        }
-        .card-header {
-            border-radius: 15px 15px 0 0;
-            padding: 1.5rem;
-        }
-        .table th {
-            border-top: none;
-        }
-        .btn-group .btn {
-            margin: 0 2px;
-        }
-        .badge {
-            padding: 0.5em 1em;
-        }
-    </style>
+
+<style>
+    .section-header {
+        margin-bottom: 3rem;
+    }
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(45deg, #2c3e50, #3498db);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .divider {
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(45deg, #3498db, #2ecc71);
+        border-radius: 2px;
+    }
+    .card {
+        border: none;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        background: white;
+    }
+    .shadow-hover {
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+    .shadow-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+    .bg-success-soft {
+        background-color: rgba(46, 204, 113, 0.1);
+        color: #2ecc71;
+    }
+    .bg-secondary-soft {
+        background-color: rgba(149, 165, 166, 0.1);
+        color: #95a5a6;
+    }
+    .badge {
+        padding: 0.75em 1.2em;
+        font-weight: 500;
+        border-radius: 30px;
+    }
+    .card-title {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+    .btn {
+        border-radius: 8px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .btn-primary {
+        background: linear-gradient(45deg, #3498db, #2ecc71);
+        border: none;
+        box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+    }
+    .btn-primary:hover {
+        background: linear-gradient(45deg, #2980b9, #27ae60);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+    }
+    .empty-state {
+        background: white;
+        border-radius: 16px;
+        padding: 3rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .empty-state-icon {
+        color: #95a5a6;
+        animation: float 3s ease-in-out infinite;
+    }
+    .empty-state-title {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+    .card-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    .fade-in {
+        animation: fadeIn 0.6s ease-out;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+        100% { transform: translateY(0px); }
+    }
+</style>
 {% endblock %}
