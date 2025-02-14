@@ -19,10 +19,6 @@ class Reclamation
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
-    #[ORM\ManyToOne(targetEntity: Objet::class)]
-    #[ORM\JoinColumn(name: "id_objet", referencedColumnName: "id_objet", nullable: false)]
-    private ?Objet $objet = null;
-
     #[ORM\Column(type: 'text')]
     private ?string $message = null;
 
@@ -34,6 +30,10 @@ class Reclamation
 
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $date_reclamation = null;
+
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    private ?string $titre = null;
 
     // Getters and setters
     public function getIdReclamation(): ?int
@@ -49,17 +49,6 @@ class Reclamation
     public function setUtilisateur(?Utilisateur $utilisateur): self
     {
         $this->utilisateur = $utilisateur;
-        return $this;
-    }
-
-    public function getObjet(): ?Objet
-    {
-        return $this->objet;
-    }
-
-    public function setObjet(?Objet $objet): self
-    {
-        $this->objet = $objet;
         return $this;
     }
 
@@ -104,6 +93,17 @@ class Reclamation
     public function setDateReclamation(\DateTimeInterface $date_reclamation): self
     {
         $this->date_reclamation = $date_reclamation;
+        return $this;
+    }
+
+    public function getTitre(): ?string
+    {
+        return $this->titre;
+    }
+
+    public function setTitre(string $titre): self
+    {
+        $this->titre = $titre;
         return $this;
     }
 } 
