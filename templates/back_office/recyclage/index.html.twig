@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Recyclages{% endblock %}
+
+{% block body %}
+    <h1>Gestion des Recyclages</h1>
+
+    <table class="table table-striped mt-4">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>nom</th>
+                <th>description</th>
+                <th>etat</th>
+                <th>date_ajout</th>
+                <th>categorie</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for objet in objets %}
+                <tr>
+                    <td>{{ objet.idObjet }}</td>
+                    <td>{{ objet.nom }}</td>
+                    <td>{{ objet.description }}</td>
+                    <td>{{ objet.etat }}</td>
+                    <td>{{ objet.dateAjout|date('d/m/Y H:i') }}</td>
+                    <td>{{ objet.categorie }}</td>
+                  
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">Aucun recyclage trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_back_office') }}" class="btn btn-secondary">Retour au Dashboard</a>
+{% endblock %}
