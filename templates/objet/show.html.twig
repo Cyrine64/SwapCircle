@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Objet{% endblock %}
+
+{% block body %}
+<section class="service_section layout_padding bg-light ">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow animated-card">
+                    <img src="{{ asset('images/' ~ objet.image) }}" alt="{{ objet.nom }}" class="img-fluid">
+
+                    <div class="card-body">
+                        <h2 class="card-title">{{ objet.nom }}</h2>
+                        <p class="card-text">{{ objet.description }}</p>
+                        <div class="meta-info mb-4">
+                            <span class="text-muted">
+                                <i class="far fa-calendar-alt me-2"></i>
+                                {{ objet.dateAjout ? objet.dateAjout|date('d/m/Y H:i') : '' }}
+                            </span>
+                        </div>
+                        <div class="status-badge mb-3">
+                            <span class="badge {% if objet.etat == 'disponible' %}bg-success-soft{% else %}bg-secondary-soft{% endif %}">
+                                <i class="fas {% if objet.etat == 'disponible' %}fa-check-circle{% else %}fa-clock{% endif %} me-1"></i>
+                                {{ objet.etat|capitalize }}
+                            </span>
+                        </div>
+                        <div class="card-actions mt-4">
+                            <a href="{{ path('app_objet_edit', {'id_objet': objet.getIdObjet()}) }}" class="btn btn-outline-warning">
+                                <i class="fas fa-edit me-1"></i> Modifier
+                            </a>
+                            <a href="{{ path('app_objet_index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .animated-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .animated-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0;
+        padding: 20px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .btn {
+        border-radius: 8px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 500;
+
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-warning {
+        border-color: #ffc107;
+        color: #ffc107;
+    }
+
+    .btn-outline-warning:hover {
+        background-color: #ffc107;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268;
+    }
+</style>
+{% endblock %}
