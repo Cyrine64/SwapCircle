@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Echange{% endblock %}
+
+{% block body %}
+    <h1>Create new Echange</h1>
+
+    {{ include('echange/_form.html.twig') }}
+
+    <a href="{{ path('app_echange_index') }}">back to list</a>
+{% endblock %}
