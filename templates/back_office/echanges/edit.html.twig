@@ -1,0 +1,64 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}{{ button_label|default('Modifier') }} l'Échange{% endblock %}
+
+{% block body %}
+<div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xl">
+        <h1 class="app-page-title">{{ button_label|default('Modifier') }} l'Échange</h1>
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start">
+                    <div class="app-card-header p-3 border-bottom-0">
+                        <div class="row align-items-center gx-3">
+                            <div class="col-auto">
+                                <h4 class="app-card-title">Formulaire {{ button_label|default('de modification') }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app-card-body px-4 w-100">
+                        {{ form_start(form, {'attr': {'class': 'settings-form'}}) }}
+                            <div class="mb-3">
+                                {{ form_label(form.nameEchange, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.nameEchange, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.nameEchange) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.objet, 'Objet proposé', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.objet, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.objet) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.message, 'Message', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.message, {'attr': {'class': 'form-control', 'rows': 4}}) }}
+                                {{ form_errors(form.message) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.dateEchange, 'Date d\'échange', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.dateEchange, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.dateEchange) }}
+                            </div>
+
+                            {% if form.statut is defined %}
+                            <div class="mb-3">
+                                {{ form_label(form.statut, 'Statut', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.statut, {'attr': {'class': 'form-select'}}) }}
+                                {{ form_errors(form.statut) }}
+                            </div>
+                            {% endif %}
+
+                            <div class="mb-3">
+                                <button type="submit" class="btn app-btn-primary">{{ button_label|default('Enregistrer') }}</button>
+                                <a href="{{ path('app_back_office_echanges') }}" class="btn app-btn-secondary">Retour à la liste</a>
+                            </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

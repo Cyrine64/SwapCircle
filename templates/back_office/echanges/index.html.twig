@@ -1,0 +1,85 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Gestion des Échanges{% endblock %}
+
+{% block body %}
+<div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xl">
+        <div class="row g-3 mb-4 align-items-center justify-content-between">
+            <div class="col-auto">
+                <h1 class="app-page-title mb-0">Gestion des Échanges</h1>
+            </div>
+            <div class="col-auto">
+                <a href="{{ path('app_back_office_echange_new') }}" class="btn app-btn-primary">
+                    <i class="fas fa-plus me-2"></i>Ajouter un échange
+                </a>
+            </div>
+        </div>
+        
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="app-card app-card-orders-table shadow-sm mb-5">
+                    <div class="app-card-header p-3">
+                        <div class="row justify-content-between align-items-center">
+                            <div class="col-auto">
+                                <h4 class="app-card-title">Liste des Échanges</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app-card-body p-3">
+                        <div class="table-responsive">
+                            <table class="table app-table-hover mb-0 text-left">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Titre</th>
+                                        <th>Utilisateur</th>
+                                        <th>Objet proposé</th>
+                                        <th>Date d'échange</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for echange in echanges %}
+                                    <tr>
+                                        <td>{{ echange.getIdEchange }}</td>
+                                        <td>{{ echange.getNameEchange }}</td>
+                                        <td>{{ echange.getUtilisateur.nom }}</td>
+                                        <td>{{ echange.getObjet.nom }}</td>
+                                        <td>{{ echange.getDateEchange|date('d/m/Y H:i') }}</td>
+                                        <td>
+                                            <span class="badge {{ echange.getStatut == 'accepte' ? 'bg-success' : (echange.getStatut == 'refuse' ? 'bg-danger' : 'bg-warning') }}">
+                                                {{ echange.getStatut|replace({'en_attente': 'En attente', 'accepte': 'Accepté', 'refuse': 'Refusé'})|capitalize }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ path('app_back_office_echange_show', {'id': echange.getIdEchange}) }}" class="btn btn-info btn-sm">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ path('app_back_office_echange_edit', {'id': echange.getIdEchange}) }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="post" action="{{ path('app_back_office_echange_delete', {'id': echange.getIdEchange}) }}" style="display: inline-block" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet échange ?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ echange.getIdEchange) }}">
+                                                <button class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% else %}
+                                    <tr>
+                                        <td colspan="7" class="text-center">Aucun échange trouvé</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
