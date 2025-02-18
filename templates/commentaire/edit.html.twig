@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Commentaire{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="text-center fw-bold mb-4">Edit Commentaire</h1>
+
+        <div class="card shadow-sm p-4 rounded bg-light">
+            <!-- Form to update the commentaire -->
+            {{ include('commentaire/_form.html.twig', {'button_label': 'Update'}) }}
+
+            <div class="mt-3 d-flex justify-content-between">
+                <!-- Back to list button -->
+                <a href="{{ path('app_commentaire_index') }}" class="btn btn-secondary">Back to list</a>
+
+                <!-- Delete button -->
+                <div class="text-end">
+                    {{ include('commentaire/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}{{ blog.titre }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0 rounded-lg">
+                    
+                    <!-- En-tête stylisé -->
+                    <div class="card-header bg-dark text-white text-center py-4">
+                        <h2 class="mb-0">{{ blog.titre }}</h2>
+                    </div>
+
+                    <!-- Contenu du blog -->
+                    <div class="card-body p-5">
+                        <div class="text-center mb-4">
+                            <!-- Image dynamique -->
+                            <img src="{{ asset('uploads/images/' ~ blog.image) }}"
+                                 class="img-fluid rounded shadow-lg" 
+                                 style="max-width: 75%; height: auto;" 
+                                 alt="Image de l'article">
+                        </div>
+
+                        <p class="text-muted text-center mb-3">
+                            🗓 Publié le :         {{ blog.datePublication ? blog.datePublication|date('Y-m-d H:i:s') : 'Non daté' }}
+
+                        </p>
+
+                        <div class="px-4">
+                            <p class="lead">{{ blog.contenu|nl2br }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Pied de page avec les boutons -->
+                    <div class="card-footer bg-light d-flex justify-content-between py-4">
+                        <a href="{{ path('app_blog_index') }}" class="btn btn-outline-dark">
+                            ⬅️ Retour
+                        </a>
+
+                        <div>
+                         <a href="{{ path('app_blog_edit', {'idArticle': blog.idArticle}) }}" class="btn btn-warning">
+                                ✏️ Modifier
+                            </a>
+                            <!-- Optionally, you can add edit/delete buttons here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
