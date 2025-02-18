@@ -1,109 +1,63 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    Créer un Nouvel Objet
-{% endblock %}
+{% block title %}Nouvel Objet{% endblock %}
 
 {% block body %}
-<section class="service_section layout_padding bg-light min-vh-100 fade-in">
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow animated-card">
-                    <div class="card-header bg-primary text-white">
-                        <h2 class="text-center mb-0">Ajouter un Nouvel Objet</h2>
-                    </div>
-                    <div class="card-body">
-                        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
-                            {{ form_widget(form) }}
-                            <button class="btn btn-primary">Créer</button>
-                        {{ form_end(form) }}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="h3 mb-4 text-center">Ajouter un nouvel objet</h1>
+
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    {{ include('objet/_form.html.twig', {'button_label': 'Ajouter'}) }}
+
+                    <div class="text-center mt-3">
+                        <a href="{{ path('app_objet_index') }}" class="btn btn-link">
+                            <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</section>
+</div>
 
 <style>
-    .animated-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .animated-card:hover {
-        transform: scale(1.05);
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
-    }
-
     .card {
         border: none;
         border-radius: 15px;
     }
 
-    .card-header {
-        border-radius: 15px 15px 0 0;
-        padding: 20px;
-    }
-
     .card-body {
-        padding: 30px;
+        padding: 2rem;
     }
 
-    .form-control {
-        border-radius: 8px;
-        padding: 12px;
-        margin-bottom: 15px;
-        transition: border-color 0.3s ease;
-    }
-
-    .form-control:focus {
-        border-color: #3498db;
-        box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-    }
-
-    .btn-primary {
-        padding: 12px 30px;
-        border-radius: 8px;
+    h1 {
+        color: #2c3e50;
         font-weight: 600;
-        transition: all 0.3s ease;
     }
 
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        background: linear-gradient(45deg, #2980b9, #27ae60);
+    .btn-link {
+        color: #6c757d;
+        text-decoration: none;
+    }
+
+    .btn-link:hover {
+        color: #495057;
+        text-decoration: underline;
     }
 </style>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Form validation
-        const form = document.querySelector('form');
-        if(form) {
-            form.addEventListener('submit', function(e) {
-                const requiredFields = form.querySelectorAll('[required]');
-                requiredFields.forEach(field => {
-                    if (!field.value) {
-                        e.preventDefault();
-                        field.classList.add('is-invalid');
-                    } else {
-                        field.classList.remove('is-invalid');
-                    }
-                });
-            });
-        }
-
-        // Dynamic feedback
-        const inputs = document.querySelectorAll('.form-control');
-        inputs.forEach(input => {
-            input.addEventListener('focus', function() {
-                this.classList.add('shadow-sm');
-            });
-            
-            input.addEventListener('blur', function() {
-                this.classList.remove('shadow-sm');
-            });
-        });
-    });
-</script>
 {% endblock %}

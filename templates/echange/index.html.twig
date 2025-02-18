@@ -1,41 +1,159 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Echange index{% endblock %}
+{% block title %}Liste des Échanges{% endblock %}
 
 {% block body %}
-    <h1>Echange index</h1>
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h2 class="h4 mb-0">
+                        <i class="fas fa-exchange-alt me-2"></i>
+                        Liste des Échanges
+                    </h2>
+                    <a href="{{ path('app_objet_index') }}" class="btn btn-light">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        Proposer un nouvel échange
+                    </a>
+                </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id_echange</th>
-                <th>Name_echange</th>
-                <th>Image_echange</th>
-                <th>Date_echange</th>
-                <th>Message</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for echange in echanges %}
-            <tr>
-                <td>{{ echange.idEchange }}</td>
-                <td>{{ echange.nameEchange }}</td>
-                <td>{{ echange.imageEchange }}</td>
-                <td>{{ echange.dateEchange ? echange.dateEchange|date('Y-m-d H:i:s') : '' }}</td>
-                <td>{{ echange.message }}</td>
-                <td>
-                    <a href="{{ path('app_echange_show', {'id_echange': echange.id_echange}) }}">show</a>
-                    <a href="{{ path('app_echange_edit', {'id_echange': echange.id_echange}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                <div class="card-body">
+                    {% if echanges is empty %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-exchange-alt fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">Aucun échange n'a encore été proposé</h5>
+                            <p class="text-muted mb-4">Pour proposer un échange, consultez la liste des objets disponibles.</p>
+                            <a href="{{ path('app_objet_index') }}" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>
+                                Voir les objets disponibles
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Objet proposé</th>
+                                        <th>Titre</th>
+                                        <th>Date</th>
+                                        <th>Statut</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for echange in echanges %}
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                {% if echange.objet.image %}
+                                                    <img src="{{ asset('uploads/images/' ~ echange.objet.image) }}" 
+                                                         alt="{{ echange.objet.nom }}" 
+                                                         class="img-thumbnail me-2" 
+                                                         style="width: 50px; height: 50px; object-fit: cover;">
+                                                {% endif %}
+                                                <div>
+                                                    <h6 class="mb-0">{{ echange.objet.nom }}</h6>
+                                                    <small class="text-muted">{{ echange.objet.description|slice(0, 50) }}...</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>{{ echange.nameEchange }}</td>
+                                        <td>{{ echange.getDateEchange()|date('d/m/Y H:i') }}</td>
+                                        <td>
+                                            {% set status_labels = {
+                                                'en_attente': 'En attente',
+                                                'accepte': 'Accepté',
+                                                'refuse': 'Refusé'
+                                            } %}
+                                            
+                                            {% set status_classes = {
+                                                'en_attente': 'bg-warning text-dark',
+                                                'accepte': 'bg-success',
+                                                'refuse': 'bg-danger'
+                                            } %}
+                                            
+                                            {% set current_status = echange.getStatut() %}
+                                            <span class="badge {{ status_classes[current_status] }}">
+                                                {{ status_labels[current_status] }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="{{ path('app_echange_show', {'id_echange': echange.idEchange}) }}" 
+                                                   class="btn btn-sm btn-info" title="Voir les détails">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                {% if app.user == echange.utilisateur %}
+                                                    <a href="{{ path('app_echange_edit', {'id_echange': echange.idEchange}) }}" 
+                                                       class="btn btn-sm btn-warning" title="Modifier">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <a href="{{ path('app_echange_new') }}">Create new</a>
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        background-color: #0d6efd;
+        border-bottom: none;
+    }
+    
+    .btn-group .btn {
+        padding: .25rem .5rem;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0,0,0,.02);
+    }
+    
+    .img-thumbnail {
+        border-radius: 8px;
+    }
+    
+    .badge {
+        padding: 0.5em 0.8em;
+    }
+    
+    .btn-info {
+        color: #fff;
+        background-color: #0dcaf0;
+        border-color: #0dcaf0;
+    }
+    
+    .btn-info:hover {
+        color: #fff;
+        background-color: #31d2f2;
+        border-color: #25cff2;
+    }
+    
+    .btn-warning {
+        color: #fff;
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+    
+    .btn-warning:hover {
+        color: #fff;
+        background-color: #ffca2c;
+        border-color: #ffc720;
+    }
+</style>
 {% endblock %}
