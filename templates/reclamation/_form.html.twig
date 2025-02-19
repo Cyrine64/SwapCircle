@@ -1,0 +1,122 @@
+{{ form_start(form,{'attr':{'novalidate':'novalidate'}}) }}
+    <div class="form-container">
+
+        <table class="form-table">
+            <tr>
+                <td>{{ form_label(form.message, "Message") }}</td>
+                <td>{{ form_widget(form.message) }}</td>
+                <td>{{ form_errors(form.message) }}</td>
+            </tr>
+            <tr class="recf">
+                <td>{{ form_label(form.type_reclamation, "Type de Réclamation") }}</td>
+                <td>{{ form_widget(form.type_reclamation) }}</td>
+                <td>{{ form_errors(form.type_reclamation) }}</td>
+            </tr>
+            <tr class="recf">
+                <td>{{ form_label(form.utilisateur, "Utilisateur") }}</td>
+                <td>{{ form_widget(form.utilisateur) }}</td>
+                <td>{{ form_errors(form.utilisateur) }}</td>
+            </tr>
+            <tr>
+                <td>{{ form_label(form.titre, "Titre") }}</td>
+                <td>{{ form_widget(form.titre) }}</td>
+                <td>{{ form_errors(form.titre) }}</td>
+            </tr>
+        </table>
+
+        <button class="btn">{{ button_label|default('Sauvegarder') }}</button>
+    </div>
+{{ form_end(form) }}
+
+{% block stylesheets %}
+    <style>
+        .form-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            margin: auto;
+            color: #fff;
+        }
+        .recf{
+            color: rgb(0, 0, 0);
+        }
+
+        .form-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color:rgb(3, 90, 21);
+        }
+
+        .form-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .form-table td {
+            padding: 8px;
+        }
+
+        .form-table td:nth-child(1) {
+            font-weight: 600;
+            color: #53ec2e;
+            width: 30%;
+        }
+
+        .form-table td:nth-child(2) {
+            width: 60%;
+        }
+
+        .form-table td:nth-child(3) {
+            width: 10%;
+            color: #f44336;
+        }
+
+        .form-table input,
+        .form-table select,
+        .form-table textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: rgba(0, 0, 0, 0.8);
+            box-sizing: border-box;
+        }
+
+        .form-table input:focus,
+        .form-table select:focus,
+        .form-table textarea:focus {
+            outline: none;
+            border: 2px solidrgb(57, 163, 45);
+            box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+        }
+        
+
+        .btn {
+            background:rgb(117, 207, 121);
+            color: #000;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: block;
+            margin: 20px auto 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+        }
+
+        .btn:hover {
+            background:rgb(45, 181, 54);
+            box-shadow: 0 6px 15px rgba(110, 180, 95, 0.4);
+            transform: translateY(-2px);
+        }
+    </style>
+{% endblock %}

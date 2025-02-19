@@ -1,138 +1,38 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détails de l'échange{% endblock %}
+{% block title %}Echange{% endblock %}
 
 {% block body %}
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow">
-                <div class="card-header bg-success text-white">
-                    <h2 class="h4 mb-0">Détails de l'échange</h2>
-                </div>
+    <h1>Echange</h1>
 
-                <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <h5 class="mb-3">Objet proposé</h5>
-                            <div class="card">
-                                <div class="card-body">
-                                    <h6 class="card-title">{{ echange.objet.nom }}</h6>
-                                    <p class="card-text">{{ echange.objet.description|slice(0, 100) }}...</p>
-                                    {% if echange.objet.image %}
-                                        <img src="{{ asset('uploads/images/' ~ echange.objet.image) }}" 
-                                             alt="{{ echange.objet.nom }}" 
-                                             class="img-thumbnail" 
-                                             style="width: 100px; height: 100px; object-fit: cover;">
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id_echange</th>
+                <td>{{ echange.idEchange }}</td>
+            </tr>
+            <tr>
+                <th>Name_echange</th>
+                <td>{{ echange.nameEchange }}</td>
+            </tr>
+            <tr>
+                <th>Image_echange</th>
+                <td>{{ echange.imageEchange }}</td>
+            </tr>
+            <tr>
+                <th>Date_echange</th>
+                <td>{{ echange.dateEchange ? echange.dateEchange|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Message</th>
+                <td>{{ echange.message }}</td>
+            </tr>
+        </tbody>
+    </table>
 
-                    <div class="details-section mb-4">
-                        <h5 class="mb-3">Informations de l'échange</h5>
-                        <table class="table">
-                            <tbody>
-                                <tr>
-                                    <th>Titre</th>
-                                    <td>{{ echange.getNameEchange() }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Message</th>
-                                    <td>{{ echange.getMessage() }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Date proposée</th>
-                                    <td>{{ echange.getDateEchange() ? echange.getDateEchange()|date('d/m/Y H:i') : '' }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Statut</th>
-                                    <td>
-                                        {% set status_labels = {
-                                            'en_attente': 'En attente',
-                                            'accepte': 'Accepté',
-                                            'refuse': 'Refusé'
-                                        } %}
-                                        
-                                        {% set status_classes = {
-                                            'en_attente': 'bg-warning text-dark',
-                                            'accepte': 'bg-success',
-                                            'refuse': 'bg-danger'
-                                        } %}
-                                        
-                                        {% set current_status = echange.getStatut() %}
-                                        <span class="badge {{ status_classes[current_status] }}">
-                                            {{ status_labels[current_status] }}
-                                        </span>
+    <a href="{{ path('app_echange_index') }}">back to list</a>
 
-                                        {% if current_status == 'accepte' %}
-                                            <div class="alert alert-success mt-3">
-                                                <i class="fas fa-check-circle me-2"></i>
-                                                Votre échange a été accepté ! Vous pouvez maintenant contacter le propriétaire pour organiser l'échange.
-                                            </div>
-                                        {% elseif current_status == 'refuse' %}
-                                            <div class="alert alert-danger mt-3">
-                                                <i class="fas fa-times-circle me-2"></i>
-                                                Désolé, votre proposition d'échange a été refusée.
-                                            </div>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+    <a href="{{ path('app_echange_edit', {'id_echange': echange.id_echange}) }}">edit</a>
 
-                    <div class="d-grid gap-2">
-                        <a href="{{ path('app_echange_edit', {'id_echange': echange.getIdEchange()}) }}" 
-                           class="btn btn-warning">
-                            <i class="fas fa-edit me-2"></i>
-                            Modifier l'échange
-                        </a>
-                        <a href="{{ path('app_echange_index') }}" 
-                           class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-2"></i>
-                            Retour à la liste
-                        </a>
-                    </div>
-
-                    {{ include('echange/_delete_form.html.twig') }}
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-    .card {
-        border: none;
-        border-radius: 10px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
-    
-    .card-header {
-        border-radius: 10px 10px 0 0;
-    }
-    
-    .table th {
-        width: 30%;
-    }
-    
-    .badge {
-        font-size: 0.9rem;
-        padding: 0.5em 1em;
-    }
-    
-    .btn-warning {
-        color: #fff;
-        background-color: #ffc107;
-        border-color: #ffc107;
-    }
-    
-    .btn-warning:hover {
-        color: #fff;
-        background-color: #e0a800;
-        border-color: #d39e00;
-    }
-</style>
+    {{ include('echange/_delete_form.html.twig') }}
 {% endblock %}

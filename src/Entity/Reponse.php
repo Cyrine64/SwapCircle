@@ -16,17 +16,21 @@ class Reponse
     private ?int $id_reponse = null;
 
     #[ORM\ManyToOne(targetEntity: Reclamation::class)]
-    #[ORM\JoinColumn(name: "id_reclamation", referencedColumnName: "id_reclamation", nullable: false)]
+    #[ORM\JoinColumn(name: "id_reclamation", referencedColumnName: "id", nullable: false)]
     private ?Reclamation $reclamation = null;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
-    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
+    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id", nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
     #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank(message: 'ce champs est obligatoire')]
+    #[Assert\Length(
+        min: 10,
+        minMessage: 'veillez introduire 10 caractères au minimum',)]
     private ?string $contenu = null;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $date_reponse = null;
 
     // Getters and setters

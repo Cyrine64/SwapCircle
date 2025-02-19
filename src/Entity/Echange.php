@@ -20,7 +20,7 @@ class Echange
     private ?Objet $objet = null;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
-    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
+    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id", nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
     #[ORM\Column(length: 255)]
@@ -35,10 +35,6 @@ class Echange
 
     #[ORM\Column(type: 'text')]
     private ?string $message = null;
-
-    #[ORM\Column(length: 20)]
-    #[Assert\Choice(choices: ['en_attente', 'accepte', 'refuse'])]
-    private ?string $statut = 'en_attente';
 
     // Getters and setters
     public function getIdEchange(): ?int
@@ -109,17 +105,6 @@ class Echange
     public function setMessage(string $message): self
     {
         $this->message = $message;
-        return $this;
-    }
-
-    public function getStatut(): ?string
-    {
-        return $this->statut;
-    }
-
-    public function setStatut(string $statut): self
-    {
-        $this->statut = $statut;
         return $this;
     }
 } 

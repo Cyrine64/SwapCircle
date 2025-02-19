@@ -27,109 +27,47 @@ final class ObjetController extends AbstractController
     }
 
     #[Route('/new', name: 'app_objet_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $objet = new Objet();
-        // Utiliser un utilisateur statique
-        $utilisateur = $entityManager->getRepository(Utilisateur::class)->find(1);
-        if (!$utilisateur) {
-            throw new \Exception('L\'utilisateur statique avec ID 1 n\'existe pas');
-        }
+public function new(Request $request, EntityManagerInterface $entityManager): Response
+{
+    $objet = new Objet();
+    $utilisateur = $entityManager->getRepository(Utilisateur::class)->find(1);
+    $objet->setIdUtilisateur($utilisateur);
+    $objet->setDateAjout(new \DateTime());
+    $objet->setEtat('disponible');
+    $form = $this->createForm(ObjetType::class, $objet);
+    $form->handleRequest($request); // Save filename in the database
+
+    if ($form->isSubmitted() && $form->isValid()) {
         
-        $objet->setIdUtilisateur($utilisateur);
-        $objet->setDateAjout(new \DateTime());
-        $objet->setEtat('disponible');
-        
-        $form = $this->createForm(ObjetType::class, $objet, ['is_front' => false]);
-        $form->handleRequest($request);
+        $imageFile = $form->get('image')->getData();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Gérer l'upload de l'image
-            $imageFile = $form->get('image')->getData();
+        if ($imageFile) {
+            // Generate a unique file name
+            $newFilename = uniqid().'.'.$imageFile->guessExtension();
 
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                // Remplacer les caractères non alphanumériques par des tirets
-                $safeFilename = preg_replace('/[^a-zA-Z0-9]/', '-', $originalFilename);
-                $newFilename = strtolower($safeFilename).'-'.uniqid().'.'.$imageFile->guessExtension();
+            // Move the file to the directory where images are stored
+            $imageFile->move(
+                $this->getParameter('images_directory'), // Define this parameter in services.yaml
+                $newFilename
+            );
 
-                try {
-                    $imageFile->move(
-                        $this->getParameter('images_directory'),
-                        $newFilename
-                    );
-                    $objet->setImage($newFilename); // Assurez-vous que le nom de l'image est enregistré
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image : ' . $e->getMessage());
-                    return $this->redirectToRoute('app_objet_new');
-                }
-            }
-
-            $entityManager->persist($objet);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'L\'objet a été ajouté avec succès!');
-            return $this->redirectToRoute('app_objet_index');
+            // Set the image path in the entity
+            $objet->setImage($newFilename);
         }
+        $entityManager->persist($objet);
+        $entityManager->flush();
+        
 
-        return $this->render('objet/new.html.twig', [
-            'objet' => $objet,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('app_objet_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/front/new', name: 'app_front_objet_new', methods: ['GET', 'POST'])]
-    public function newFront(Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $objet = new Objet();
-        // Utiliser un utilisateur statique
-        $utilisateur = $entityManager->getRepository(Utilisateur::class)->find(1);
-        if (!$utilisateur) {
-            throw new \Exception('L\'utilisateur statique avec ID 1 n\'existe pas');
-        }
-        
-        $objet->setIdUtilisateur($utilisateur);
-        $objet->setDateAjout(new \DateTime());
-        $objet->setEtat('disponible');
-        
-        $form = $this->createForm(ObjetType::class, $objet, ['is_front' => true]);
-        $form->handleRequest($request);
+    return $this->render('objet/new.html.twig', [
+        'objet' => $objet,
+        'form' => $form->createView(),
+    ]);
+}
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Gérer l'upload de l'image
-            $imageFile = $form->get('image')->getData();
-
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                // Remplacer les caractères non alphanumériques par des tirets
-                $safeFilename = preg_replace('/[^a-zA-Z0-9]/', '-', $originalFilename);
-                $newFilename = strtolower($safeFilename).'-'.uniqid().'.'.$imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('images_directory'),
-                        $newFilename
-                    );
-                    $objet->setImage($newFilename); // Assurez-vous que le nom de l'image est enregistré
-                } catch (FileException $e) {
-                    $this->addFlash('error', 'Une erreur est survenue lors du téléchargement de l\'image : ' . $e->getMessage());
-                    return $this->redirectToRoute('app_front_objet_new');
-                }
-            }
-
-            $entityManager->persist($objet);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Votre objet a été ajouté avec succès!');
-            return $this->redirectToRoute('front_office_index');
-        }
-
-        return $this->render('front_office/new_objet.html.twig', [
-            'form' => $form,
-        ]);
-    }
-
-    #[Route('/{id}', name: 'app_objet_show', methods: ['GET'])]
+    #[Route('/{id_objet}', name: 'app_objet_show', methods: ['GET'])]
     public function show(Objet $objet): Response
     {
         return $this->render('objet/show.html.twig', [
@@ -137,7 +75,7 @@ final class ObjetController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_objet_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id_objet}/edit', name: 'app_objet_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Objet $objet, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ObjetType::class, $objet);
@@ -155,10 +93,10 @@ final class ObjetController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_objet_delete', methods: ['POST'])]
+    #[Route('/{id_objet}', name: 'app_objet_delete', methods: ['POST'])]
     public function delete(Request $request, Objet $objet, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$objet->getIdObjet(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete'.$objet->getIdObjet(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($objet);
             $entityManager->flush();
         }

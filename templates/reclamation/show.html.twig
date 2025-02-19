@@ -1,0 +1,109 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Reclamation{% endblock %}
+{% block stylesheets %}
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+        
+        .table1 {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .table1 th, .table1 td {
+            padding: 15px;
+            text-align: left;
+            font-size: 1.1rem;
+        }
+        
+        .table1 th {
+            background: rgba(255, 255, 255, 0.2);
+            color:rgb(53, 236, 46);
+            font-weight: 600;
+        }
+        
+        .table1 td {
+            color:rgb(0, 0, 0);
+        }
+        
+        .table1 tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        aa1 {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 15px 5px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            background: #ffcc00;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
+        }
+        
+        aa1:hover {
+            background: #ff9900;
+            box-shadow: 0 6px 15px rgba(255, 153, 0, 0.4);
+            transform: translateY(-2px);
+        }
+            </style>
+{% endblock %}
+{% block body %}
+    <h1>Reclamation</h1>
+
+    <table class="table1">
+        <tbody>
+            <tr>
+                <th>Message</th>
+                <td>{{ reclamation.message }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ reclamation.statut }}</td>
+            </tr>
+            <tr>
+                <th>Type_reclamation</th>
+                <td>{{ reclamation.typeReclamation.value }}</td>
+            </tr>
+            <tr>
+                <th>Date_reclamation</th>
+                <td>{{ reclamation.dateReclamation ? reclamation.dateReclamation|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Titre</th>
+                <td>{{ reclamation.titre }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a class="aa1" href="{{ path('app_reclamation_index') }}">back to list</a>
+
+   
+    {{ include('reclamation/_delete_form.html.twig') }}
+{% endblock %}

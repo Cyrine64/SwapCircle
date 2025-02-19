@@ -2,27 +2,22 @@
 
 namespace App\Form;
 
-use App\Entity\Echange;
-use App\Entity\Objet;
+use App\Entity\Reclamation;
+use App\Entity\Reponse;
 use App\Entity\Utilisateur;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EchangeType extends AbstractType
+class ReponseType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name_echange')
-            ->add('image_echange')
-            ->add('date_echange', null, [
-                'widget' => 'single_text',
-            ])
-            ->add('message')
-            ->add('objet', EntityType::class, [
-                'class' => Objet::class,
+            ->add('contenu')
+            ->add('reclamation', EntityType::class, [
+                'class' => Reclamation::class,
                 'choice_label' => 'id',
             ])
             ->add('utilisateur', EntityType::class, [
@@ -35,7 +30,7 @@ class EchangeType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Echange::class,
+            'data_class' => Reponse::class,
         ]);
     }
 }

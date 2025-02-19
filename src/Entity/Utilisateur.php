@@ -14,7 +14,7 @@ class Utilisateur
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id_utilisateur = null;
+    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -39,37 +39,37 @@ class Utilisateur
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $date_inscription = null;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Objet::class)]
+    #[ORM\OneToMany(mappedBy: "id", targetEntity: Objet::class)]
     private Collection $objets;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Reclamation::class)]
+    #[ORM\OneToMany(mappedBy: "id", targetEntity: Reclamation::class)]
     private Collection $reclamations;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Blog::class)]
+    #[ORM\OneToMany(mappedBy: "id", targetEntity: Blog::class)]
     private Collection $blogs;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Commentaire::class)]
+    #[ORM\OneToMany(mappedBy: "id", targetEntity: Commentaire::class)]
     private Collection $commentaires;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Reponse::class)]
+    #[ORM\OneToMany(mappedBy: "id", targetEntity: Reponse::class)]
     private Collection $reponses;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Recyclage::class)]
+    #[ORM\OneToMany(mappedBy: "id", targetEntity: Recyclage::class)]
     private Collection $recyclages;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Echange::class)]
+    #[ORM\OneToMany(mappedBy: "id", targetEntity: Echange::class)]
     private Collection $echanges;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Tutorial::class)]
+    #[ORM\OneToMany(mappedBy: "id", targetEntity: Tutorial::class)]
     private Collection $tutorials;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: BlogLike::class)]
+    #[ORM\OneToMany(mappedBy: "id", targetEntity: BlogLike::class)]
     private Collection $blogLikes;
 
     // Getters and setters
-    public function getIdUtilisateur(): ?int
+    public function getId(): ?int
     {
-        return $this->id_utilisateur;
+        return $this->id;
     }
 
     public function getNom(): ?string

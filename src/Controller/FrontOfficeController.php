@@ -33,10 +33,10 @@ final class FrontOfficeController extends AbstractController
         return $this->render('front_office/blog.html.twig');
     }
 
-    #[Route('/reclamation', name: 'front_office_reclamation')]
+    #[Route('/reclamationFront', name: 'app_reclamation_index')]
     public function reclamation(): Response
     {
-        return $this->render('front_office/reclamation.html.twig');
+        return $this->render('reclamation/newFront.html.twig');
     }
 
     #[Route('/contact', name: 'front_office_contact')]

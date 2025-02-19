@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+    <style>
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .back-link {
+            display: inline-block;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: rgb(54, 68, 54);
+            background: transparent;
+            border: 2px solid rgb(106, 240, 79);
+            padding: 12px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link:hover {
+            background: rgb(0, 255, 72);
+            color: #000;
+            box-shadow: 0 4px 10px rgba(142, 192, 137, 0.3);
+        }
+        
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        {{ include('reclamation/_form.html.twig') }}
+        <a class="back-link" href="{{ path('app_reclamation_index') }}">Back to list</a>
+    </div>
+{% endblock %}

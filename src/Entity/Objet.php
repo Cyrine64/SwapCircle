@@ -17,51 +17,28 @@ class Objet
     private ?int $id_objet = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'Le nom de l\'objet est obligatoire')]
-    #[Assert\Length(
-        min: 3,
-        max: 255,
-        minMessage: 'Le nom doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères'
-    )]
+    #[Assert\NotBlank]
     private ?string $nom = null;
 
     #[ORM\Column(type: 'text')]
-    #[Assert\NotBlank(message: 'La description est obligatoire')]
-    #[Assert\Length(
-        min: 10,
-        minMessage: 'La description doit contenir au moins {{ limit }} caractères'
-    )]
+    #[Assert\NotBlank]
     private ?string $description = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: 'L\'état est obligatoire')]
-    #[Assert\Choice(
-        choices: ['disponible', 'attendu'],
-        message: 'Choisissez un état valide : disponible ou attendu'
-    )]
+    #[Assert\NotBlank]
     private ?string $etat = null;
 
     #[ORM\Column(type: 'datetime')]
-    #[Assert\NotNull(message: 'La date d\'ajout est obligatoire')]
-    #[Assert\Type('\DateTimeInterface')]
     private ?\DateTimeInterface $date_ajout = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255)]
     private ?string $image = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: 'La catégorie est obligatoire')]
-    #[Assert\Length(
-        min: 2,
-        max: 255,
-        minMessage: 'La catégorie doit contenir au moins {{ limit }} caractères',
-        maxMessage: 'La catégorie ne peut pas dépasser {{ limit }} caractères'
-    )]
     private ?string $categorie = null;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "objets")]
-    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
+    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id", nullable: false)]
     private ?Utilisateur $id_utilisateur = null;
 
     #[ORM\OneToMany(mappedBy: "id_objet", targetEntity: Echange::class)]

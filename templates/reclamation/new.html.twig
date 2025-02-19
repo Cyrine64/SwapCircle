@@ -1,0 +1,89 @@
+{% extends 'back-base.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .btn {
+            background:rgb(33, 160, 31);
+            color: #000;
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(77, 207, 62, 0.3);
+        }
+
+        .btn:hover {
+            background:rgb(74, 206, 96);
+            box-shadow: 0 6px 15px rgba(51, 184, 64, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: rgb(54, 68, 54);
+            background: transparent;
+            border: 2px solidrgb(106, 240, 79);
+            padding: 12px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .back-link:hover {
+            background:rgb(0, 255, 72);
+            color: #000;
+            box-shadow: 0 4px 10px rgba(142, 192, 137, 0.3);
+        }
+
+    </style>
+{% endblock %}
+
+{% block title %}New Reclamation{% endblock %}
+
+{% block body %}
+    <h1>Create new Reclamation</h1>
+
+    <div class="container">
+        {{ include('reclamation/_form.html.twig') }}
+        <a class="back-link" href="{{ path('app_reclamation_index') }}">Back to list</a>
+    </div>
+{% endblock %}
