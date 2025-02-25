@@ -1,0 +1,125 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Détails de l'Échange{% endblock %}
+
+{% block body %}
+<div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xl">
+        <div class="row g-3 mb-4 align-items-center justify-content-between">
+            <div class="col-auto">
+                <h1 class="app-page-title mb-0">Détails de l'Échange</h1>
+            </div>
+            <div class="col-auto">
+                <a href="{{ path('app_back_office_echange_edit', {'id': echange.getIdEchange()}) }}" class="btn app-btn-primary">
+                    <i class="fas fa-edit me-2"></i>Modifier
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="app-card app-card-account shadow-sm d-flex flex-column align-items-start">
+                    <div class="app-card-header p-3 border-bottom-0">
+                        <div class="row align-items-center gx-3">
+                            <div class="col-auto">
+                                <h4 class="app-card-title">Informations de l'échange</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app-card-body px-4 w-100">
+                        {% for label, messages in app.flashes %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        <div class="item border-bottom py-3">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-auto">
+                                    <div class="item-label"><strong>ID</strong></div>
+                                    <div class="item-data">{{ echange.getIdEchange() }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item border-bottom py-3">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-auto">
+                                    <div class="item-label"><strong>Titre</strong></div>
+                                    <div class="item-data">{{ echange.getNameEchange() }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item border-bottom py-3">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-auto">
+                                    <div class="item-label"><strong>Utilisateur</strong></div>
+                                    <div class="item-data">{{ echange.getUtilisateur().nom }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item border-bottom py-3">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-auto">
+                                    <div class="item-label"><strong>Objet proposé</strong></div>
+                                    <div class="item-data">{{ echange.getObjet().nom }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item border-bottom py-3">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-auto">
+                                    <div class="item-label"><strong>Date d'échange</strong></div>
+                                    <div class="item-data">{{ echange.getDateEchange()|date('d/m/Y H:i') }}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item border-bottom py-3">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-auto">
+                                    <div class="item-label"><strong>Statut</strong></div>
+                                    <div class="item-data">
+                                        {% if echange.getStatut() == 'en_attente' %}
+                                            <span class="badge bg-warning text-dark">En attente</span>
+                                            <div class="mt-3">
+                                                <form method="post" action="{{ path('app_back_office_echange_accept', {'id': echange.getIdEchange()}) }}" style="display: inline;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('accept' ~ echange.getIdEchange()) }}">
+                                                    <button type="submit" class="btn btn-success btn-sm">
+                                                        <i class="fas fa-check me-2"></i>Accepter
+                                                    </button>
+                                                </form>
+                                                <form method="post" action="{{ path('app_back_office_echange_refuse', {'id': echange.getIdEchange()}) }}" style="display: inline; margin-left: 10px;">
+                                                    <input type="hidden" name="_token" value="{{ csrf_token('refuse' ~ echange.getIdEchange()) }}">
+                                                    <button type="submit" class="btn btn-danger btn-sm">
+                                                        <i class="fas fa-times me-2"></i>Refuser
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        {% elseif echange.getStatut() == 'accepte' %}
+                                            <span class="badge bg-success">Accepté</span>
+                                        {% elseif echange.getStatut() == 'refuse' %}
+                                            <span class="badge bg-danger">Refusé</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="item border-bottom py-3">
+                            <div class="row justify-content-between align-items-center">
+                                <div class="col-auto">
+                                    <div class="item-label"><strong>Message</strong></div>
+                                    <div class="item-data">{{ echange.getMessage() }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app-card-footer p-4 mt-auto">
+                        <a href="{{ path('app_back_office_echanges') }}" class="btn app-btn-secondary">Retour à la liste</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

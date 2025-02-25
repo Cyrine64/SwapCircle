@@ -1,0 +1,162 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Statistiques par Métier{% endblock %}
+
+{% block body %}
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Statistiques par Métier</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-bar me-1"></i>
+                Distribution des objets par métier
+            </div>
+            <div class="card-body">
+                {% if statistiques is empty %}
+                    <div class="alert alert-info">
+                        Aucune statistique disponible. Assurez-vous que des objets ont été créés avec des métiers assignés.
+                    </div>
+                {% else %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Métier</th>
+                                <th>Nombre d'objets</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for stat in statistiques %}
+                                <tr>
+                                    <td>{{ stat.metier }}</td>
+                                    <td>{{ stat.total }}</td>
+                                    <td>
+                                        <a href="{{ path('app_back_office_objets_by_metier', {'metier': stat.metier}) }}" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-eye me-1"></i> Voir les objets
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr class="table-info">
+                                <td><strong>Total</strong></td>
+                                <td colspan="2">
+                                    <strong>
+                                        {% set total = 0 %}
+                                        {% for stat in statistiques %}
+                                            {% set total = total + stat.total %}
+                                        {% endfor %}
+                                        {{ total }} objet{% if total > 1 %}s{% endif %}
+                                    </strong>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-xl-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-chart-bar me-1"></i>
+                        Objets par Catégorie
+                    </div>
+                    <div class="card-body">
+                        <canvas id="categoriesChart" width="100%" height="40"></canvas>
+                        {% if categories is defined and categories is not empty and countParCategorie is defined and countParCategorie is not empty %}
+                            <script>
+                                // Données pour le graphique des catégories
+                                var categoriesCtx = document.getElementById('categoriesChart');
+                                new Chart(categoriesCtx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: {{ categories|raw }},
+                                        datasets: [{
+                                            label: 'Nombre d\'objets',
+                                            data: {{ countParCategorie|raw }},
+                                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true,
+                                                ticks: {
+                                                    stepSize: 1
+                                                }
+                                            }
+                                        },
+                                        plugins: {
+                                            legend: {
+                                                display: true
+                                            }
+                                        }
+                                    }
+                                });
+                            </script>
+                        {% else %}
+                            <p>Aucune donnée disponible pour afficher les statistiques.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-chart-bar me-1"></i>
+                        Objets par État
+                    </div>
+                    <div class="card-body">
+                        <canvas id="etatsChart" width="100%" height="40"></canvas>
+                        {% if etats is defined and etats is not empty and countParEtat is defined and countParEtat is not empty %}
+                            <script>
+                                // Données pour le graphique des états
+                                var etatsCtx = document.getElementById('etatsChart');
+                                new Chart(etatsCtx, {
+                                    type: 'bar',
+                                    data: {
+                                        labels: {{ etats|raw }},
+                                        datasets: [{
+                                            label: 'Nombre d\'objets par état',
+                                            data: {{ countParEtat|raw }},
+                                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                            borderColor: 'rgba(75, 192, 192, 1)',
+                                            borderWidth: 1
+                                        }]
+                                    },
+                                    options: {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true,
+                                                ticks: {
+                                                    stepSize: 1
+                                                }
+                                            }
+                                        },
+                                        plugins: {
+                                            legend: {
+                                                display: true
+                                            }
+                                        }
+                                    }
+                                });
+                            </script>
+                        {% else %}
+                            <p>Aucune donnée disponible pour afficher les statistiques des états.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}

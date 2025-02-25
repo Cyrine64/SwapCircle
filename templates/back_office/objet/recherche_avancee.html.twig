@@ -1,0 +1,69 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Recherche Avancée{% endblock %}
+
+{% block body %}
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Recherche Avancée</h1>
+        
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-search me-1"></i>
+                Filtres de recherche
+            </div>
+            <div class="card-body">
+                <form method="get" class="mb-4">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="metier">Métier</label>
+                                <input type="text" id="metier" name="metier" class="form-control" value="{{ metier|default('') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="categorie">Catégorie</label>
+                                <input type="text" id="categorie" name="categorie" class="form-control" value="{{ categorie|default('') }}">
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary mt-4">Rechercher</button>
+                        </div>
+                    </div>
+                </form>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Métier</th>
+                            <th>Catégorie</th>
+                            <th>État</th>
+                            <th>Date d'ajout</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for objet in objets %}
+                            <tr>
+                                <td>{{ objet.nom }}</td>
+                                <td>{{ objet.metier|default('Non spécifié') }}</td>
+                                <td>{{ objet.categorie|default('Non spécifié') }}</td>
+                                <td>{{ objet.etat }}</td>
+                                <td>{{ objet.dateAjout|date('Y-m-d H:i:s') }}</td>
+                                <td>
+                                    <a href="{{ path('app_back_office_objet_show', {'id': objet.idObjet}) }}" class="btn btn-info btn-sm">Voir</a>
+                                    <a href="{{ path('app_back_office_objet_edit', {'id': objet.idObjet}) }}" class="btn btn-primary btn-sm">Éditer</a>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">Aucun objet trouvé</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
