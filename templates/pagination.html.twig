@@ -1,0 +1,80 @@
+{% if pageCount > 1 %}
+    <div class="custom-pagination">
+        <div class="btn-group" role="group" aria-label="Pagination">
+            {% if previous is defined %}
+                <a href="{{ path(route, {(pageParameterName): previous}) }}" class="btn btn-outline-primary">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            {% else %}
+                <button class="btn btn-outline-primary" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            {% endif %}
+
+            {% set nearbyPagesLimit = 2 %}
+            
+            {# Pages around current page #}
+            {% for page in pagesInRange %}
+                {% if page == current %}
+                    <button class="btn btn-primary">{{ page }}</button>
+                {% else %}
+                    <a href="{{ path(route, {(pageParameterName): page}) }}" 
+                       class="btn btn-outline-primary">
+                        {{ page }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+
+            {% if next is defined %}
+                <a href="{{ path(route, {(pageParameterName): next}) }}" class="btn btn-outline-primary">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            {% else %}
+                <button class="btn btn-outline-primary" disabled>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            {% endif %}
+        </div>
+    </div>
+
+    <style>
+        .custom-pagination {
+            margin: 2rem 0;
+        }
+        .custom-pagination .btn-group {
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .custom-pagination .btn {
+            border-radius: 4px !important;
+            min-width: 40px;
+            height: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .custom-pagination .btn.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .custom-pagination .btn-primary {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+        .custom-pagination .btn-outline-primary {
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+        .custom-pagination .btn-outline-primary:hover {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .custom-pagination .fas {
+            font-size: 12px;
+        }
+    </style>
+{% endif %}

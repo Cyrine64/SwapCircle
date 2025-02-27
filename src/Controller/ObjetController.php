@@ -7,6 +7,7 @@ use App\Entity\Utilisateur;
 use App\Form\ObjetType;
 use App\Repository\ObjetRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,10 +20,27 @@ use Symfony\Flex\Downloader;
 final class ObjetController extends AbstractController
 {
     #[Route(name: 'app_objet_index', methods: ['GET'])]
-    public function index(ObjetRepository $objetRepository): Response
+    public function index(ObjetRepository $objetRepository, PaginatorInterface $paginator, Request $request): Response
     {
+        $query = $objetRepository->createQueryBuilder('o')
+            ->orderBy('o.date_ajout', 'DESC')
+            ->getQuery();
+        
+        $page = max(1, $request->query->getInt('page', 1)); // Ensure page is at least 1
+        
+        $pagination = $paginator->paginate(
+            $query,
+            $page,
+            3   // Show 3 items per page
+        );
+
+        // If page is greater than max pages, redirect to page 1
+        if ($page > $pagination->getPageCount() && $pagination->getPageCount() > 0) {
+            return $this->redirectToRoute('app_objet_index', ['page' => 1]);
+        }
+
         return $this->render('objet/index.html.twig', [
-            'objets' => $objetRepository->findAll(),
+            'pagination' => $pagination,
         ]);
     }
 
