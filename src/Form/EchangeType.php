@@ -56,9 +56,6 @@ class EchangeType extends AbstractType
                 'label' => 'Date souhaitée pour l\'échange',
                 'required' => true,
                 'widget' => 'single_text',
-                'attr' => [
-                    'min' => (new \DateTime())->format('Y-m-d\TH:i')
-                ]
             ])
             ->add('statut', ChoiceType::class, [
                 'label' => 'Statut',

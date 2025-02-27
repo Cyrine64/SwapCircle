@@ -30,7 +30,7 @@ class Objet
     #[Assert\NotBlank(message: 'La description est obligatoire')]
     #[Assert\Length(
         min: 10,
-        minMessage: 'La description doit contenir au moins {{ limit }} caractères'
+        minMessage: 'La description doit  au moins {{ limit }} caractères'
     )]
     private ?string $description = null;
 

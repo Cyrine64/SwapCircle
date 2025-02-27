@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
@@ -56,14 +57,13 @@ class ObjetType extends AbstractType
                     'accept' => 'image/jpeg,image/png,image/webp'
                 ]
             ])
-            ->add('date_ajout', DateTimeType::class, [
-                'label' => 'Date d\'ajout',
+            ->add('dateAjout', DateTimeType::class, [
                 'widget' => 'single_text',
-                'html5' => true,
-                'required' => true,
                 'data' => new \DateTime(),
+                'label' => 'Date d\'ajout',
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'readonly' => true
                 ]
             ])
             ->add('categorie', ChoiceType::class, [
@@ -87,12 +87,14 @@ class ObjetType extends AbstractType
                 'label' => 'État de l\'objet',
                 'choices' => [
                     'Disponible' => 'disponible',
-                    'En attente' => 'attendu',
-                    'Échangé' => 'echange'
+                    'En attente' => 'attendu'
                 ],
                 'attr' => [
                     'class' => 'form-control'
-                ]
+                ],
+                'data' => 'disponible', // Default value
+                'required' => true, // Make the field required
+                'empty_data' => 'disponible', // Fallback value if null is submitted
             ]);
         }
     }

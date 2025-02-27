@@ -39,8 +39,14 @@
         {% if form.etat is defined %}
         <div class="col-md-12">
             <div class="form-group">
-                {{ form_label(form.etat) }}
-                {{ form_widget(form.etat) }}
+                {{ form_label(form.etat, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.etat, {
+                    'attr': {
+                        'class': 'form-control transparent-select',
+                        'disabled': 'disabled', 
+                        'style': 'opacity: 0.5; pointer-events: none;' 
+                    }
+                }) }}
                 <div class="invalid-feedback">
                     {{ form_errors(form.etat) }}
                 </div>
@@ -93,6 +99,10 @@
     .form-text {
         margin-top: 0.25rem;
         color: #6c757d;
+    }
+    .transparent-select {
+        opacity: 0.5;
+        pointer-events: none;
     }
 </style>
 
