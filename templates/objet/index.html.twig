@@ -3,8 +3,33 @@
 {% block title %}Liste des Objets{% endblock %}
 
 {% block body %}
-<section class="service_section layout_padding" style="margin-bottom: 800px;">
+<section class="service_section layout_padding">
     <div class="container-fluid px-4">
+        <!-- Search Bar -->
+        <div class="search-container mb-4">
+            <form class="search-form" action="{{ path('app_objet_index') }}" method="GET">
+                <div class="search-wrapper">
+                    <input type="text" 
+                           name="search" 
+                           class="search-input" 
+                           placeholder="Rechercher un objet..."
+                           value="{{ app.request.query.get('search') }}"
+                           autocomplete="off">
+                    <button class="search-button" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+                {% if app.request.query.get('search') %}
+                    <div class="search-info">
+                        Résultats pour: "{{ app.request.query.get('search') }}"
+                        <a href="{{ path('app_objet_index') }}" class="clear-search">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+
         <div class="row">
             <!-- Sidebar Categories -->
             <div class="col-lg-2 sidebar-wrapper" style="position: sticky; top: 0; ">
@@ -18,13 +43,15 @@
                         <div class="filter-section mb-4">
                             <h6 class="filter-subtitle">Trier par date</h6>
                             <div class="filter-options">
-                                <a href="{{ path('app_objet_index', {'sortBy': 'desc'}) }}" class="filter-link {{ app.request.query.get('sortBy') == 'desc' ? 'active' : '' }}">
+                                <a href="{{ path('app_objet_index', {'sortBy': 'desc', 'search': app.request.query.get('search')}) }}" 
+                                   class="filter-link {{ app.request.query.get('sortBy') == 'desc' ? 'active' : '' }}">
                                     <div class="icon-wrapper">
                                         <i class="fa fa-clock"></i>
                                     </div>
                                     <span>Plus récents</span>
                                 </a>
-                                <a href="{{ path('app_objet_index', {'sortBy': 'asc'}) }}" class="filter-link {{ app.request.query.get('sortBy') == 'asc' ? 'active' : '' }}">
+                                <a href="{{ path('app_objet_index', {'sortBy': 'asc', 'search': app.request.query.get('search')}) }}" 
+                                   class="filter-link {{ app.request.query.get('sortBy') == 'asc' ? 'active' : '' }}">
                                     <div class="icon-wrapper">
                                         <i class="fa fa-history"></i>
                                     </div>
@@ -36,15 +63,15 @@
                         <!-- Categories -->
                         <h6 class="filter-subtitle">Catégories</h6>
                         <div class="filter-options">
-                            <a href="{{ path('app_objet_index') }}" 
+                            <a href="{{ path('app_objet_index', {'search': app.request.query.get('search')}) }}" 
                                class="filter-link {% if not selectedCategory %}active{% endif %}">
                                 <div class="icon-wrapper">
-                                    <i class="fa fa-th"></i>
+                                    <i class="fa fa-th-large"></i>
                                 </div>
-                                <span>Toutes les catégories</span>
+                                <span>Tous les objets</span>
                             </a>
                             
-                            <a href="{{ path('app_objet_index', {'category': 'electronique'}) }}" 
+                            <a href="{{ path('app_objet_index', {'category': 'electronique', 'search': app.request.query.get('search')}) }}" 
                                class="filter-link {% if selectedCategory == 'electronique' %}active{% endif %}">
                                 <div class="icon-wrapper">
                                     <i class="fa fa-laptop"></i>
@@ -52,7 +79,7 @@
                                 <span>Électronique</span>
                             </a>
                             
-                            <a href="{{ path('app_objet_index', {'category': 'vetements'}) }}" 
+                            <a href="{{ path('app_objet_index', {'category': 'vetements', 'search': app.request.query.get('search')}) }}" 
                                class="filter-link {% if selectedCategory == 'vetements' %}active{% endif %}">
                                 <div class="icon-wrapper">
                                     <i class="fa fa-tshirt"></i>
@@ -60,7 +87,7 @@
                                 <span>Vêtements</span>
                             </a>
                             
-                            <a href="{{ path('app_objet_index', {'category': 'livres'}) }}" 
+                            <a href="{{ path('app_objet_index', {'category': 'livres', 'search': app.request.query.get('search')}) }}" 
                                class="filter-link {% if selectedCategory == 'livres' %}active{% endif %}">
                                 <div class="icon-wrapper">
                                     <i class="fa fa-book"></i>
@@ -68,7 +95,7 @@
                                 <span>Livres</span>
                             </a>
                             
-                            <a href="{{ path('app_objet_index', {'category': 'sports_loisirs'}) }}" 
+                            <a href="{{ path('app_objet_index', {'category': 'sports_loisirs', 'search': app.request.query.get('search')}) }}" 
                                class="filter-link {% if selectedCategory == 'sports_loisirs' %}active{% endif %}">
                                 <div class="icon-wrapper">
                                     <i class="fa fa-futbol"></i>
@@ -76,7 +103,7 @@
                                 <span>Sports & Loisirs</span>
                             </a>
                             
-                            <a href="{{ path('app_objet_index', {'category': 'maison_jardin'}) }}" 
+                            <a href="{{ path('app_objet_index', {'category': 'maison_jardin', 'search': app.request.query.get('search')}) }}" 
                                class="filter-link {% if selectedCategory == 'maison_jardin' %}active{% endif %}">
                                 <div class="icon-wrapper">
                                     <i class="fa fa-home"></i>
@@ -84,7 +111,7 @@
                                 <span>Maison & Jardin</span>
                             </a>
                             
-                            <a href="{{ path('app_objet_index', {'category': 'autres'}) }}" 
+                            <a href="{{ path('app_objet_index', {'category': 'autres', 'search': app.request.query.get('search')}) }}" 
                                class="filter-link {% if selectedCategory == 'autres' %}active{% endif %}">
                                 <div class="icon-wrapper">
                                     <i class="fa fa-box"></i>
@@ -196,6 +223,88 @@
     </div>
 
     <style>
+        /* Modern Search Bar Styling */
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 15px;
+        }
+
+        .search-form {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 25px;
+            padding: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .search-wrapper:focus-within {
+            box-shadow: 0 3px 15px rgba(0,123,255,0.2);
+            border-color: #007bff;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            background: transparent;
+            outline: none;
+        }
+
+        .search-button {
+            background: #007bff;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .search-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .clear-search {
+            margin-left: 10px;
+            color: #dc3545;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .clear-search:hover {
+            background: #dc3545;
+            color: white;
+            transform: scale(1.1);
+        }
+
         /* General Styling */
         body {
             font-family: 'Poppins', sans-serif;

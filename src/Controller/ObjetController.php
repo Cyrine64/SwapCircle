@@ -24,6 +24,21 @@ final class ObjetController extends AbstractController
     {
         $queryBuilder = $objetRepository->createQueryBuilder('o');
 
+        // Handle search with improved matching
+        if ($search = $request->query->get('search')) {
+            $searchTerms = array_filter(explode(' ', $search));
+            $searchQuery = [];
+            
+            foreach ($searchTerms as $key => $term) {
+                $searchQuery[] = '(LOWER(o.nom) LIKE LOWER(:search' . $key . ') OR LOWER(o.description) LIKE LOWER(:search' . $key . '))';
+                $queryBuilder->setParameter('search' . $key, '%' . $term . '%');
+            }
+            
+            if (!empty($searchQuery)) {
+                $queryBuilder->andWhere(implode(' AND ', $searchQuery));
+            }
+        }
+
         // Handle category filter
         if ($category = $request->query->get('category')) {
             $queryBuilder->andWhere('o.categorie = :category')
