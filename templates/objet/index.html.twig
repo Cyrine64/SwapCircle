@@ -13,6 +13,28 @@
                         <h6 class="filter-title">
                             <i class="fa fa-filter me-2"></i>Catégories
                         </h6>
+                        
+                        <!-- Date Sort Options -->
+                        <div class="filter-section mb-4">
+                            <h6 class="filter-subtitle">Trier par date</h6>
+                            <div class="filter-options">
+                                <a href="{{ path('app_objet_index', {'sortBy': 'desc'}) }}" class="filter-link {{ app.request.query.get('sortBy') == 'desc' ? 'active' : '' }}">
+                                    <div class="icon-wrapper">
+                                        <i class="fa fa-clock"></i>
+                                    </div>
+                                    <span>Plus récents</span>
+                                </a>
+                                <a href="{{ path('app_objet_index', {'sortBy': 'asc'}) }}" class="filter-link {{ app.request.query.get('sortBy') == 'asc' ? 'active' : '' }}">
+                                    <div class="icon-wrapper">
+                                        <i class="fa fa-history"></i>
+                                    </div>
+                                    <span>Plus anciens</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Categories -->
+                        <h6 class="filter-subtitle">Catégories</h6>
                         <div class="filter-options">
                             <a href="{{ path('app_objet_index') }}" 
                                class="filter-link {% if not selectedCategory %}active{% endif %}">
@@ -325,10 +347,24 @@
             color: #333;
             margin-bottom: 15px;
         }
+
+        .filter-subtitle {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            margin: 15px 0 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
         
+        .filter-section {
+            margin-bottom: 20px;
+        }
+
         .filter-options {
             display: flex;
             flex-direction: column;
+            gap: 8px;
         }
         
         .filter-link {

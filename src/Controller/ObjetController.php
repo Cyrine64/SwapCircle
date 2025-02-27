@@ -20,24 +20,25 @@ use Symfony\Flex\Downloader;
 final class ObjetController extends AbstractController
 {
     #[Route(name: 'app_objet_index', methods: ['GET'])]
-    public function index(ObjetRepository $objetRepository, PaginatorInterface $paginator, Request $request): Response
+    public function index(Request $request, PaginatorInterface $paginator, ObjetRepository $objetRepository): Response
     {
-        $queryBuilder = $objetRepository->createQueryBuilder('o')
-            ->orderBy('o.date_ajout', 'DESC');
+        $queryBuilder = $objetRepository->createQueryBuilder('o');
 
-        // Apply category filter if selected
-        $selectedCategory = $request->query->get('category');
-        if ($selectedCategory) {
+        // Handle category filter
+        if ($category = $request->query->get('category')) {
             $queryBuilder->andWhere('o.categorie = :category')
-                        ->setParameter('category', $selectedCategory);
+                ->setParameter('category', $category);
         }
-        
+
+        // Handle date sorting
+        $sortBy = $request->query->get('sortBy', 'desc');
+        $queryBuilder->orderBy('o.date_ajout', strtoupper($sortBy));
+
         $page = max(1, $request->query->getInt('page', 1));
-        
         $pagination = $paginator->paginate(
             $queryBuilder->getQuery(),
             $page,
-            3
+            4
         );
 
         if ($page > $pagination->getPageCount() && $pagination->getPageCount() > 0) {
@@ -46,7 +47,7 @@ final class ObjetController extends AbstractController
 
         return $this->render('objet/index.html.twig', [
             'pagination' => $pagination,
-            'selectedCategory' => $selectedCategory
+            'selectedCategory' => $category
         ]);
     }
 
