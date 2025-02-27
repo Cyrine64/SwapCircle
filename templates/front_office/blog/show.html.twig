@@ -1,0 +1,260 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ blog.titre }}{% endblock %}
+
+{% block body %}
+<div class="blog-post py-4">
+    <div class="container">
+        <!-- Back Button -->
+        <a href="{{ path('blog_index') }}" class="btn btn-outline-primary back-btn mb-4">
+            <i class="fas fa-arrow-left me-2"></i>Back to Blogs
+        </a>
+
+        <!-- Post Header -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <h1 class="blog-title text-center mb-3">{{ blog.titre }}</h1>
+                <div class="meta-info text-center mb-4">
+                    <span class="me-3"><i class="fas fa-calendar me-1"></i> {{ blog.datePublication|date('d M Y') }}</span>
+                    <span><i class="fas fa-comments me-1"></i> {{ blog.commentaires|length }} Comments</span>
+                </div>
+
+                <!-- Featured Image -->
+                {% if blog.image %}
+                <div class="blog-image-wrapper mb-4">
+                    <div class="image-container">
+                        <img src="{{ asset('uploads/blog_images/' ~ blog.image) }}" 
+                             alt="{{ blog.titre }}"
+                             class="blog-image">
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Content -->
+                <div class="blog-content mb-4">
+                    {{ blog.contenu|raw }}
+                </div>
+
+                <!-- Reactions -->
+                <div class="reactions text-center mb-4">
+                    <form method="post" action="{{ path('blog_react', {'id': blog.idArticle}) }}" class="d-inline-block me-3">
+                        <input type="hidden" name="_token" value="{{ csrf_token('react' ~ blog.idArticle) }}">
+                        <input type="hidden" name="type" value="like">
+                        <button class="btn btn-reaction like-btn">
+                            <span class="emoji">👍</span> {{ blog.likesCount }}
+                        </button>
+                    </form>
+                    <form method="post" action="{{ path('blog_react', {'id': blog.idArticle}) }}" class="d-inline-block">
+                        <input type="hidden" name="_token" value="{{ csrf_token('react' ~ blog.idArticle) }}">
+                        <input type="hidden" name="type" value="dislike">
+                        <button class="btn btn-reaction dislike-btn">
+                            <span class="emoji">👎</span> {{ blog.dislikesCount }}
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Comments -->
+                <div class="comments-section">
+                    <h3 class="h5 mb-4">Comments</h3>
+                    
+                    <!-- Comment Form -->
+                    {{ form_start(commentForm) }}
+                    <div class="mb-3">
+                        {{ form_widget(commentForm.contenu, {
+                            'attr': {
+                                'class': 'form-control',
+                                'placeholder': 'Write your comment...',
+                                'rows': '3'
+                            }
+                        }) }}
+                    </div>
+                    <button type="submit" class="btn btn-primary mb-4">
+                        <i class="fas fa-paper-plane me-1"></i> Post Comment
+                    </button>
+                    {{ form_end(commentForm) }}
+
+                    <!-- Comments List -->
+                    {% for commentaire in blog.commentaires|reverse %}
+                        <div class="comment-item mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <small class="text-muted">{{ commentaire.datecommentaire|date('d M Y') }}</small>
+                                <div class="comment-actions">
+                                    <button class="btn btn-link text-primary p-0 " onclick="toggleEdit({{ commentaire.id }})">
+                                        Modifier
+                                    </button>
+                                    <form method="post" action="{{ path('comment_delete', {'id': commentaire.id}) }}" class="d-inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ commentaire.id) }}">
+                                        <button type="submit" class="btn btn-link text-danger p" 
+                                                onclick="return confirm('Delete this comment?')">
+                                                Supprimer
+                                            
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <!-- Normal View -->
+                            <div id="comment-view-{{ commentaire.id }}">
+                                <p class="mb-1">{{ commentaire.contenu }}</p>
+                            </div>
+                            <!-- Edit Form -->
+                            <div id="comment-edit-{{ commentaire.id }}" style="display: none;">
+                                <form method="post" action="{{ path('comment_edit', {'id': commentaire.id}) }}" class="edit-form">
+                                    <div class="input-group">
+                                        <textarea name="content" class="form-control" rows="2">{{ commentaire.contenu }}</textarea>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-secondary" onclick="toggleEdit({{ commentaire.id }})">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No comments yet. Be the first to comment!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.blog-post {
+    background: #f8f9fa;
+}
+
+.back-btn {
+    border-radius: 20px;
+    padding: 8px 16px;
+}
+
+.back-btn:hover {
+    transform: translateX(-5px);
+}
+
+.blog-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+.meta-info {
+    color: #6c757d;
+}
+
+.blog-image-wrapper {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin: 0 auto;
+    background-color: #f8f9fa;
+    padding: 10px;
+    max-width: 500px; /* Limit maximum width */
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.blog-image {
+    max-width: 100%;
+    max-height: 300px; /* Limit maximum height */
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.blog-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.btn-reaction {
+    font-size: 1.1rem;
+    padding: 8px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    border: 2px solid #e9ecef;
+    background: white;
+}
+
+.btn-reaction:hover {
+    transform: scale(1.1);
+}
+
+.btn-reaction .emoji {
+    font-size: 1.3rem;
+    margin-right: 5px;
+}
+
+.like-btn:hover {
+    background-color: #e8f5e9;
+    border-color: #4caf50;
+}
+
+.dislike-btn:hover {
+    background-color: #ffebee;
+    border-color: #f44336;
+}
+
+.comment-item {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.comment-item:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.comment-actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.comment-item:hover .comment-actions {
+    opacity: 1;
+}
+
+.edit-form .input-group {
+    gap: 0.5rem;
+}
+
+.edit-form textarea {
+    border-radius: 8px;
+}
+
+.edit-form .btn {
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .blog-title {
+        font-size: 2rem;
+    }
+    
+    .blog-image {
+        height: 250px;
+    }
+}
+</style>
+
+<script>
+function toggleEdit(commentId) {
+    const viewDiv = document.getElementById(`comment-view-${commentId}`);
+    const editDiv = document.getElementById(`comment-edit-${commentId}`);
+    
+    if (viewDiv.style.display === 'none') {
+        viewDiv.style.display = 'block';
+        editDiv.style.display = 'none';
+    } else {
+        viewDiv.style.display = 'none';
+        editDiv.style.display = 'block';
+    }
+}
+</script>
+{% endblock %}

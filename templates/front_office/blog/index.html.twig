@@ -1,0 +1,354 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Blog Articles{% endblock %}
+
+{% block body %}
+<section class="blog-listing py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h1 class="display-3 fw-bold mb-3">List Blog</h1>
+                <div class="header-line"></div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6 mx-auto">
+                <div class="search-wrapper">
+                    {{ form_start(form, {'attr': {'class': 'search-form'}}) }}
+                        <div class="input-group">
+                            {{ form_widget(form.query, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Search by title or content...'
+                                }
+                            }) }}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for blog in pagination %}
+                <div class="col-md-6 col-lg-4">
+                    <article class="blog-card h-100">
+                        <div class="card-image">
+                            {% if blog.image %}
+                                <div class="blog-image-wrapper">
+                                    <div class="image-container">
+                                        <img src="{{ asset('uploads/blog_images/' ~ blog.image) }}" 
+                                             alt="{{ blog.titre }}" 
+                                             class="blog-image">
+                                    </div>
+                                </div>
+                            {% endif %}
+                            <div class="card-date">
+                                <span class="day">{{ blog.datePublication|date('d') }}</span>
+                                <span class="month">{{ blog.datePublication|date('M') }}</span>
+                            </div>
+                            {% if blog.likesCount > 0 %}
+                                <div class="top-post-badge">
+                                    <i class="fas fa-fire"></i> {{ blog.likesCount }} Likes
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-content">
+                            <div class="post-meta mb-2">
+                                <span class="meta-item">
+                                    <i class="fas fa-comments"></i>
+                                    {{ blog.commentaires|length }} Comments
+                                </span>
+                                <span class="meta-item">
+                                    <i class="fas fa-heart"></i>
+                                    {{ blog.likesCount }} Likes
+                                </span>
+                            </div>
+                            <h3 class="card-title">
+                                <a href="{{ path('blog_show', {'id': blog.idArticle}) }}" class="stretched-link">
+                                    {{ blog.titre }}
+                                </a>
+                            </h3>
+                            <p class="card-text">
+                                {{ blog.contenu|striptags|slice(0, 120) }}...
+                            </p>
+                            <a href="{{ path('blog_show', {'id': blog.idArticle}) }}" class="read-more">Read more</a>
+                        </div>
+                    </article>
+                </div>
+            {% else %}
+                <div class="col-12">
+                    <div class="empty-state text-center py-5">
+                        <i class="fas fa-search fa-3x mb-3 text-muted"></i>
+                        <h3 class="h4 mb-3">No Articles Found</h3>
+                        <p class="text-muted">Try adjusting your search criteria or browse all articles.</p>
+                        {% if app.request.query.get('query') %}
+                            <a href="{{ path('blog_index') }}" class="btn btn-outline-primary mt-3">
+                                <i class="fas fa-undo"></i> Show All Articles
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="pagination-wrapper d-flex justify-content-center">
+                    {{ knp_pagination_render(pagination, '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.blog-listing {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+.header-line {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(to right, #007bff, #00e1ff);
+    margin: 0 auto;
+    border-radius: 2px;
+}
+
+.blog-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #eee;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.blog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.card-image {
+    position: relative;
+    background-color: #f8f9fa;
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+}
+
+.blog-image-wrapper {
+    overflow: hidden;
+    margin: 0 auto;
+    background-color: #f8f9fa;
+    padding: 8px;
+    height: 200px;
+    width: 100%;
+    position: relative;
+}
+
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
+.blog-image {
+    max-width: 100%;
+    max-height: 180px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+.card-date {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 2;
+}
+
+.card-date .day {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+    color: #333;
+}
+
+.card-date .month {
+    display: block;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: #666;
+}
+
+.top-post-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: rgba(255, 215, 0, 0.9);
+    color: #000;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.top-post-badge i {
+    color: #fff;
+    margin-right: 4px;
+}
+
+.card-content {
+    padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.post-meta {
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #333;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-text {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.read-more {
+    margin-top: auto;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.read-more:hover {
+    text-decoration: underline;
+}
+
+.pagination-wrapper {
+    margin-top: 2rem;
+}
+
+.pagination-wrapper .pagination {
+    margin-bottom: 0;
+}
+
+.pagination-wrapper .page-link {
+    color: #007bff;
+    border-radius: 5px;
+    margin: 0 2px;
+    transition: all 0.3s ease;
+}
+
+.pagination-wrapper .page-link:hover {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.pagination-wrapper .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.pagination-wrapper .page-item.disabled .page-link {
+    color: #6c757d;
+}
+
+.empty-state {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.empty-state i {
+    color: #007bff;
+}
+
+.search-wrapper {
+    margin-bottom: 2rem;
+}
+
+.search-form .input-group {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.search-form .form-control {
+    border: none;
+    padding: 0.8rem 1.2rem;
+    font-size: 1rem;
+}
+
+.search-form .form-control:focus {
+    box-shadow: none;
+    border-color: #007bff;
+}
+
+.search-form .btn-primary {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    background: #007bff;
+}
+
+.search-form .btn-primary:hover {
+    background: #0056b3;
+}
+
+.search-form .btn-primary i {
+    margin-right: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .card-date {
+        top: 10px;
+        left: 10px;
+        padding: 8px;
+    }
+
+    .card-date .day {
+        font-size: 1.25rem;
+    }
+
+    .card-content {
+        padding: 1.25rem;
+    }
+}
+</style>
+{% endblock %}
