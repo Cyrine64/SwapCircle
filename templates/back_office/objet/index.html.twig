@@ -41,7 +41,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for objet in objets %}
+                                    {% for objet in pagination %}
                                     <tr>
                                         <td>{{ objet.idObjet }}</td>
                                         <td>
@@ -74,10 +74,14 @@
                                 </tbody>
                             </table>
                         </div>
+                        
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<div class="mt-4" style="text-align: center;">
+    {{ knp_pagination_render(pagination) }}
 </div>
 {% endblock %}

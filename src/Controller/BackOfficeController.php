@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Knp\Component\Pager\PaginatorInterface;
 
 #[Route('/dashboard')]
 final class BackOfficeController extends AbstractController
@@ -28,10 +29,26 @@ final class BackOfficeController extends AbstractController
 
     // Routes pour les objets
     #[Route('/objets', name: 'app_back_office_objets')]
-    public function listObjets(ObjetRepository $objetRepository): Response
+    public function listObjets(ObjetRepository $objetRepository, Request $request, PaginatorInterface $paginator): Response
     {
+        $query = $objetRepository->createQueryBuilder('o')
+            ->orderBy('o.date_ajout', 'DESC')
+            ->getQuery();
+        
+        $page = max(1, $request->query->getInt('page', 1));
+        
+        $pagination = $paginator->paginate(
+            $query,
+            $page,
+            3
+        );
+
+        if ($page > $pagination->getPageCount() && $pagination->getPageCount() > 0) {
+            return $this->redirectToRoute('app_back_office_objets', ['page' => 1]);
+        }
+
         return $this->render('back_office/objet/index.html.twig', [
-            'objets' => $objetRepository->findAll(),
+            'pagination' => $pagination,
         ]);
     }
 
