@@ -20,7 +20,7 @@ use Knp\Component\Pager\PaginatorInterface;
 final class BackOfficeController extends AbstractController
 {
     #[Route('', name: 'app_back_office')]
-    public function index(): Response
+    public function index1(): Response
     {
         return $this->render('back_office/index.html.twig', [
             'controller_name' => 'BackOfficeController',
@@ -28,27 +28,39 @@ final class BackOfficeController extends AbstractController
     }
 
     // Routes pour les objets
-    #[Route('/objets', name: 'app_back_office_objets')]
-    public function listObjets(ObjetRepository $objetRepository, Request $request, PaginatorInterface $paginator): Response
+    #[Route('/objets', name: 'app_back_office_objet_index')]
+    public function index(ObjetRepository $objetRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $query = $objetRepository->createQueryBuilder('o')
-            ->orderBy('o.date_ajout', 'DESC')
-            ->getQuery();
-        
-        $page = max(1, $request->query->getInt('page', 1));
-        
-        $pagination = $paginator->paginate(
-            $query,
-            $page,
-            3
-        );
+        $queryBuilder = $objetRepository->createQueryBuilder('o');
 
-        if ($page > $pagination->getPageCount() && $pagination->getPageCount() > 0) {
-            return $this->redirectToRoute('app_back_office_objets', ['page' => 1]);
+        // Handle search
+        if ($search = $request->query->get('search')) {
+            $searchTerms = array_filter(explode(' ', $search));
+            $searchQuery = [];
+            
+            foreach ($searchTerms as $key => $term) {
+                $searchQuery[] = '(LOWER(o.nom) LIKE LOWER(:search' . $key . ') 
+                                OR LOWER(o.description) LIKE LOWER(:search' . $key . ')
+                                OR LOWER(o.categorie) LIKE LOWER(:search' . $key . '))';
+                $queryBuilder->setParameter('search' . $key, '%' . $term . '%');
+            }
+            
+            if (!empty($searchQuery)) {
+                $queryBuilder->andWhere(implode(' AND ', $searchQuery));
+            }
         }
 
+        // Default sorting by most recent
+        $queryBuilder->orderBy('o.date_ajout', 'DESC');
+
+        $pagination = $paginator->paginate(
+            $queryBuilder->getQuery(),
+            $request->query->getInt('page', 1),
+            10 // Items per page
+        );
+
         return $this->render('back_office/objet/index.html.twig', [
-            'pagination' => $pagination,
+            'pagination' => $pagination
         ]);
     }
 
@@ -65,7 +77,7 @@ final class BackOfficeController extends AbstractController
             $entityManager->persist($objet);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_back_office_objets');
+            return $this->redirectToRoute('app_back_office_objet_index');
         }
 
         return $this->render('back_office/objet/edit.html.twig', [
@@ -92,7 +104,7 @@ final class BackOfficeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_back_office_objets');
+            return $this->redirectToRoute('app_back_office_objet_index');
         }
 
         return $this->render('back_office/objet/edit.html.twig', [
@@ -110,7 +122,7 @@ final class BackOfficeController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_back_office_objets');
+        return $this->redirectToRoute('app_back_office_objet_index');
     }
 
     // Routes pour les échanges

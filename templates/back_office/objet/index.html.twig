@@ -9,7 +9,26 @@
             <div class="col-auto">
                 <h1 class="app-page-title mb-0">Gestion des Objets</h1>
             </div>
-            <div class="col-auto">
+            <div class="col-auto d-flex align-items-center gap-2">
+                <!-- Search Bar -->
+                <form class="search-form" action="{{ path('app_back_office_objet_index') }}" method="GET">
+                    <div class="search-wrapper">
+                        <input type="text" 
+                               name="search" 
+                               class="search-input" 
+                               placeholder="Rechercher un objet..."
+                               value="{{ app.request.query.get('search') }}"
+                               autocomplete="off">
+                        <button class="search-button" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        {% if app.request.query.get('search') %}
+                            <a href="{{ path('app_back_office_objet_index') }}" class="clear-search" title="Effacer la recherche">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                </form>
                 <a href="{{ path('app_back_office_objet_new') }}" class="btn app-btn-primary">
                     <i class="fas fa-plus me-2"></i>Ajouter un objet
                 </a>
@@ -84,4 +103,74 @@
 <div class="mt-4" style="text-align: center;">
     {{ knp_pagination_render(pagination) }}
 </div>
+
+<style>
+    /* Modern Search Bar Styling */
+    .search-form {
+        position: relative;
+        width: 300px;
+    }
+
+    .search-wrapper {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #e7e9ed;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .search-wrapper:focus-within {
+        border-color: #15a362;
+        box-shadow: 0 0 0 0.2rem rgba(21, 163, 98, 0.25);
+    }
+
+    .search-input {
+        flex: 1;
+        border: none;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        background: transparent;
+        color: #5d6778;
+        outline: none;
+    }
+
+    .search-input::placeholder {
+        color: #9fa7b5;
+    }
+
+    .search-button {
+        background: none;
+        border: none;
+        color: #15a362;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .search-button:hover {
+        color: #0e724a;
+    }
+
+    .clear-search {
+        position: absolute;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #dc3545;
+        text-decoration: none;
+        font-size: 0.75rem;
+        padding: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .clear-search:hover {
+        color: #bd2130;
+        transform: translateY(-50%) scale(1.1);
+    }
+</style>
 {% endblock %}
