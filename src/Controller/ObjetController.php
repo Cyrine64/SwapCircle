@@ -22,25 +22,31 @@ final class ObjetController extends AbstractController
     #[Route(name: 'app_objet_index', methods: ['GET'])]
     public function index(ObjetRepository $objetRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $query = $objetRepository->createQueryBuilder('o')
-            ->orderBy('o.date_ajout', 'DESC')
-            ->getQuery();
+        $queryBuilder = $objetRepository->createQueryBuilder('o')
+            ->orderBy('o.date_ajout', 'DESC');
+
+        // Apply category filter if selected
+        $selectedCategory = $request->query->get('category');
+        if ($selectedCategory) {
+            $queryBuilder->andWhere('o.categorie = :category')
+                        ->setParameter('category', $selectedCategory);
+        }
         
-        $page = max(1, $request->query->getInt('page', 1)); // Ensure page is at least 1
+        $page = max(1, $request->query->getInt('page', 1));
         
         $pagination = $paginator->paginate(
-            $query,
+            $queryBuilder->getQuery(),
             $page,
-            3   // Show 3 items per page
+            3
         );
 
-        // If page is greater than max pages, redirect to page 1
         if ($page > $pagination->getPageCount() && $pagination->getPageCount() > 0) {
             return $this->redirectToRoute('app_objet_index', ['page' => 1]);
         }
 
         return $this->render('objet/index.html.twig', [
             'pagination' => $pagination,
+            'selectedCategory' => $selectedCategory
         ]);
     }
 
