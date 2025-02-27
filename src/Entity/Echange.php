@@ -24,17 +24,28 @@ class Echange
     private ?Utilisateur $utilisateur = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: 'Le titre est obligatoire')]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Le titre doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le titre ne peut pas dépasser {{ limit }} caractères'
+    )]
     private ?string $name_echange = null;
+
+    #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank(message: 'Le message est obligatoire')]
+    #[Assert\Length(
+        min: 10,
+        minMessage: 'Le message doit contenir au moins {{ limit }} caractères'
+    )]
+    private ?string $message = null;
 
     #[ORM\Column(length: 255)]
     private ?string $image_echange = null;
 
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $date_echange = null;
-
-    #[ORM\Column(type: 'text')]
-    private ?string $message = null;
 
     #[ORM\Column(length: 20)]
     #[Assert\Choice(choices: ['en_attente', 'accepte', 'refuse'])]

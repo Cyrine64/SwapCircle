@@ -27,7 +27,10 @@ class EchangeType extends AbstractType
                 'label' => 'Titre de l\'échange',
                 'required' => true,
                 'attr' => [
-                    'placeholder' => 'Donnez un titre à votre proposition d\'échange'
+                    'placeholder' => 'Donnez un titre à votre proposition d\'échange (minimum 3 caractères)',
+                    'minlength' => 3,
+                    'maxlength' => 255,
+                    'class' => 'form-control'
                 ]
             ])
             ->add('objet', EntityType::class, [
@@ -43,19 +46,27 @@ class EchangeType extends AbstractType
                 },
                 'placeholder' => 'Choisissez un de vos objets à échanger',
                 'required' => true,
+                'disabled' => true,
             ])
+            
             ->add('message', TextareaType::class, [
                 'label' => 'Message pour le propriétaire',
                 'required' => true,
                 'attr' => [
                     'placeholder' => 'Expliquez pourquoi vous souhaitez faire cet échange...',
-                    'rows' => 4
+                    'rows' => 4,
+                    'minlength' => 10,
+                    'class' => 'form-control'
                 ]
             ])
             ->add('dateEchange', DateTimeType::class, [
-                'label' => 'Date souhaitée pour l\'échange',
-                'required' => true,
                 'widget' => 'single_text',
+                'data' => new \DateTime(),
+                'label' => 'Date d\'ajout',
+                'attr' => [
+                    'class' => 'form-control',
+                    'readonly' => true
+                ]
             ])
             ->add('statut', ChoiceType::class, [
                 'label' => 'Statut',
@@ -65,7 +76,12 @@ class EchangeType extends AbstractType
                     'Refusé' => 'refuse'
                 ],
                 'required' => true,
-                'data' => 'en_attente'
+                'data' => 'en_attente',
+                'empty_data' => 'en_attente',
+                'attr' => [
+                    'class' => 'form-control',
+                    
+                ]
             ]);
     }
 
