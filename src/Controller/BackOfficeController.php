@@ -31,37 +31,40 @@ final class BackOfficeController extends AbstractController
     #[Route('/objets', name: 'app_back_office_objet_index')]
     public function index(ObjetRepository $objetRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $queryBuilder = $objetRepository->createQueryBuilder('o');
+        $search = $request->query->get('search');
+        $queryBuilder = $objetRepository->findSortedAndFiltered($search);
 
-        // Handle search
-        if ($search = $request->query->get('search')) {
-            $searchTerms = array_filter(explode(' ', $search));
-            $searchQuery = [];
-            
-            foreach ($searchTerms as $key => $term) {
-                $searchQuery[] = '(LOWER(o.nom) LIKE LOWER(:search' . $key . ') 
-                                OR LOWER(o.description) LIKE LOWER(:search' . $key . ')
-                                OR LOWER(o.categorie) LIKE LOWER(:search' . $key . '))';
-                $queryBuilder->setParameter('search' . $key, '%' . $term . '%');
+        // Handle date sorting with default value
+        $sortBy = $request->query->get('sortBy', 'desc');
+        $queryBuilder->orderBy('o.date_ajout', strtoupper($sortBy));
+
+        // Get current page with validation
+        $page = max(1, $request->query->getInt('page', 1));
+        
+        try {
+            $pagination = $paginator->paginate(
+                $queryBuilder->getQuery(),
+                $page,
+                4
+            );
+
+            // Redirect to first page if current page is invalid
+            if ($page > $pagination->getPageCount() && $pagination->getPageCount() > 0) {
+                return $this->redirectToRoute('app_back_office_objet_index', [
+                    'page' => 1,
+                    'sortBy' => $sortBy,
+                    'search' => $search
+                ]);
             }
+
+            return $this->render('back_office/objet/index.html.twig', [
+                'pagination' => $pagination
+            ]);
             
-            if (!empty($searchQuery)) {
-                $queryBuilder->andWhere(implode(' AND ', $searchQuery));
-            }
+        } catch (\Exception $e) {
+            // Handle any potential errors
+            return $this->redirectToRoute('app_back_office_objet_index', ['page' => 1]);
         }
-
-        // Default sorting by most recent
-        $queryBuilder->orderBy('o.date_ajout', 'DESC');
-
-        $pagination = $paginator->paginate(
-            $queryBuilder->getQuery(),
-            $request->query->getInt('page', 1),
-            10 // Items per page
-        );
-
-        return $this->render('back_office/objet/index.html.twig', [
-            'pagination' => $pagination
-        ]);
     }
 
     #[Route('/objet/new', name: 'app_back_office_objet_new')]
