@@ -44,4 +44,35 @@ class ObjetRepository extends ServiceEntityRepository
 
         return $qb;
     }
+
+    public function getStatisticsData(): array
+    {
+        // Count by category
+        $categoryStats = $this->createQueryBuilder('o')
+            ->select('o.categorie as label, COUNT(o.id_objet) as count')
+            ->groupBy('o.categorie')
+            ->getQuery()
+            ->getResult();
+
+        // Count by status
+        $statusStats = $this->createQueryBuilder('o')
+            ->select('o.etat as label, COUNT(o.id_objet) as count')
+            ->groupBy('o.etat')
+            ->getQuery()
+            ->getResult();
+
+        // Objects added per month
+        $monthlyStats = $this->createQueryBuilder('o')
+            ->select('SUBSTRING(o.date_ajout, 1, 7) as month, COUNT(o.id_objet) as count')
+            ->groupBy('month')
+            ->orderBy('month', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return [
+            'categoryStats' => $categoryStats,
+            'statusStats' => $statusStats,
+            'monthlyStats' => $monthlyStats
+        ];
+    }
 }

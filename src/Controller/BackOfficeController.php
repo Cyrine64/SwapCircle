@@ -67,6 +67,16 @@ final class BackOfficeController extends AbstractController
         }
     }
 
+    #[Route('/objets/statistiques', name: 'app_back_office_objet_stats')]
+    public function statistiques(ObjetRepository $objetRepository): Response
+    {
+        $stats = $objetRepository->getStatisticsData();
+        
+        return $this->render('back_office/objet/statistiques.html.twig', [
+            'stats' => $stats
+        ]);
+    }
+
     #[Route('/objet/new', name: 'app_back_office_objet_new')]
     public function newObjet(Request $request, EntityManagerInterface $entityManager): Response
     {
