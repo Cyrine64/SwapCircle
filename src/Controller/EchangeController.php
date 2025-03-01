@@ -112,4 +112,44 @@ class EchangeController extends AbstractController
 
         return $this->redirectToRoute('app_echange_index');
     }
+    
+    #[Route('/{id_echange}/accept', name: 'app_echange_accept', methods: ['POST'])]
+    public function accept(Request $request, Echange $echange, EntityManagerInterface $entityManager): Response
+    {
+        // Vérifier le token CSRF
+        if ($this->isCsrfTokenValid('accept'.$echange->getIdEchange(), $request->request->get('_token'))) {
+            // Mettre à jour le statut de l'échange
+            $echange->setStatut('accepte');
+            
+            // Mettre à jour l'état de l'objet à "non disponible"
+            $objet = $echange->getObjet();
+            $objet->setEtat('attendu');
+            
+            // Persister les changements
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'L\'échange a été accepté avec succès !');
+        }
+        
+        return $this->redirectToRoute('app_echange_show', ['id_echange' => $echange->getIdEchange()]);
+    }
+    
+    #[Route('/{id_echange}/refuse', name: 'app_echange_refuse', methods: ['POST'])]
+    public function refuse(Request $request, Echange $echange, EntityManagerInterface $entityManager): Response
+    {
+        // Vérifier le token CSRF
+        if ($this->isCsrfTokenValid('refuse'.$echange->getIdEchange(), $request->request->get('_token'))) {
+            // Mettre à jour le statut de l'échange
+            $echange->setStatut('refuse');
+            
+            // L'objet reste disponible, pas besoin de modifier son état
+            
+            // Persister les changements
+            $entityManager->flush();
+            
+            $this->addFlash('warning', 'L\'échange a été refusé.');
+        }
+        
+        return $this->redirectToRoute('app_echange_show', ['id_echange' => $echange->getIdEchange()]);
+    }
 }
