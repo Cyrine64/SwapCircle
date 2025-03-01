@@ -1,0 +1,42 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Nouvel Article{% endblock %}
+
+{% block body %}
+<div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xl">
+        <h1 class="app-page-title">Créer un Nouvel Article</h1>
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="app-card app-card-settings shadow-sm p-4">
+                    <div class="app-card-body">
+                        {{ form_start(form, {'attr': {'class': 'settings-form'}}) }}
+                            <div class="mb-3">
+                                {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.titre) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.contenu, 'Contenu', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.contenu, {'attr': {'class': 'form-control', 'rows': '10'}}) }}
+                                {{ form_errors(form.contenu) }}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form_label(form.image, 'Image', {'label_attr': {'class': 'form-label'}}) }}
+                                {{ form_widget(form.image, {'attr': {'class': 'form-control'}}) }}
+                                {{ form_errors(form.image) }}
+                            </div>
+
+                            <button type="submit" class="btn app-btn-primary">Créer l'article</button>
+                            <a href="{{ path('admin_blog_index') }}" class="btn btn-secondary">Retour à la liste</a>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,11 @@
+bazinga_js_translation:
+    locale_fallback: en
+    default_domain: messages
+    active_locales:
+        - en
+        - fr
+    http_cache_time: 86400
+    active_domains:
+        - messages
+        - validators
+        - comments
