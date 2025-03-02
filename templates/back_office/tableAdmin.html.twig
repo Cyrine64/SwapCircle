@@ -1,0 +1,54 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Admins List{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-12">
+        <div class="card my-4">
+            <div class="card-header bg-gradient-dark text-white border-radius-lg pt-4 pb-3">
+                <h6 class="ps-3">Admins Table</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table align-items-center">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Last Activity</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+    {% for user in users %}
+        {% if 'ROLE_ADMIN' in user.roles %}
+        <tr>
+            <td>
+                <div class="d-flex align-items-center">
+                    <img src="../assets/img/admin-avatar.jpg" class="avatar me-3" alt="admin">
+                    <div>
+                        <h6 class="mb-0 text-sm">{{ user.name }} {{ user.lastName }}</h6>
+                        <p class="text-xs text-secondary mb-0">{{ user.email }}</p>
+                    </div>
+                </div>
+            </td>
+            <td>{{ user.email }}</td>
+            <td class="text-center text-sm">{{ user.lastActivity|date('d/m/Y') }}</td>
+            <td>
+                <span class="badge {{ user.isEnabled ? 'bg-success' : 'bg-danger' }}">
+                    {{ user.isEnabled ? 'Active' : 'Disabled' }}
+                </span>
+            </td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+</tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

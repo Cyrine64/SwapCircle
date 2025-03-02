@@ -1,0 +1,126 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Users List{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-12">
+        <div class="card my-4">
+            <div class="card-header bg-gradient-dark text-white border-radius-lg pt-4 pb-3">
+                <h6 class="ps-3">Users Table</h6>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table align-items-center">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Last Activity</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+    {% for user in users %}
+        {% if 'ROLE_ADMIN' not in user.roles %}
+            <tr>
+                <td>
+                    <div class="d-flex align-items-center">
+                        <img src="../assets/img/user-avatar.jpg" class="avatar me-3" alt="user">
+                        <div>
+                            <h6 class="mb-0 text-sm">{{ user.name }} {{ user.lastName }}</h6>
+                            <p class="text-xs text-secondary mb-0">{{ user.email }}</p>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ user.email }}</td>
+                <td class="text-center text-sm">{{ user.lastActivity|date('d/m/Y') }}</td>
+                <td><span class="badge {{ user.isEnabled ? 'bg-success' : 'bg-danger' }}">{{ user.isEnabled ? 'Active' : 'Disabled' }}</span></td>
+                <td>
+                    <button class="btn {{ user.isEnabled ? 'btn-danger' : 'btn-success' }} toggle-status" data-user-id="{{ user.id }}">
+                        {{ user.isEnabled ? 'Disable' : 'Enable' }}
+                    </button>
+                </td>
+                 <td>
+            {% if 'ROLE_ADMIN' not in user.roles %}
+                <form action="{{ path('admin_update_user_roles', {id: user.id}) }}" method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token('update_roles' ~ user.id) }}">
+                    <input type="hidden" name="roles[]" value="ROLE_ADMIN">
+<button onclick="makeAdmin({{ user.id }})" {% if not user.isEnabled %} disabled {% endif %}>Make Admin</button>
+                </form>
+            {% else %}
+                <span class="text-success">Already Admin</span>
+            {% endif %}
+        </td>
+            </tr>
+        {% endif %}
+    {% endfor %}
+</tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.toggle-status').forEach(button => {
+        button.addEventListener('click', function() {
+            let userId = this.getAttribute('data-user-id');
+
+            fetch(`/admin/user/toggle-status/${userId}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Requested-With": "XMLHttpRequest"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Refresh to update UI
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    });
+</script>
+<script>
+$(document).on('click', '.toggle-status', function() {
+    let button = $(this);
+    let userId = button.data('user-id');
+
+    $.get('/admin/user/csrf-token', function(csrfToken) { // ✅ Fetch fresh CSRF token
+        $.ajax({
+            url: `/toggle-user-status/${userId}`,
+            type: 'POST',
+            data: { _token: csrfToken },
+            success: function(response) {
+                if (response.success) {
+                    let statusBadge = button.closest('tr').find('.status-badge');
+
+                    if (response.status) {
+                        button.text('Disable').removeClass('btn-success').addClass('btn-danger');
+                        statusBadge.text('Active').removeClass('bg-danger').addClass('bg-success');
+                    } else {
+                        button.text('Enable').removeClass('btn-danger').addClass('btn-success');
+                        statusBadge.text('Disabled').removeClass('bg-success').addClass('bg-danger');
+                    }
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            },
+            error: function(xhr) {
+                alert('Request failed: ' + xhr.responseJSON.message);
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}
+

@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2>Edit Profile</h2>
+
+    <form method="post">
+        <div class="mb-3">
+            <label for="name" class="form-label text-white">Name:</label>
+            <input type="text" class="form-control bg-dark text-white" id="name" name="name" value="{{ user.name }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="lastName" class="form-label text-white">Last Name:</label>
+            <input type="text" class="form-control bg-dark text-white" id="lastName" name="lastName" value="{{ user.lastName }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="email" class="form-label text-white">Email:</label>
+            <input type="email" class="form-control bg-dark text-white" id="email" name="email" value="{{ user.email }}" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password" class="form-label text-white">New Password:</label>
+            <input type="password" class="form-control bg-dark text-white" id="password" name="password" placeholder="Enter new password">
+        </div>
+
+        <button type="submit" class="btn btn-success">Save Changes</button>
+    </form>
+</div>
+{% endblock %}
+
+

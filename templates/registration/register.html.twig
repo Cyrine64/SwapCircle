@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+<section class="container my-3 pastel-container">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="h3 mb-4 text-center font-weight-normal">Register</h1>
+                    {{ form_errors(registrationForm) }}
+{{ form_start(registrationForm, {'attr': {'novalidate': 'novalidate'}}) }}
+    {{ form_row(registrationForm._token) }} {# ✅ This must be included #}
+
+
+                    <form method="post">
+                     <div class="form-group mb-3">
+
+                        <fieldset>
+                         {{form_label(registrationForm.name)}}
+                          {{form_widget(registrationForm.name,{
+                                'attr': {'class': 'form-control', 'placeholder': 'Enter your name'}
+                            })}}
+                             {{form_label(registrationForm.last_name)}}
+                          {{form_widget(registrationForm.last_name,{
+                                'attr': {'class': 'form-control', 'placeholder': 'Enter your last name'}
+                            })}}
+
+
+</fieldset>
+</div>
+                        <!-- Email Field -->
+                        <div class="form-group mb-3">
+                            {{ form_label(registrationForm.email) }}
+                            {{ form_widget(registrationForm.email, {
+                                'attr': {'class': 'form-control', 'placeholder': 'Enter your email'}
+                            }) }}
+                        </div>
+
+                        <!-- Password Field -->
+                       <div class="form-group mb-3">
+    {{ form_label(registrationForm.password) }}
+    {{ form_widget(registrationForm.password, {
+        'attr': {'class': 'form-control', 'placeholder': 'Enter your password'}
+    }) }}
+    {{ form_errors(registrationForm.password) }}
+</div>
+{# Display CAPTCHA #}
+   <div class="form-group mb-3">
+                            <label>CAPTCHA</label>
+                            <img src="{{ path('captcha_image') }}" alt="CAPTCHA" id="captcha-image" class="mb-2">
+                            <a href="#" id="refresh-captcha" class="btn btn-sm btn-link">Refresh CAPTCHA</a>
+                            {{ form_widget(registrationForm.captcha, {'attr': {'class': 'form-control', 'placeholder': 'Enter CAPTCHA'}}) }}
+                            {{ form_errors(registrationForm.captcha) }}
+                        </div>       
+                       
+
+                        <div class="form-group text-center">
+                            <button class="btn btn-lg btn-success w-100 btn-primary btn-lg" type="submit">Register</button>
+                        </div>
+
+                        <div class="form-group text-center mt-3">
+                            <a href="{{ path('app_login') }}" class="btn btn-secondary w-100 mb-2">Login</a>
+                            <a href="" class="btn btn-secondary w-100">Forgot password</a>
+                        </div>
+                    </form>
+                     {{ form_end(registrationForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
