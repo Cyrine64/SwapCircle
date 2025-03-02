@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\TypeReclamation;
 use App\Entity\Utilisateur;
+use App\Entity\Reponse;
 
 #[ORM\Entity(repositoryClass: ReclamationRepository::class)]
 #[ORM\Table(name: "reclamation")]
@@ -43,6 +44,15 @@ class Reclamation
         min: 5,
         minMessage: 'veillez introduire 5 caractères au minimum',)]
     private ?string $titre = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $priorite = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $categorie = null;
+
+    #[ORM\OneToOne(targetEntity: Reponse::class, mappedBy: "reclamation", cascade: ["persist", "remove"])]
+    private ?Reponse $reponse = null;
 
     // Getters and setters
     public function getId(): ?int
@@ -115,4 +125,37 @@ class Reclamation
         $this->titre = $titre;
         return $this;
     }
-} 
+
+    public function getPriorite(): ?string
+    {
+        return $this->priorite;
+    }
+
+    public function setPriorite(?string $priorite): self
+    {
+        $this->priorite = $priorite;
+        return $this;
+    }
+
+    public function getCategorie(): ?string
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?string $categorie): self
+    {
+        $this->categorie = $categorie;
+        return $this;
+    }
+
+    public function getReponse(): ?Reponse
+    {
+        return $this->reponse;
+    }
+
+    public function setReponse(?Reponse $reponse): self
+    {
+        $this->reponse = $reponse;
+        return $this;
+    }
+}

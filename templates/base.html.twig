@@ -7,7 +7,6 @@
         {% block stylesheets %}
         {% endblock %}
 
-
         <link rel="stylesheet" type="text/css" href="{{ asset('frontOffice/css/bootstrap.css') }}" />
 
         <!-- fonts style -->
@@ -23,6 +22,7 @@
         <link href="{{ asset('frontOffice/css/style.css') }}" rel="stylesheet" />
         <!-- responsive style -->
         <link href="{{ asset('frontOffice/css/responsive.css') }}" rel="stylesheet" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
  
 
     </head>
@@ -218,8 +218,30 @@
         </footer>
         <!-- footer section -->
       
-        <!-- jQery -->
+        {% block javascripts %}{% endblock %}
+        
+        <!-- jQuery -->
         <script src="{{ asset('frontOffice/js/jquery-3.4.1.min.js') }}"></script>
+        
+        <!-- Toastr -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        
+        <!-- Initialize Toastr -->
+        <script>
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "5000"
+            };
+            
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    toastr.{{ label }}("{{ message }}");
+                {% endfor %}
+            {% endfor %}
+        </script>
+        
         <!-- popper js -->
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <!-- bootstrap js -->
