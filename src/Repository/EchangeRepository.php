@@ -21,5 +21,22 @@ class EchangeRepository extends ServiceEntityRepository
         parent::__construct($registry, Echange::class);
     }
 
-    // Add custom methods if needed
+    /**
+     * Find exchanges created within the last X hours
+     * 
+     * @param int $hours Number of hours to look back
+     * @return Echange[] Returns an array of Echange objects
+     */
+    public function findRecentExchanges(int $hours): array
+    {
+        $date = new \DateTime();
+        $date->modify('-' . $hours . ' hours');
+        
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.date_echange >= :date')
+            ->setParameter('date', $date)
+            ->orderBy('e.date_echange', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

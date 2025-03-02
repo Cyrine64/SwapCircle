@@ -137,4 +137,4 @@ class Utilisateur
         $this->date_inscription = $date_inscription;
         return $this;
     }
-} 
+}

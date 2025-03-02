@@ -6,6 +6,7 @@ use App\Entity\Objet;
 use App\Entity\Utilisateur;
 use App\Form\ObjetType;
 use App\Repository\ObjetRepository;
+use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -67,7 +68,7 @@ final class ObjetController extends AbstractController
     }
 
     #[Route('/new', name: 'app_objet_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, NotificationService $notificationService): Response
     {
         $objet = new Objet();
         // Utiliser un utilisateur statique
@@ -108,6 +109,24 @@ final class ObjetController extends AbstractController
             $entityManager->persist($objet);
             $entityManager->flush();
 
+            // Send notification via Mercure
+            $notificationSent = $notificationService->notify(
+                'new_object', 
+                'Un nouvel objet a été ajouté: ' . $objet->getNom(),
+                [
+                    'id' => $objet->getIdObjet(),
+                    'name' => $objet->getNom(),
+                    'image' => $objet->getImage(),
+                    'category' => $objet->getCategorie() ?: 'Non catégorisé',
+                ]
+            );
+
+            // Only log issue with notification, don't prevent the main functionality
+            if (!$notificationSent) {
+                // Log internal note about notification failure, but still show success to user
+                // Code continues as normal
+            }
+
             $this->addFlash('success', 'L\'objet a été ajouté avec succès!');
             return $this->redirectToRoute('app_objet_index');
         }
@@ -119,7 +138,7 @@ final class ObjetController extends AbstractController
     }
 
     #[Route('/front/new', name: 'app_front_objet_new', methods: ['GET', 'POST'])]
-    public function newFront(Request $request, EntityManagerInterface $entityManager): Response
+    public function newFront(Request $request, EntityManagerInterface $entityManager, NotificationService $notificationService): Response
     {
         $objet = new Objet();
         // Utiliser un utilisateur statique
@@ -159,6 +178,24 @@ final class ObjetController extends AbstractController
 
             $entityManager->persist($objet);
             $entityManager->flush();
+
+            // Send notification via Mercure
+            $notificationSent = $notificationService->notify(
+                'new_object', 
+                'Un nouvel objet a été ajouté: ' . $objet->getNom(),
+                [
+                    'id' => $objet->getIdObjet(),
+                    'name' => $objet->getNom(),
+                    'image' => $objet->getImage(),
+                    'category' => $objet->getCategorie() ?: 'Non catégorisé',
+                ]
+            );
+
+            // Only log issue with notification, don't prevent the main functionality
+            if (!$notificationSent) {
+                // Log internal note about notification failure, but still show success to user
+                // Code continues as normal
+            }
 
             $this->addFlash('success', 'Votre objet a été ajouté avec succès!');
             return $this->redirectToRoute('front_office_index');

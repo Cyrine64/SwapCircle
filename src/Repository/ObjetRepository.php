@@ -75,4 +75,23 @@ class ObjetRepository extends ServiceEntityRepository
             'monthlyStats' => $monthlyStats
         ];
     }
+
+    /**
+     * Find objects added within the last X hours
+     * 
+     * @param int $hours Number of hours to look back
+     * @return Objet[] Returns an array of Objet objects
+     */
+    public function findRecentObjects(int $hours): array
+    {
+        $date = new \DateTime();
+        $date->modify('-' . $hours . ' hours');
+        
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.date_ajout >= :date')
+            ->setParameter('date', $date)
+            ->orderBy('o.date_ajout', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
