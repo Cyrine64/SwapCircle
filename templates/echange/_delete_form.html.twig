@@ -1,0 +1,7 @@
+<form method="post" action="{{ path('app_echange_delete', {'id_echange': echange.getIdEchange()}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet échange ?');" class="mt-3">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ echange.getIdEchange()) }}">
+    <button class="btn btn-danger w-100">
+        <i class="fas fa-trash-alt me-2"></i>
+        Supprimer l'échange
+    </button>
+</form>

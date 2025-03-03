@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel Objet{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h1 class="h3 mb-4 text-center">Ajouter un nouvel objet</h1>
+
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    {{ include('objet/_form.html.twig', {'button_label': 'Ajouter'}) }}
+
+                    <div class="text-center mt-3">
+                        <a href="{{ path('app_objet_index') }}" class="btn btn-link">
+                            <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+
+    .card-body {
+        padding: 2rem;
+    }
+
+    h1 {
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .btn-link {
+        color: #6c757d;
+        text-decoration: none;
+    }
+
+    .btn-link:hover {
+        color: #495057;
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}

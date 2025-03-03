@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'Objet{% endblock %}
+
+{% block body %}
+<section class="service_section layout_padding bg-light">
+    <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">Modifier l'Objet</h2>
+            </div>
+            <div class="card-body">
+                <div class="w-full">
+                    {{ include('objet/_form.html.twig', {'button_label': 'Mettre à jour', 'objet': objet}) }}
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_objet_index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Retour à la liste
+                    </a>
+                    {{ include('objet/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+    .card-header {
+        border-radius: 15px 15px 0 0;
+        padding: 1.5rem;
+    }
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}

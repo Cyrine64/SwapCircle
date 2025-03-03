@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le Recyclage{% endblock %}
+
+{% block body %}
+<div class="p-8 bg-white shadow-md rounded-lg">
+    <h1 class="text-3xl font-bold mb-4">Modifier le Recyclage</h1>
+
+    <form method="post">
+        <div class="space-y-4">
+            <div>
+                <label class="block font-medium">Objet</label>
+                <input type="text" name="objet" value="{{ recyclage.objet.nom }}" class="w-full border border-gray-300 p-2 rounded">
+            </div>
+
+            <div>
+                <label class="block font-medium">Type de Recyclage</label>
+                <input type="text" name="typeRecyclage" value="{{ recyclage.typeRecyclage }}" class="w-full border border-gray-300 p-2 rounded">
+            </div>
+
+            <div>
+                <label class="block font-medium">Commentaire</label>
+                <textarea name="commentaire" class="w-full border border-gray-300 p-2 rounded">{{ recyclage.commentaire }}</textarea>
+            </div>
+        </div>
+
+        <div class="mt-4 space-x-2">
+            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+                Enregistrer
+            </button>
+            <a href="{{ path('recyclage_index') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                Annuler
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
