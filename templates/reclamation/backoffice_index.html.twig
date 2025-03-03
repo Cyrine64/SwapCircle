@@ -1,0 +1,193 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Liste des Réclamations{% endblock %}
+
+{% block body %}
+<section class="service_section layout_padding" style="background-color: #e9ecef; padding: 50px 0;">
+    <div class="container mt-5">
+        <div class="section-header text-center mb-4">
+            <h6 class="text-secondary text-uppercase">Gestion des Réclamations</h6>
+            <h2 class="section-title">Liste des Réclamations</h2>
+            <div class="divider mx-auto mb-3" style="width: 80px; height: 4px; background: #007bff; border-radius: 2px;"></div>
+        </div>
+
+        <div class="text-end mb-4">
+            <a href="{{ path('backoffice_reclamation_new') }}" class="btn btn-success">
+                <i class="fas fa-plus-circle me-2"></i> Ajouter une Réclamation
+            </a>
+            <!-- Add the new button to navigate to app_api_calendar -->
+            <a href="{{ path('app_api_calendar') }}" class="btn btn-secondary ms-3">
+                <i class="fas fa-calendar-alt me-2"></i> Accéder au Calendrier
+            </a>
+        </div>
+
+        <!-- Search Bar with Icon -->
+        <div class="input-group mb-4">
+            <input type="text" id="liveSearch" placeholder="Cherchez-vous une reclamation? 🔍" class="form-control" autocomplete="off">
+        </div>
+
+        {# Loading Indicator #}
+        <div id="loading">Loading...</div>
+        
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover table-striped align-middle text-center shadow">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Titre</th>
+                        <th scope="col">Message</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Statut</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reclamationResults">
+                    {% for reclamation in reclamations %}
+                        <tr>
+                            <th scope="row">{{ loop.index }}</th>
+                            <td>{{ reclamation.titre }}</td>
+                            <td>{{ reclamation.message|length > 50 ? reclamation.message|slice(0, 50) ~ '...' : reclamation.message }}</td>
+                            <td>{{ reclamation.dateReclamation ? reclamation.dateReclamation|date('d/m/Y H:i') : '' }}</td>
+                            <td>
+                                <span class="badge {% if reclamation.statut == 'En attente' %}bg-warning{% elseif reclamation.statut == 'En cours' %}bg-info{% elseif reclamation.statut == 'Résolu' %}bg-success{% endif %}">
+                                    {{ reclamation.statut|capitalize }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ path('backoffice_reclamation_show', {'id': reclamation.id}) }}" class="btn btn-outline-primary btn-sm me-1">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ path('backoffice_reclamation_edit', {'id': reclamation.id}) }}" class="btn btn-outline-warning btn-sm me-1">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{{ path('app_reclamation_delete', {'id': reclamation.id}) }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Voulez-vous vraiment supprimer cette réclamation ?');">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <div class="empty-state">
+                                    <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                                    <h3>Aucune réclamation disponible</h3>
+                                    <p class="text-muted">Commencez par ajouter votre première réclamation.</p>
+                                    <a href="{{ path('backoffice_reclamation_new') }}" class="btn btn-success">
+                                        <i class="fas fa-plus-circle"></i> Ajouter une réclamation
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<style>
+    table {
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    table thead {
+        background: #343a40;
+        color: white;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f3f5;
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-2px);
+    }
+
+    #loading {
+        display: none;
+        text-align: center;
+        color: green;
+    }
+
+    .empty-state {
+        padding: 2rem;
+        background: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .input-group-text {
+        background-color: #007bff;
+        border: 1px solid #007bff;
+    }
+
+    .input-group input {
+        margin-bottom: 20px;  /* Space between the search bar and the table */
+    }
+</style>
+
+<script>
+    document.getElementById('liveSearch').addEventListener('input', function() {
+        var searchQuery = this.value;
+
+        document.getElementById('loading').style.display = 'block';
+
+        fetch('/reclamation/back/search?search=' + encodeURIComponent(searchQuery))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('loading').style.display = 'none'; 
+
+                var resultsContainer = document.getElementById('reclamationResults');
+                resultsContainer.innerHTML = ''; 
+
+                if (data.length > 0) {
+                    data.forEach(function(reclamation) {
+
+                        let formattedDate = '';
+                        if (reclamation.dateReclamation) {
+                            // Check if date is a valid string or object
+                            if (typeof reclamation.dateReclamation === 'string' || typeof reclamation.dateReclamation === 'object') {
+                                const dateObj = new Date(reclamation.dateReclamation);
+                                if (!isNaN(dateObj.getTime())) {  // Check if the date is valid
+                                    formattedDate = dateObj.toISOString().split('T')[0];  // Format the date
+                                } else {
+                                    formattedDate = '';  // Invalid date handling
+                                }
+                            }
+                        }
+
+                        var row = document.createElement('tr');
+                        row.innerHTML = ` 
+                            <td>${reclamation.id}</td>
+                            <td>${reclamation.titre}</td>
+                            <td>${reclamation.message}</td>
+                            <td>${formattedDate}</td>
+                            <td>${reclamation.statut}</td>
+                            <td>
+                                <a href="/reclamation/back/${reclamation.id}" class="btn btn-success btn-sm">Afficher</a>
+                                <a href="/reclamation/back/${reclamation.id}/edit" class="btn btn-success btn-sm">Modifier</a>
+                            </td>
+                        `;
+                        resultsContainer.appendChild(row);
+                    });
+                } else {
+                    resultsContainer.innerHTML = '<tr><td colspan="5">No results found</td></tr>';
+                }
+            })
+            .catch(function(error) {
+                console.error('Error fetching search results:', error);
+                document.getElementById('loading').style.display = 'none'; 
+            });
+    });
+</script>
+{% endblock %}

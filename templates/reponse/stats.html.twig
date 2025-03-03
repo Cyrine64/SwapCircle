@@ -1,0 +1,266 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Statistics Dashboard{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="text-primary">Statistics Dashboard</h1>
+        <a href="{{ path('app_reponse_index') }}" class="btn btn-primary">
+            <i class="fas fa-list mr-2"></i> View All Responses
+        </a>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm bg-light h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Total Responses</h5>
+                    <h2 class="card-text text-primary">
+                        {{ responsesPerUser|map(user => user.response_count)|reduce((sum, count) => sum + count, 0) }}
+                    </h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm bg-light h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Avg. Response Length</h5>
+                    <h2 class="card-text text-success">{{ averageLength }}</h2>
+                    <p class="text-muted">characters</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm bg-light h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Last Month</h5>
+                    <h2 class="card-text text-info">{{ responsesLastMonth }}</h2>
+                    <p class="text-muted">responses</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm bg-light h-100">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Unique Users</h5>
+                    <h2 class="card-text text-warning">{{ responsesPerUser|length }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Charts - Same structure but with better styling -->
+    <div class="row">
+        <!-- Responses per User -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-transparent">
+                    <h2 class="text-center">Responses per User</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="responsesPerUserChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Responses per Reclamation -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-transparent">
+                    <h2 class="text-center">Responses per Reclamation</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="responsesPerReclamationChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Average Response Length -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-transparent">
+                    <h2 class="text-center">Average Response Length</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="averageResponseLengthChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Responses in Last Month -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-transparent">
+                    <h2 class="text-center">Responses in Last Month</h2>
+                </div>
+                <div class="card-body">
+                    <canvas id="responsesLastMonthChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bottom navigation button -->
+    <div class="text-center mt-4 mb-5">
+        <a href="{{ path('app_reponse_index') }}" class="btn btn-lg btn-outline-primary">
+            Return to Responses List
+        </a>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const colorPalette = {
+        primaryColor: 'rgba(54, 162, 235, 0.2)',
+        primaryBorder: 'rgba(54, 162, 235, 1)',
+        secondaryColor: 'rgba(255, 99, 132, 0.2)',
+        secondaryBorder: 'rgba(255, 99, 132, 1)',
+        tertiaryColor: 'rgba(75, 192, 192, 0.2)',
+        tertiaryBorder: 'rgba(75, 192, 192, 1)',
+        quaternaryColor: 'rgba(153, 102, 255, 0.2)',
+        quaternaryBorder: 'rgba(153, 102, 255, 1)'
+    };
+
+    const responsesPerUserData = {
+        labels: {{ responsesPerUser|map(user => user.id) | json_encode() }},
+        datasets: [{
+            label: 'Response Count',
+            data: {{ responsesPerUser|map(user => user.response_count) | json_encode() }},
+            backgroundColor: colorPalette.primaryColor,
+            borderColor: colorPalette.primaryBorder,
+            borderWidth: 1
+        }]
+    };
+
+    const responsesPerReclamationData = {
+        labels: {{ responsesPerReclamation|map(reclamation => reclamation.id) | json_encode() }},
+        datasets: [{
+            label: 'Response Count',
+            data: {{ responsesPerReclamation|map(reclamation => reclamation.response_count) | json_encode() }},
+            backgroundColor: colorPalette.secondaryColor,
+            borderColor: colorPalette.secondaryBorder,
+            borderWidth: 1
+        }]
+    };
+
+    const averageResponseLengthData = {
+        labels: ['Average Length'],
+        datasets: [{
+            label: 'Average Response Length (characters)',
+            data: [{{ averageLength }}],
+            backgroundColor: colorPalette.tertiaryColor,
+            borderColor: colorPalette.tertiaryBorder,
+            borderWidth: 1
+        }]
+    };
+
+    const responsesLastMonthData = {
+        labels: ['Responses in Last Month'],
+        datasets: [{
+            label: 'Response Count',
+            data: [{{ responsesLastMonth }}],
+            backgroundColor: colorPalette.quaternaryColor,
+            borderColor: colorPalette.quaternaryBorder,
+            borderWidth: 1
+        }]
+    };
+
+    const chartOptions = {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' },
+            title: {
+                display: true,
+                font: {
+                    size: 16,
+                    weight: 'bold'
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0,0,0,0.8)',
+                padding: 12
+            }
+        },
+        animation: {
+            duration: 1000,
+            easing: 'easeOutQuart'
+        }
+    };
+
+    const ctx1 = document.getElementById('responsesPerUserChart').getContext('2d');
+    const responsesPerUserChart = new Chart(ctx1, {
+        type: 'bar',
+        data: responsesPerUserData,
+        options: {
+            ...chartOptions,
+            plugins: {
+                ...chartOptions.plugins,
+                title: {
+                    display: true,
+                    text: 'Number of Responses per User'
+                }
+            },
+            scales: {
+                x: { beginAtZero: true },
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    const ctx2 = document.getElementById('responsesPerReclamationChart').getContext('2d');
+    const responsesPerReclamationChart = new Chart(ctx2, {
+        type: 'bar',
+        data: responsesPerReclamationData,
+        options: {
+            ...chartOptions,
+            plugins: {
+                ...chartOptions.plugins,
+                title: {
+                    display: true,
+                    text: 'Number of Responses per Reclamation'
+                }
+            },
+            scales: {
+                x: { beginAtZero: true },
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    const ctx3 = document.getElementById('averageResponseLengthChart').getContext('2d');
+    const averageResponseLengthChart = new Chart(ctx3, {
+        type: 'doughnut',
+        data: averageResponseLengthData,
+        options: {
+            ...chartOptions,
+            plugins: {
+                ...chartOptions.plugins,
+                title: {
+                    display: true,
+                    text: 'Average Response Length (in characters)'
+                }
+            }
+        }
+    });
+
+    const ctx4 = document.getElementById('responsesLastMonthChart').getContext('2d');
+    const responsesLastMonthChart = new Chart(ctx4, {
+        type: 'pie',
+        data: responsesLastMonthData,
+        options: {
+            ...chartOptions,
+            plugins: {
+                ...chartOptions.plugins,
+                title: {
+                    display: true,
+                    text: 'Responses in the Last Month'
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

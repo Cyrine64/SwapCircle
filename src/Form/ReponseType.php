@@ -18,11 +18,11 @@ class ReponseType extends AbstractType
             ->add('contenu')
             ->add('reclamation', EntityType::class, [
                 'class' => Reclamation::class,
-                'choice_label' => 'id',
+                'choice_label' => 'message',
             ])
             ->add('utilisateur', EntityType::class, [
                 'class' => Utilisateur::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
             ])
         ;
     }

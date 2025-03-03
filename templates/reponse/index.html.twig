@@ -1,38 +1,188 @@
 {% extends 'back-base.html.twig' %}
 
-{% block title %}Reponse index{% endblock %}
+{% block title %}Liste des Réponses{% endblock %}
 
 {% block body %}
-    <h1>Reponse index</h1>
+<section class="service_section layout_padding" style="background-color: #e9ecef; padding: 50px 0;">
+    <div class="container mt-5">
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="section-header text-center">
+                    <h6 class="text-secondary text-uppercase mb-3">Gestion des Réponses</h6>
+                    <h2 class="section-title mb-3" style="font-size: 2.5rem; font-weight: 700; color: #343a40;">Liste des Réponses</h2>
+                    <div class="divider mx-auto mb-4" style="width: 80px; height: 4px; background: #007bff; border-radius: 2px;"></div>
+                </div>
+                <div class="text-center mb-4">
+                    <a href="{{ path('app_reponse_new') }}" class="btn btn-success btn-lg">
+                        <i class="fas fa-plus-circle me-2"></i> Créer une nouvelle réponse
+                    </a>
+                    <a href="{{ path('app_back_office') }}" class="btn btn-secondary btn-lg ms-3">
+                        <i class="fas fa-arrow-left me-2"></i> Retour au tableau de bord
+                    </a>
+                    <a href="{{ path('reponse_stats') }}" class="btn btn-info btn-lg ms-3">
+                        <i class="fas fa-bar-chart me-2"></i> Voir Statistics
+                    </a>
+                </div>
+            </div>
+        </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Titre Reclamation</th>
-                <th>Contenu</th>
-                <th>Date_reponse</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for reponse in reponses %}
-            <tr>
-                <td>{{ reponse.reclamation.titre }}</td>
-                <td>{{ reponse.contenu }}</td>
-                <td>{{ reponse.dateReponse ? reponse.dateReponse|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_reponse_show', {'id_reponse': reponse.getIdReponse()}) }}">show</a>
-                    <a href="{{ path('app_reponse_edit', {'id_reponse': reponse.getIdReponse()}) }}">edit</a>
-                    <a href="{{ path('app_reponse_delete', {'id_reponse': reponse.getIdReponse()}) }}">Supprimer</a>     
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        <div class="input-group mb-4">
+            <input type="text" id="liveSearch" placeholder="Cherchez-vous une reclamation? 🔍" class="form-control" autocomplete="off">
+        </div>
 
-    <a href="{{ path('app_reponse_new') }}">Create new</a>
+        {# Loading Indicator #}
+        <div id="loading">Loading...</div>
+
+        <div class="table-responsive fade-in">
+            <table class="table table-hover shadow-sm rounded">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>#ID</th>
+                        <th>Titre Réclamation</th>
+                        <th>Contenu</th>
+                        <th>Date Réponse</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reponseResults">
+                    {% for reponse in reponses %}
+                        <tr>
+                            <td>{{ reponse.idreponse }}</td>
+                            <td>{{ reponse.reclamation.titre }}</td>
+                            <td>{{ reponse.contenu|length > 50 ? reponse.contenu|slice(0, 50) ~ '...' : reponse.contenu }}</td>
+                            <td>{{ reponse.dateReponse ? reponse.dateReponse|date('d/m/Y H:i') : 'Non défini' }}</td>
+                            <td class="text-center">
+                                <a href="{{ path('app_reponse_show', {'id_reponse': reponse.getIdReponse()}) }}" class="btn btn-outline-primary btn-sm me-2">
+                                    <i class="fas fa-eye"></i> Voir
+                                </a>
+                                <a href="{{ path('app_reponse_edit', {'id_reponse': reponse.getIdReponse()}) }}" class="btn btn-outline-warning btn-sm me-2">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </a>
+                                <a href="{{ path('app_reponse_delete', {'id_reponse': reponse.getIdReponse()}) }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réponse ?');">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-5">
+                                <i class="fas fa-box-open fa-3x mb-3 text-secondary"></i>
+                                <h4>Aucune réponse trouvée</h4>
+                                <p>Commencez par créer votre première réponse.</p>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="pagination-controls text-center">
+                {% if currentPage > 1 %}
+                    <a href="{{ path('app_reponse_index', {'page': currentPage - 1}) }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-chevron-left"></i> Précédent
+                    </a>
+                {% endif %}
+
+                <span>Page {{ currentPage }} sur {{ totalPages }}</span>
+
+                {% if currentPage < totalPages %}
+                    <a href="{{ path('app_reponse_index', {'page': currentPage + 1}) }}" class="btn btn-outline-primary btn-sm">
+                        Suivant <i class="fas fa-chevron-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .table {
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f3f5;
+    }
+
+    .btn-outline-primary:hover, .btn-outline-warning:hover, .btn-outline-danger:hover {
+        transform: translateY(-2px);
+        transition: all 0.3s ease;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    #loading {
+        display: none;
+        text-align: center;
+        color: green;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+
+<script>
+
+    document.getElementById('liveSearch').addEventListener('input', function() {
+        var searchQuery = this.value;
+
+        document.getElementById('loading').style.display = 'block';
+
+        fetch('/reponse/back/search?search=' + encodeURIComponent(searchQuery))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('loading').style.display = 'none'; 
+
+                var resultsContainer = document.getElementById('reponseResults');
+                resultsContainer.innerHTML = ''; 
+
+                if (data.length > 0) {
+                    data.forEach(function(reponse) {
+
+                        let formattedDate = '';
+                        if (reponse.dateReponse && reponse.dateReponse.date) {
+                            // Parse the date string from the object and format it
+                            const dateObj = new Date(reponse.dateReponse.date);
+                            if (!isNaN(dateObj.getTime())) {  // Check if the date is valid
+                                // Format the date to 'dd/mm/yyyy'
+                                formattedDate = dateObj.toLocaleDateString('fr-FR') + ' ' + dateObj.toLocaleTimeString('fr-FR');
+                            } else {
+                                formattedDate = 'Date invalide';  // Invalid date handling
+                            }
+                        }
+
+                        var row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${reponse.id}</td>
+                            <td>${reponse.titre}</td>
+                            <td>${reponse.contenu}</td>
+                            <td>${formattedDate || 'Non défini'}</td>
+                            <td>
+                                <a href="/reponse/${reponse.id}" class="btn btn-success btn-sm">Afficher</a>
+                                <a href="/reponse/${reponse.id}/edit" class="btn btn-success btn-sm">Modifier</a>
+                            </td>
+                        `;
+                        resultsContainer.appendChild(row);
+                    });
+                } else {
+                    resultsContainer.innerHTML = '<tr><td colspan="5">Aucun résultat trouvé</td></tr>';
+                }
+            })
+            .catch(function(error) {
+                console.error('Error fetching search results:', error);
+                document.getElementById('loading').style.display = 'none'; 
+            });
+    });
+
+</script>
 {% endblock %}

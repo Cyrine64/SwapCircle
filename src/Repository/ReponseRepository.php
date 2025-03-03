@@ -19,5 +19,50 @@ class ReponseRepository extends ServiceEntityRepository
         parent::__construct($registry, Reponse::class);
     }
 
-    // Add custom methods here if needed
+    public function searchReponse(string $searchQuery)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.contenu LIKE :searchQuery')
+            ->setParameter('searchQuery', '%' . $searchQuery . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countResponsesPerUser()
+    {
+            return $this->createQueryBuilder('r')
+                ->select('u.id, COUNT(r.id_reponse) as response_count')
+                ->leftJoin('r.utilisateur', 'u')
+                ->groupBy('u.id')
+                ->getQuery()
+                ->getResult();
+    }
+    
+    public function countResponsesPerReclamation()
+    {
+            return $this->createQueryBuilder('r')
+                ->select('rec.id, COUNT(r.id_reponse) as response_count')
+                ->leftJoin('r.reclamation', 'rec')
+                ->groupBy('rec.id')
+                ->getQuery()
+                ->getResult();
+    }
+    
+    public function averageResponseLength()
+    {
+            return $this->createQueryBuilder('r')
+                ->select('AVG(LENGTH(r.contenu)) as average_length')
+                ->getQuery()
+                ->getSingleScalarResult();
+    }
+    
+    public function countResponsesLastMonth()
+    {
+            return $this->createQueryBuilder('r')
+                ->select('COUNT(r.id_reponse) as response_count')
+                ->where('r.date_reponse > :last_month')
+                ->setParameter('last_month', (new \DateTime())->modify('-1 month'))
+                ->getQuery()
+                ->getSingleScalarResult();
+    }
 } 

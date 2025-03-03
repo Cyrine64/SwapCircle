@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'back-base.html.twig' %}
 
 {% block title %}Nouvelle Réclamation{% endblock %}
 
@@ -184,12 +184,8 @@
             <h1 class="dashboard-title">Nouvelle Réclamation</h1>
             <p class="dashboard-subtitle">Nous sommes là pour vous aider. Décrivez votre problème en détail.</p>
         </div>
+
         <div class="form-container">
-        {% for message in app.flashes('danger') %}
-        <div class="alert alert-danger">
-            {{ message }}
-        </div>
-        {% endfor %}
             {{ form_start(form, {'attr': {'class': 'claim-form', 'novalidate': 'novalidate'}}) }}
                 <div class="form-group">
                     {{ form_label(form.titre, "Titre de la réclamation", {'label_attr': {'class': 'form-label'}}) }}
@@ -219,60 +215,11 @@
                     <button type="submit" class="action-button">
                         <i class="fas fa-paper-plane"></i> Envoyer la réclamation
                     </button>
-                    <a href="{{ path('app_reclamation_index') }}" class="action-button secondary">
+                    <a href="{{ path('backoffice_reclamation_index') }}" class="action-button secondary">
                         <i class="fas fa-arrow-left"></i> Retour à la liste
                     </a>
                 </div>
             {{ form_end(form) }}
         </div>
     </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const messageField = document.querySelector("#reclamation_message");
-        const errorDiv = document.createElement("div");
-        errorDiv.classList.add("form-error");
-        messageField.parentNode.appendChild(errorDiv);
-
-        let containsBadWords = false; // Track the bad words state
-
-        messageField.addEventListener("input", async function () {
-            const message = messageField.value;
-
-            if (message.length > 0) {
-                const response = await fetch("/check-bad-words", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ message: message }),
-                });
-
-                const data = await response.json();
-
-                containsBadWords = data.containsBadWords; // Update the state
-
-                if (containsBadWords) {
-                    errorDiv.textContent = "Votre message contient des mots inappropriés.";
-                    messageField.classList.add("is-invalid");
-                } else {
-                    errorDiv.textContent = "";
-                    messageField.classList.remove("is-invalid");
-                }
-            } else {
-                containsBadWords = false;
-                errorDiv.textContent = "";
-                messageField.classList.remove("is-invalid");
-            }
-        });
-
-        // Prevent form submission
-        document.querySelector(".claim-form").addEventListener("submit", function (e) {
-            if (containsBadWords) {
-                e.preventDefault(); // Stop the form from submitting
-                alert("Veuillez corriger votre message avant de soumettre.");
-            }
-        });
-    });
-
-</script>
 {% endblock %}

@@ -15,7 +15,7 @@ class Reponse
     #[ORM\Column]
     private ?int $id_reponse = null;
 
-    #[ORM\ManyToOne(targetEntity: Reclamation::class)]
+    #[ORM\OneToOne(inversedBy: "reponse", targetEntity: Reclamation::class)]
     #[ORM\JoinColumn(name: "id_reclamation", referencedColumnName: "id", nullable: false)]
     private ?Reclamation $reclamation = null;
 
@@ -33,12 +33,17 @@ class Reponse
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeInterface $date_reponse = null;
 
-    // Getters and setters
     public function getIdReponse(): ?int
     {
         return $this->id_reponse;
     }
 
+    public function setIdReponse(?int $id_reponse): self
+    {
+        $this->id_reponse = $id_reponse;
+        return $this;
+    }
+    
     public function getReclamation(): ?Reclamation
     {
         return $this->reclamation;

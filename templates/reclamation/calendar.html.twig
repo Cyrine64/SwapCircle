@@ -1,0 +1,67 @@
+{% extends 'back-base.html.twig' %}
+
+{% block body %}
+<div id="calendar" style="margin: 5%; width: 90%; height: 400px; border: 1px solid red;"></div>
+
+<!-- FullCalendar CSS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet" />
+
+<!-- jQuery and FullCalendar JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar/index.global.min.js'></script>
+
+<script>
+    const eventsData = [];
+
+    {% for reclamation in reclamation %}
+        eventsData.push({
+            title: 'Reclamation: {{ reclamation.titre }}', 
+            start: '{{ reclamation.dateReclamation|date('Y-m-d') }}',  
+            end: '{{ reclamation.dateReclamation|date('Y-m-d') }}',  
+            allDay: true,
+            statut: '{{ reclamation.statut }}',  
+            typeReclamation: '{{ reclamation.typeReclamation.value }}',  
+            utilisateurFirstname: '{{ reclamation.utilisateur.nom }}',  
+            id: '{{ reclamation.id }}',  
+        });
+    {% endfor %}
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const calendarEl = document.getElementById('calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            events: eventsData,
+            eventClick: function(info) {
+                // Using the original ID extraction approach
+                const id = info.event.id; 
+                const url = '{{ path("backoffice_reclamation_show", {"id": "__ID__"}) }}'.replace('__ID__', id);
+                window.location.href = url;
+            },
+            contentHeight: 'auto',
+            height: 'auto',
+            // Adding these settings for improved display but maintaining original structure
+            eventDisplay: 'block',
+            displayEventTime: false,
+            eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            }
+        });
+
+        calendar.render();
+    });
+</script>
+
+<div class="mt-4">
+    <a href="{{ path('backoffice_reclamation_index') }}" class="btn btn-secondary">
+        🔙 Retour à la liste
+    </a>
+</div>
+
+{% endblock %}

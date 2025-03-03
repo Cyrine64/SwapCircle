@@ -19,5 +19,12 @@ class ReclamationRepository extends ServiceEntityRepository
         parent::__construct($registry, Reclamation::class);
     }
 
-    // Add custom methods here if needed
+    public function searchReclamation(string $searchQuery)
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.titre LIKE :searchQuery')
+            ->setParameter('searchQuery', '%' . $searchQuery . '%')
+            ->getQuery()
+            ->getResult();
+    }
 } 

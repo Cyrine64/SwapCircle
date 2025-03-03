@@ -12,53 +12,56 @@
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            text-align: center;
         }
         
         h1 {
-            text-align: center;
             font-size: 2.5rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         
         .table1 {
             width: 100%;
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
             border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
             overflow: hidden;
+            margin-bottom: 30px;
         }
         
         .table1 th, .table1 td {
-            padding: 15px;
+            padding: 20px;
             text-align: left;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
         
         .table1 th {
-            background: rgba(255, 255, 255, 0.2);
-            color:rgb(53, 236, 46);
-            font-weight: 600;
+            background: rgba(255, 255, 255, 0.3);
+            color: #35ec2e;
+            font-weight: 700;
+            text-transform: uppercase;
         }
         
         .table1 td {
-            color:rgb(0, 0, 0);
-        }
-        
-        .table1 tr:nth-child(even) {
+            color: #000000;
             background: rgba(255, 255, 255, 0.1);
         }
         
-        aa1 {
+        .table1 tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .btn-custom {
             display: inline-block;
-            padding: 12px 20px;
-            margin: 15px 5px;
+            padding: 12px 25px;
+            margin: 15px 10px;
             text-decoration: none;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #ffffff;
             background: #ffcc00;
@@ -67,20 +70,20 @@
             box-shadow: 0 4px 10px rgba(255, 204, 0, 0.3);
         }
         
-        aa1:hover {
+        .btn-custom:hover {
             background: #ff9900;
             box-shadow: 0 6px 15px rgba(255, 153, 0, 0.4);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
         }
-            </style>
+    </style>
 {% endblock %}
 {% block body %}
-    <h1>Reponse</h1>
+    <h1>Réponse Détail</h1>
 
-    <table class="table">
+    <table class="table1">
         <tbody>
             <tr>
-                <th>Titre Reclamation</th>
+                <th>Titre Réclamation</th>
                 <td>{{ reponse.reclamation.titre }}</td>
             </tr>
             <tr>
@@ -88,15 +91,14 @@
                 <td>{{ reponse.contenu }}</td>
             </tr>
             <tr>
-                <th>Date_reponse</th>
-                <td>{{ reponse.dateReponse ? reponse.dateReponse|date('Y-m-d H:i:s') : '' }}</td>
+                <th>Date Réponse</th>
+                <td>{{ reponse.dateReponse ? reponse.dateReponse|date('Y-m-d H:i:s') : 'Non défini' }}</td>
             </tr>
         </tbody>
     </table>
 
-    <a href="{{ path('app_reponse_index') }}">back to list</a>
-
-    <a href="{{ path('app_reponse_edit', {'id_reponse': reponse.getIdReponse()}) }}">edit</a>
+    <a href="{{ path('app_reponse_index') }}" class="btn-custom">Retour à la liste</a>
+    <a href="{{ path('app_reponse_edit', {'id_reponse': reponse.getIdReponse()}) }}" class="btn-custom">Modifier</a>
 
     {{ include('reponse/_delete_form.html.twig') }}
 {% endblock %}

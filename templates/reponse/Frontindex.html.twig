@@ -1,0 +1,251 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Réponses{% endblock %}
+
+{% block body %}
+<section class="service_section layout_padding" style="background-color: #e9ecef; padding: 50px 0;">
+    <div class="container mt-5">
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="section-header text-center">
+                    <h6 class="text-secondary text-uppercase mb-3">Gestion des Réponses</h6>
+                    <h2 class="section-title mb-3" style="font-size: 2.5rem; font-weight: 700; color: #343a40;">Liste des Réponses</h2>
+                    <div class="divider mx-auto mb-4" style="width: 80px; height: 4px; background: #007bff; border-radius: 2px;"></div>
+                </div>
+                <div class="text-center mb-4">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group mb-4">
+            <span class="input-group-text bg-primary text-white">
+                <i class="fas fa-search"></i>
+            </span>
+            <input type="text" id="liveSearch" placeholder="Cherchez-vous une reclamation? 🔍" class="form-control" autocomplete="off">
+        </div>
+
+        {# Loading Indicator #}
+        <div id="loading" class="text-center my-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Chargement en cours...</p>
+        </div>
+
+        <div class="fade-in">
+            <div id="reponseResults" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for reponse in reponses %}
+                    <div class="col">
+                        <div class="card h-100 shadow-sm hover-card">
+                            <div class="card-header bg-gradient d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary rounded-pill">ID: {{ reponse.idreponse }}</span>
+                                <span class="badge bg-secondary rounded-pill">
+                                    <i class="far fa-clock me-1"></i>
+                                    {{ reponse.dateReponse ? reponse.dateReponse|date('d/m/Y H:i') : 'Non défini' }}
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">{{ reponse.reclamation.titre }}</h5>
+                                <p class="card-text">{{ reponse.contenu|length > 100 ? reponse.contenu|slice(0, 100) ~ '...' : reponse.contenu }}</p>
+                            </div>
+                            <div class="card-footer bg-transparent text-center">
+                                <a href="{{ path('front_reponse_show', {'id_reponse': reponse.getIdReponse()}) }}" class="btn btn-primary btn-sm w-100">
+                                    <i class="fas fa-eye me-2"></i> Voir les détails
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="col-12 text-center py-5 bg-white rounded shadow-sm">
+                        <i class="fas fa-inbox fa-3x mb-3 text-secondary"></i>
+                        <h4>Aucune réponse trouvée</h4>
+                        <p>Il n'y a pas de réponses disponibles pour le moment.</p>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="pagination-controls text-center mt-4">
+                {% if currentPage > 1 %}
+                    <a href="{{ path('app_reponse_index', {'page': currentPage - 1}) }}" class="btn btn-outline-primary">
+                        <i class="fas fa-chevron-left"></i> Précédent
+                    </a>
+                {% endif %}
+
+                <span class="mx-3 fs-5">Page {{ currentPage }} sur {{ totalPages }}</span>
+
+                {% if currentPage < totalPages %}
+                    <a href="{{ path('app_reponse_index', {'page': currentPage + 1}) }}" class="btn btn-outline-primary">
+                        Suivant <i class="fas fa-chevron-right"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: none;
+    }
+
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .card-header {
+        background: linear-gradient(to right, #007bff, #0056b3);
+        color: white;
+        border-bottom: none;
+        padding: 12px 16px;
+    }
+
+    .card-title {
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-footer {
+        border-top: 1px solid rgba(0,0,0,0.05);
+        padding: 1rem;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+    .fade-in {
+        animation: fadeIn 0.8s ease-out;
+    }
+
+    #loading {
+        display: none;
+    }
+
+    .input-group {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        border-radius: 50px;
+        overflow: hidden;
+    }
+
+    .input-group-text {
+        border-radius: 50px 0 0 50px;
+        border: none;
+    }
+
+    #liveSearch {
+        border-radius: 0 50px 50px 0;
+        border: none;
+        height: 50px;
+        font-size: 1.1rem;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+</style>
+
+<script>
+    document.getElementById('liveSearch').addEventListener('input', function() {
+        var searchQuery = this.value;
+
+        document.getElementById('loading').style.display = 'block';
+
+        fetch('/reponse/back/search?search=' + encodeURIComponent(searchQuery))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('loading').style.display = 'none'; 
+
+                var resultsContainer = document.getElementById('reponseResults');
+                resultsContainer.innerHTML = ''; 
+
+                if (data.length > 0) {
+                    data.forEach(function(reponse) {
+                        let formattedDate = '';
+                        if (reponse.dateReponse && reponse.dateReponse.date) {
+                            // Parse the date string from the object and format it
+                            const dateObj = new Date(reponse.dateReponse.date);
+                            if (!isNaN(dateObj.getTime())) {  // Check if the date is valid
+                                // Format the date to 'dd/mm/yyyy'
+                                formattedDate = dateObj.toLocaleDateString('fr-FR') + ' ' + dateObj.toLocaleTimeString('fr-FR');
+                            } else {
+                                formattedDate = 'Date invalide';  // Invalid date handling
+                            }
+                        }
+
+                        const truncatedContent = reponse.contenu.length > 100 ? 
+                            reponse.contenu.substring(0, 100) + '...' : 
+                            reponse.contenu;
+
+                        var card = document.createElement('div');
+                        card.className = 'col';
+                        card.innerHTML = `
+                            <div class="card h-100 shadow-sm hover-card">
+                                <div class="card-header bg-gradient d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary rounded-pill">ID: ${reponse.id}</span>
+                                    <span class="badge bg-secondary rounded-pill">
+                                        <i class="far fa-clock me-1"></i>
+                                        ${formattedDate || 'Non défini'}
+                                    </span>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">${reponse.titre}</h5>
+                                    <p class="card-text">${truncatedContent}</p>
+                                </div>
+                                <div class="card-footer bg-transparent text-center">
+                                    <a href="/reponse/${reponse.id}" class="btn btn-primary btn-sm w-100">
+                                        <i class="fas fa-eye me-2"></i> Voir les détails
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                        resultsContainer.appendChild(card);
+                    });
+                } else {
+                    resultsContainer.innerHTML = `
+                        <div class="col-12 text-center py-5 bg-white rounded shadow-sm">
+                            <i class="fas fa-search fa-3x mb-3 text-secondary"></i>
+                            <h4>Aucun résultat trouvé</h4>
+                            <p>Essayez avec d'autres termes de recherche.</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(function(error) {
+                console.error('Error fetching search results:', error);
+                document.getElementById('loading').style.display = 'none'; 
+                
+                var resultsContainer = document.getElementById('reponseResults');
+                resultsContainer.innerHTML = `
+                    <div class="col-12 text-center py-5 bg-white rounded shadow-sm">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3 text-danger"></i>
+                        <h4>Erreur lors de la recherche</h4>
+                        <p>Une erreur s'est produite lors de la recherche. Veuillez réessayer plus tard.</p>
+                    </div>
+                `;
+            });
+    });
+</script>
+{% endblock %}

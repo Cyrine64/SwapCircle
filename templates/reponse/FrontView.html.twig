@@ -1,0 +1,292 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail de la Réponse{% endblock %}
+{% block stylesheets %}
+    <style>
+        body {
+            background-color: #e9ecef;
+            font-family: 'Poppins', sans-serif;
+            color: #343a40;
+            min-height: 100vh;
+            padding: 50px 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .text-secondary {
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #343a40;
+            margin-bottom: 15px;
+            margin-top: 10px;
+        }
+        
+        .divider {
+            width: 80px;
+            height: 4px;
+            background: #007bff;
+            border-radius: 2px;
+            margin: 0 auto 25px;
+        }
+        
+        .detail-card {
+            background-color: #fff;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            border: none;
+        }
+        
+        .card-header {
+            background: linear-gradient(to right, #007bff, #0056b3);
+            color: white;
+            padding: 20px 25px;
+            position: relative;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .badge {
+            padding: 8px 15px;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .badge-primary {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .card-body {
+            padding: 0;
+        }
+        
+        .detail-row {
+            display: flex;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            width: 200px;
+            padding: 20px 25px;
+            background-color: rgba(0, 123, 255, 0.05);
+            font-weight: 600;
+            color: #007bff;
+            border-right: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+        }
+        
+        .detail-label i {
+            margin-right: 10px;
+            color: #007bff;
+        }
+        
+        .detail-content {
+            flex: 1;
+            padding: 20px 25px;
+            text-align: left;
+            line-height: 1.6;
+        }
+        
+        .btn-area {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+        }
+        
+        .btn-warning {
+            background-color: #ffc107;
+            color: #212529;
+            box-shadow: 0 4px 8px rgba(255, 193, 7, 0.3);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e0a800;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(255, 193, 7, 0.4);
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+        }
+        
+        .btn-danger:hover {
+            background-color: #bd2130;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(220, 53, 69, 0.4);
+        }
+        
+        .date-display {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .date-icon {
+            background-color: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .detail-row {
+                flex-direction: column;
+            }
+            
+            .detail-label {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            }
+            
+            .btn-area {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container fade-in">
+    <div class="section-header">
+        <h6 class="text-secondary mb-2">Gestion des Réponses</h6>
+        <h2 class="section-title">Détail de la Réponse</h2>
+        <div class="divider"></div>
+    </div>
+
+    <div class="detail-card">
+        <div class="card-header">
+            <div class="header-content">
+                <span class="badge badge-primary">ID: {{ reponse.getIdReponse() }}</span>
+                <div class="date-display">
+                    <div class="date-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <span>{{ reponse.dateReponse ? reponse.dateReponse|date('d/m/Y H:i') : 'Non défini' }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body">
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="fas fa-tag"></i> Titre Réclamation
+                </div>
+                <div class="detail-content">
+                    {{ reponse.reclamation.titre }}
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="fas fa-comment-alt"></i> Contenu
+                </div>
+                <div class="detail-content">
+                    {{ reponse.contenu|nl2br }}
+                </div>
+            </div>
+            
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="fas fa-clock"></i> Date Réponse
+                </div>
+                <div class="detail-content">
+                    {% if reponse.dateReponse %}
+                        {{ reponse.dateReponse|date('d/m/Y') }} à {{ reponse.dateReponse|date('H:i') }}
+                    {% else %}
+                        <span class="text-muted">Non défini</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="btn-area">
+        <a href="{{ path('front_reponse_index') }}" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Retour à la liste
+        </a>
+        
+    </div>
+</div>
+{% endblock %}
