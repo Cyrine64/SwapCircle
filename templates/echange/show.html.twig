@@ -1,0 +1,232 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'échange{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h2 class="h4 mb-0">Détails de l'échange</h2>
+                    
+                    {% if echange.getStatut() == 'en_attente' %}
+                        <div class="badge bg-warning text-dark">
+                            <i class="fas fa-clock me-1"></i> En attente de réponse
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Objet proposé</h5>
+                            <div class="card">
+                                <div class="card-body">
+                                    <h6 class="card-title">{{ echange.objet.nom }}</h6>
+                                    <p class="card-text">{{ echange.objet.description|slice(0, 100) }}...</p>
+                                    {% if echange.objet.image %}
+                                        <img src="{{ asset('uploads/images/' ~ echange.objet.image) }}" 
+                                             alt="{{ echange.objet.nom }}" 
+                                             class="img-thumbnail" 
+                                             style="width: 100px; height: 100px; object-fit: cover;">
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="details-section mb-4">
+                        <h5 class="mb-3">Informations de l'échange</h5>
+                        <table class="table">
+                            <tbody>
+                                <tr>
+                                    <th>Titre</th>
+                                    <td>{{ echange.getNameEchange() }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Message</th>
+                                    <td>{{ echange.getMessage() }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Date proposée</th>
+                                    <td>{{ echange.getDateEchange() ? echange.getDateEchange()|date('d/m/Y H:i') : '' }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Statut</th>
+                                    <td>
+                                        {% set status_labels = {
+                                            'en_attente': 'En attente',
+                                            'accepte': 'Accepté',
+                                            'refuse': 'Refusé'
+                                        } %}
+                                        
+                                        {% set status_classes = {
+                                            'en_attente': 'bg-warning text-dark',
+                                            'accepte': 'bg-success',
+                                            'refuse': 'bg-danger'
+                                        } %}
+                                        
+                                        {% set current_status = echange.getStatut() %}
+                                        <span class="badge {{ status_classes[current_status] }}">
+                                            {{ status_labels[current_status] }}
+                                        </span>
+
+                                        {% if current_status == 'accepte' %}
+                                            <div class="alert alert-success mt-3">
+                                                <i class="fas fa-check-circle me-2"></i>
+                                                Votre échange a été accepté ! Vous pouvez maintenant contacter le propriétaire pour organiser l'échange.
+                                            </div>
+                                        {% elseif current_status == 'refuse' %}
+                                            <div class="alert alert-danger mt-3">
+                                                <i class="fas fa-times-circle me-2"></i>
+                                                Désolé, votre proposition d'échange a été refusée.
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if echange.getStatut() == 'en_attente' %}
+                        <div class="decision-buttons mb-4">
+                            <h5 class="mb-3">Répondre à cette demande d'échange</h5>
+                            <div class="alert alert-info mb-3">
+                                <i class="fas fa-info-circle me-2"></i>
+                                <span>Si vous acceptez cet échange, l'objet sera marqué comme non disponible.</span>
+                            </div>
+                            
+                            <div class="d-flex gap-2">
+                                <form method="post" action="{{ path('app_echange_accept', {'id_echange': echange.getIdEchange()}) }}" class="d-inline-block me-2" onsubmit="return confirm('Êtes-vous sûr de vouloir accepter cet échange ? L\'objet sera marqué comme non disponible.')">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('accept' ~ echange.getIdEchange()) }}">
+                                    <button class="btn btn-success btn-lg action-button accept-button">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        Accepter l'échange
+                                    </button>
+                                </form>
+                                
+                                <form method="post" action="{{ path('app_echange_refuse', {'id_echange': echange.getIdEchange()}) }}" class="d-inline-block" onsubmit="return confirm('Êtes-vous sûr de vouloir refuser cet échange ?')">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('refuse' ~ echange.getIdEchange()) }}">
+                                    <button class="btn btn-danger btn-lg action-button refuse-button">
+                                        <i class="fas fa-times-circle me-2"></i>
+                                        Refuser l'échange
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="d-grid gap-2">
+                        {% if echange.getStatut() == 'en_attente' and app.user == echange.utilisateur %}
+                            <a href="{{ path('app_echange_edit', {'id_echange': echange.getIdEchange()}) }}" 
+                               class="btn btn-warning">
+                                <i class="fas fa-edit me-2"></i>
+                                Modifier l'échange
+                            </a>
+                        {% endif %}
+                        <a href="{{ path('app_echange_index') }}" 
+                           class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>
+                            Retour à la liste
+                        </a>
+                    </div>
+
+                    {% if app.user == echange.utilisateur %}
+                        {{ include('echange/_delete_form.html.twig') }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .card-header {
+        border-radius: 15px 15px 0 0;
+        background: linear-gradient(45deg, #3498db, #2ecc71);
+    }
+    
+    .table th {
+        width: 30%;
+    }
+    
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.5em 1em;
+    }
+    
+    .btn-warning {
+        color: #fff;
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+    
+    .btn-warning:hover {
+        color: #fff;
+        background-color: #e0a800;
+        border-color: #d39e00;
+    }
+    
+    .decision-buttons {
+        background-color: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 15px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .action-button {
+        font-weight: bold;
+        padding: 12px 24px;
+        font-size: 1rem;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: none;
+        border-radius: 8px;
+        min-width: 180px;
+    }
+    
+    .accept-button {
+        background: linear-gradient(to right, #28a745, #20c997);
+        color: white;
+    }
+    
+    .refuse-button {
+        background: linear-gradient(to right, #dc3545, #c82333);
+        color: white;
+    }
+    
+    .accept-button:hover {
+        background: linear-gradient(to right, #218838, #1e9b79);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(40, 167, 69, 0.4);
+    }
+    
+    .refuse-button:hover {
+        background: linear-gradient(to right, #c82333, #bd2130);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(220, 53, 69, 0.4);
+    }
+    
+    .btn-success, .btn-danger {
+        transition: all 0.3s ease;
+    }
+    
+    .btn-success:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    }
+    
+    .btn-danger:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+    }
+</style>
+{% endblock %}

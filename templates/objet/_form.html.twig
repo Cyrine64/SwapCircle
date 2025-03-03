@@ -1,0 +1,109 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'enctype': 'multipart/form-data'}}) }}
+    <div class="row g-3">
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.nom) }}
+                {{ form_widget(form.nom) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.nom) }}
+                </div>
+                <small class="form-text text-muted">
+                    Le nom doit contenir entre 3 et 255 caractères
+                </small>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.description) }}
+                </div>
+                <small class="form-text text-muted">
+                    Décrivez votre objet en détail (minimum 10 caractères)
+                </small>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.categorie) }}
+                {{ form_widget(form.categorie) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.categorie) }}
+                </div>
+            </div>
+        </div>
+
+        {% if form.etat is defined %}
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.etat, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(form.etat, {
+                    'attr': {
+                        'class': 'form-control transparent-select',
+                        'disabled': 'disabled', 
+                        'style': 'opacity: 0.5; pointer-events: none;' 
+                    }
+                }) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.etat) }}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.image) }}
+                {{ form_widget(form.image) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.image) }}
+                </div>
+                <small class="form-text text-muted">
+                    Formats acceptés : JPEG, PNG, WEBP. Taille maximale : 5 Mo
+                </small>
+            </div>
+        </div>
+        
+        <div class="col-12 mt-4">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-save me-2"></i>
+                {{ button_label|default('Enregistrer') }}
+            </button>
+        </div>
+    </div>
+{{ form_end(form) }}
+
+<style>
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .invalid-feedback {
+        display: block;
+        color: #dc3545;
+    }
+
+    .form-text {
+        margin-top: 0.25rem;
+        color: #6c757d;
+    }
+    .transparent-select {
+        opacity: 0.5;
+        pointer-events: none;
+    }
+</style>
+
+

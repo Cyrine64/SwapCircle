@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier l'échange{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-white">
+                    <h2 class="h4 mb-0">
+                        <i class="fas fa-edit me-2"></i>
+                        Modifier l'échange
+                    </h2>
+                </div>
+                
+                <div class="card-body">
+                    <!-- Objet concerné -->
+                    <div class="alert alert-info mb-4">
+                        <h5 class="mb-3">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Objet concerné par l'échange
+                        </h5>
+                        <div class="d-flex align-items-center">
+                            {% if echange.objet.image %}
+                                <img src="{{ asset('uploads/images/' ~ echange.objet.image) }}" 
+                                     alt="{{ echange.objet.nom }}" 
+                                     class="img-thumbnail me-3" 
+                                     style="width: 80px; height: 80px; object-fit: cover;">
+                            {% endif %}
+                            <div>
+                                <h6 class="mb-1">{{ echange.objet.nom }}</h6>
+                                <p class="mb-0">{{ echange.objet.description|slice(0, 100) }}...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulaire -->
+                    {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+                        <div class="mb-3">
+                            {{ form_label(form.nameEchange, 'Titre de l\'échange', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.nameEchange, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.nameEchange) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.objet, 'Votre objet à échanger', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.objet, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.objet) }}
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Sélectionnez l'un de vos objets que vous souhaitez échanger
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.message, 'Message', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.message, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'rows': '4',
+                                    'placeholder': 'Expliquez pourquoi vous souhaitez faire cet échange...'
+                                }
+                            }) }}
+                            {{ form_errors(form.message) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.dateEchange, 'Date souhaitée pour l\'échange', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.dateEchange, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.dateEchange) }}
+                            <small class="form-text text-muted">
+                                <i class="fas fa-calendar-alt me-1"></i>
+                                Choisissez une nouvelle date pour l'échange si nécessaire
+                            </small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="fas fa-save me-2"></i>
+                                Enregistrer les modifications
+                            </button>
+                            <a href="{{ path('app_echange_index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Retour à la liste
+                            </a>
+                        </div>
+                    {{ form_end(form) }}
+
+                    <!-- Formulaire de suppression -->
+                    <div class="mt-4">
+                        <h5 class="text-danger mb-3">Zone dangereuse</h5>
+                        {{ include('echange/_delete_form.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    
+    .card-header {
+        border-radius: 10px 10px 0 0;
+        background-color: #ffc107;
+    }
+    
+    .alert {
+        border: none;
+        border-radius: 8px;
+    }
+    
+    .img-thumbnail {
+        border-radius: 6px;
+    }
+    
+    .btn-warning {
+        color: #fff;
+        background-color: #ffc107;
+        border-color: #ffc107;
+    }
+    
+    .btn-warning:hover {
+        color: #fff;
+        background-color: #e0a800;
+        border-color: #d39e00;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #ffc107;
+        box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+    }
+</style>
+{% endblock %}

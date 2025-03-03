@@ -1,0 +1,115 @@
+{{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+    <div class="row g-3">
+        <!-- Nom de l'échange -->
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.nameEchange) }}
+                {{ form_widget(form.nameEchange, {
+                    'attr': {'class': 'form-control', 'required': 'required', 'minlength': '3', 'maxlength': '255'}
+                }) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.nameEchange) }}
+                </div>
+                <small class="form-text text-muted">
+                    Le nom doit contenir entre 3 et 255 caractères.
+                </small>
+            </div>
+        </div>
+
+        <!-- Objet à échanger -->
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.objet) }}
+                {{ form_widget(form.objet, {
+                    'attr': {
+                        'class': 'form-select transparent-select',
+                        'disabled': 'disabled',
+                        'style': 'opacity: 0.5; pointer-events: none;'
+                    }
+                }) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.objet) }}
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Message personnalisé -->
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.message) }}
+                {{ form_widget(form.message, {
+                    'attr': {'class': 'form-control', 'rows': '4', 'required': 'required', 'minlength': '10'}
+                }) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.message) }}
+                </div>
+                <small class="form-text text-muted">
+                    Un message personnalisé augmente vos chances d'acceptation (minimum 10 caractères).
+                </small>
+            </div>
+        </div>
+
+        <!-- Date de l'échange -->
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.dateEchange) }}
+                {{ form_widget(form.dateEchange, {
+                    'attr': {
+                        'class': 'form-control',
+                        'required': 'required'
+                    }
+                }) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.dateEchange) }}
+                </div>
+                <small class="form-text text-muted">
+                    Date proposée pour l'échange
+                </small>
+            </div>
+        </div>
+
+        <!-- Statut -->
+        <div class="col-md-12">
+            <div class="form-group">
+                {{ form_label(form.statut) }}
+                {{ form_widget(form.statut, {
+                    'attr': {
+                        'class': 'form-select transparent-select',
+                        'disabled': 'disabled',
+                        'style': 'opacity: 0.5; pointer-events: none;'
+                    }
+                }) }}
+                <div class="invalid-feedback">
+                    {{ form_errors(form.statut) }}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bouton de soumission -->
+        <div class="col-12 mt-4">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-handshake me-2"></i>
+                {{ button_label|default('Proposer l\'échange') }}
+            </button>
+        </div>
+    </div>
+{{ form_end(form) }}
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    'use strict'
+    
+    const forms = document.querySelectorAll('.needs-validation')
+
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+});
+</script>

@@ -1,0 +1,688 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Objets{% endblock %}
+
+{% block body %}
+<section class="service_section layout_padding">
+    <div class="container-fluid px-4">
+        <!-- Search Bar -->
+        <div class="search-container mb-4">
+            <form class="search-form" action="{{ path('app_objet_index') }}" method="GET">
+                <div class="search-wrapper">
+                    <input type="text" 
+                           name="search" 
+                           class="search-input" 
+                           placeholder="Rechercher un objet..."
+                           value="{{ app.request.query.get('search') }}"
+                           autocomplete="off">
+                    <button class="search-button" type="submit">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+                {% if app.request.query.get('search') %}
+                    <div class="search-info">
+                        Résultats pour: "{{ app.request.query.get('search') }}"
+                        <a href="{{ path('app_objet_index') }}" class="clear-search">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </form>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Categories -->
+            <div class="col-lg-2 sidebar-wrapper" style="position: sticky; top: 0; ">
+                <div class="card border-0 filter-sidebar">
+                    <div class="card-body p-3">
+                        <h6 class="filter-title">
+                            <i class="fa fa-filter me-2"></i>Filter
+                        </h6>
+                        
+                        <!-- Date Sort Options -->
+                        <div class="filter-section mb-4">
+                            <h6 class="filter-subtitle">Trier par date</h6>
+                            <div class="filter-options">
+                                <a href="{{ path('app_objet_index', {'sortBy': 'desc', 'search': app.request.query.get('search')}) }}" 
+                                   class="filter-link {{ app.request.query.get('sortBy') == 'desc' ? 'active' : '' }}">
+                                    <div class="icon-wrapper">
+                                        <i class="fa fa-clock"></i>
+                                    </div>
+                                    <span>Plus récents</span>
+                                </a>
+                                <a href="{{ path('app_objet_index', {'sortBy': 'asc', 'search': app.request.query.get('search')}) }}" 
+                                   class="filter-link {{ app.request.query.get('sortBy') == 'asc' ? 'active' : '' }}">
+                                    <div class="icon-wrapper">
+                                        <i class="fa fa-history"></i>
+                                    </div>
+                                    <span>Plus anciens</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Categories -->
+                        <h6 class="filter-subtitle">Catégories</h6>
+                        <div class="filter-options">
+                            <a href="{{ path('app_objet_index', {'search': app.request.query.get('search')}) }}" 
+                               class="filter-link {% if not selectedCategory %}active{% endif %}">
+                                <div class="icon-wrapper">
+                                    <i class="fa fa-th-large"></i>
+                                </div>
+                                <span>Tous les objets</span>
+                            </a>
+                            
+                            <a href="{{ path('app_objet_index', {'category': 'electronique', 'search': app.request.query.get('search')}) }}" 
+                               class="filter-link {% if selectedCategory == 'electronique' %}active{% endif %}">
+                                <div class="icon-wrapper">
+                                    <i class="fa fa-laptop"></i>
+                                </div>
+                                <span>Électronique</span>
+                            </a>
+                            
+                            <a href="{{ path('app_objet_index', {'category': 'vetements', 'search': app.request.query.get('search')}) }}" 
+                               class="filter-link {% if selectedCategory == 'vetements' %}active{% endif %}">
+                                <div class="icon-wrapper">
+                                    <i class="fa fa-tshirt"></i>
+                                </div>
+                                <span>Vêtements</span>
+                            </a>
+                            
+                            <a href="{{ path('app_objet_index', {'category': 'livres', 'search': app.request.query.get('search')}) }}" 
+                               class="filter-link {% if selectedCategory == 'livres' %}active{% endif %}">
+                                <div class="icon-wrapper">
+                                    <i class="fa fa-book"></i>
+                                </div>
+                                <span>Livres</span>
+                            </a>
+                            
+                            <a href="{{ path('app_objet_index', {'category': 'sports_loisirs', 'search': app.request.query.get('search')}) }}" 
+                               class="filter-link {% if selectedCategory == 'sports_loisirs' %}active{% endif %}">
+                                <div class="icon-wrapper">
+                                    <i class="fa fa-futbol"></i>
+                                </div>
+                                <span>Sports & Loisirs</span>
+                            </a>
+                            
+                            <a href="{{ path('app_objet_index', {'category': 'maison_jardin', 'search': app.request.query.get('search')}) }}" 
+                               class="filter-link {% if selectedCategory == 'maison_jardin' %}active{% endif %}">
+                                <div class="icon-wrapper">
+                                    <i class="fa fa-home"></i>
+                                </div>
+                                <span>Maison & Jardin</span>
+                            </a>
+                            
+                            <a href="{{ path('app_objet_index', {'category': 'autres', 'search': app.request.query.get('search')}) }}" 
+                               class="filter-link {% if selectedCategory == 'autres' %}active{% endif %}">
+                                <div class="icon-wrapper">
+                                    <i class="fa fa-box"></i>
+                                </div>
+                                <span>Autres</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-lg-10">
+                <div class="section-header text-center mb-5">
+                    <h6 class="text-primary text-uppercase mb-3">Gestion des Objets</h6>
+                    <h2 class="section-title mb-3">Catalogue des Objets</h2>
+                    <div class="divider mx-auto mb-4"></div>
+                    <div class="text-center mb-4">
+                        <a href="{{ path('app_objet_new') }}" class="btn btn-primary btn-lg">
+                            <i class="fa fa-plus-circle me-2"></i> Ajouter un Objet
+                        </a>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    {% for objet in pagination %}
+                        <div class="col-md-4 col-lg-3">
+                            <div class="card h-100 shadow-sm object-card">
+                                {% if objet.image %}
+                                    <img src="{{ asset('uploads/images/' ~ objet.image) }}" alt="{{ objet.nom }}" class="card-img-top object-img">
+                                {% else %}
+                                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center object-img">
+                                        <i class="fa fa-image fa-2x text-muted"></i>
+                                    </div>
+                                {% endif %}
+                                <div class="card-body p-3">
+                                    <h6 class="card-title mb-2">{{ objet.nom }}</h6>
+                                    <p class="card-text small text-muted mb-2">{{ objet.description|length > 60 ? objet.description|slice(0, 60) ~ '...' : objet.description }}</p>
+                                    <div class="meta-info small mb-2">
+                                        <span class="text-muted">
+                                            <i class="fa fa-calendar-alt me-1"></i>
+                                            {{ objet.dateAjout ? objet.dateAjout|date('d/m/Y') : '' }}
+                                        </span>
+                                    </div>
+                                    <div class="status-badge mb-2">
+                                        <span class="badge {% if objet.etat == 'disponible' %}bg-success-soft{% else %}bg-secondary-soft{% endif %} small">
+                                            <i class="fa {% if objet.etat == 'disponible' %}fa-check-circle{% else %}fa-clock{% endif %} me-1"></i>
+                                            {{ objet.etat|capitalize }}
+                                        </span>
+                                    </div>
+                                    <div class="action-buttons">
+                                        {% if objet.etat == 'disponible' %}
+                                            <a href="{{ path('app_echange_new', {'id': objet.idObjet}) }}" 
+                                               class="btn btn-success btn-sm w-100 mb-2">
+                                                <i class="fa fa-exchange-alt me-1"></i>
+                                                Échanger
+                                            </a>
+                                        {% else %}
+                                            <button class="btn btn-secondary btn-sm w-100 mb-2" disabled>
+                                                <i class="fa fa-ban me-1"></i>
+                                                Non disponible
+                                            </button>
+                                        {% endif %}
+                                        <div class="d-flex gap-1">
+                                            <a href="{{ path('app_objet_show', {'id': objet.idObjet}) }}" 
+                                               class="btn btn-primary btn-sm flex-grow-1">
+                                                <i class="fa fa-eye"></i>
+                                            </a>
+                                            {% if app.user == objet.idUtilisateur %}
+                                                <a href="{{ path('app_objet_edit', {'id': objet.idObjet}) }}" 
+                                                   class="btn btn-outline-primary btn-sm">
+                                                    <i class="fa fa-edit"></i>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="col-12 text-center">
+                            <div class="empty-state p-4">
+                                <i class="fa fa-box-open fa-3x mb-3 empty-state-icon"></i>
+                                <h5 class="empty-state-title">Aucun objet trouvé</h5>
+                                <p class="text-muted small">Il n'y a pas d'objets disponibles dans cette catégorie pour le moment.</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+
+                <div class="pagination-wrapper text-center">
+                    <div class="pagination-info mb-3">
+                        <span class="text-muted">
+                            Page {{ pagination.currentPageNumber }} sur {{ pagination.pageCount }} 
+                            ({{ pagination.totalItemCount }} objets au total)
+                        </span>
+                    </div>
+                    <div class="navigation">
+                        {{ knp_pagination_render(pagination, 'pagination.html.twig', {}, {
+                            'align': 'center',
+                            'size': 'small',
+                            'rounded': true
+                        }) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Modern Search Bar Styling */
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 15px;
+        }
+
+        .search-form {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 25px;
+            padding: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .search-wrapper:focus-within {
+            box-shadow: 0 3px 15px rgba(0,123,255,0.2);
+            border-color: #007bff;
+        }
+
+        .search-input {
+            flex: 1;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            background: transparent;
+            outline: none;
+        }
+
+        .search-button {
+            background: #007bff;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .search-button:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+        }
+
+        .search-info {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .clear-search {
+            margin-left: 10px;
+            color: #dc3545;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .clear-search:hover {
+            background: #dc3545;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* General Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa; /* Set your preferred background color */
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+
+        .divider {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            border-radius: 2px;
+        }
+
+        /* Card Styling */
+        .card {
+            border: none;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            background: white;
+            overflow: hidden;
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .card-img-top {
+            transform: scale(1.1);
+        }
+
+        .shadow-hover {
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .shadow-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .bg-success-soft {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+        }
+
+        .bg-secondary-soft {
+            background-color: rgba(149, 165, 166, 0.1);
+            color: #95a5a6;
+        }
+
+        .badge {
+            padding: 0.75em 1.2em;
+            font-weight: 500;
+            border-radius: 30px;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Button Styling */
+        .btn {
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            border: none;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #2980b9, #27ae60);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-outline-primary {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .btn-outline-primary:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-outline-warning {
+            border-color: #f39c12;
+            color: #f39c12;
+        }
+
+        .btn-outline-warning:hover {
+            background: #f39c12;
+            color: white;
+        }
+
+        /* Empty State Styling */
+        .empty-state {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-state-icon {
+            color: #95a5a6;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .empty-state-title {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Filter Sidebar Styling */
+        .filter-sidebar {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .filter-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .filter-subtitle {
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            margin: 15px 0 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .filter-section {
+            margin-bottom: 20px;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-link {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+            text-decoration: none;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .filter-link .icon-wrapper {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .filter-link i {
+            font-size: 16px;
+            color: #666;
+            transition: color 0.3s;
+        }
+        
+        /* Icon Colors */
+        .filter-link:nth-child(2) i { color: #007bff; } /* Electronique */
+        .filter-link:nth-child(3) i { color: #ff6f61; } /* Vêtements */
+        .filter-link:nth-child(4) i { color: #f4b400; } /* Livres */
+        .filter-link:nth-child(5) i { color: #28a745; } /* Sports & Loisirs */
+        .filter-link:nth-child(6) i { color: #6f42c1; } /* Maison & Jardin */
+        .filter-link:nth-child(7) i { color: #e83e8c; } /* Autres */
+        
+        /* Hover and Active States */
+        .filter-link:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .filter-link.active {
+            background: #007bff;
+            color: white;
+        }
+        
+        .filter-link.active i {
+            color: white !important;
+        }
+            
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .custom-pagination {
+            margin: 2rem 0;
+        }
+        .custom-pagination .btn-group {
+            gap: 0.5rem;
+        }
+        .custom-pagination .btn {
+            border-radius: 4px !important;
+        }
+
+        .pagination-wrapper {
+            margin: 2rem 0;
+        }
+        .pagination-info {
+            font-size: 0.9rem;
+        }
+        .items-per-page .btn-group {
+            gap: 0.5rem;
+        }
+        .items-per-page .btn {
+            border-radius: 4px !important;
+        }
+
+        /* Category Sidebar Styling */
+        .category-btn {
+            text-align: left;
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .category-btn:hover {
+            transform: translateX(5px);
+        }
+
+        .category-btn i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            border: none;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn-outline-primary {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .btn-outline-primary:hover {
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            border-color: transparent;
+            color: white;
+        }
+
+        /* Empty State Styling */
+        .empty-state {
+            background: white;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            color: #95a5a6;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991.98px) {
+            .category-btn {
+                text-align: center;
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        /* Object Card Styling */
+        .object-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: none;
+            background: #fff;
+        }
+
+        .object-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+        }
+
+        .object-img {
+            height: 160px;
+            object-fit: cover;
+            background: #f8f9fa;
+        }
+
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-text {
+            font-size: 0.85rem;
+            color: #6c757d;
+            line-height: 1.4;
+        }
+
+        .meta-info {
+            font-size: 0.8rem;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.35em 0.65em;
+        }
+
+        .bg-success-soft {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .bg-secondary-soft {
+            background-color: #e2e3e5;
+            color: #41464b;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .empty-state {
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .empty-state-icon {
+            color: #adb5bd;
+        }
+    </style>
+</section>
+{% endblock %}

@@ -1,0 +1,121 @@
+{% extends 'back_office/base.html.twig' %}
+
+{% block title %}Nouvelle proposition d'échange{% endblock %}
+
+{% block body %}
+    <!-- Main content -->
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Nouvelle proposition d'échange</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a href="{{ path('back_office_dashboard') }}">Tableau de bord</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_echange_index') }}">Échanges</a></li>
+                    <li class="breadcrumb-item active">Nouveau</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Proposer un échange pour l'objet "{{ objet.nom }}"</h3>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.nameEchange, 'Titre de l\'échange') }}
+                                    {{ form_widget(form.nameEchange, {'attr': {'class': 'form-control', 'placeholder': 'Titre de votre proposition'}}) }}
+                                    {{ form_errors(form.nameEchange) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {{ form_label(form.dateEchange, 'Date de l\'échange') }}
+                                    {{ form_widget(form.dateEchange, {'attr': {'class': 'form-control'}}) }}
+                                    {{ form_errors(form.dateEchange) }}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    {{ form_label(form.description, 'Description de votre proposition') }}
+                                    {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': '5', 'placeholder': 'Décrivez votre proposition d\'échange en détail...'}}) }}
+                                    {{ form_errors(form.description) }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card bg-light mt-3 mb-3">
+                            <div class="card-header">
+                                <h3 class="card-title">
+                                    <i class="fas fa-info-circle mr-2"></i>
+                                    Objet concerné
+                                </h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        {% if objet.image %}
+                                            <img src="{{ asset('uploads/images/' ~ objet.image) }}" class="img-fluid" alt="{{ objet.nom }}">
+                                        {% else %}
+                                            <img src="{{ asset('images/default-object.jpg') }}" class="img-fluid" alt="Image par défaut">
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-9">
+                                        <h4>{{ objet.nom }}</h4>
+                                        <p class="text-muted">{{ objet.description }}</p>
+                                        <p><strong>Catégorie:</strong> {{ objet.categorie.nom }}</p>
+                                        <p><strong>État:</strong> {{ objet.etat }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane mr-2"></i>
+                                Envoyer la proposition d'échange
+                            </button>
+                            <a href="{{ path('app_echange_index') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left mr-2"></i>
+                                Retour à la liste
+                            </a>
+                        </div>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(function() {
+            // Initialize date picker if needed
+            $('#echange_dateEchange').datetimepicker({
+                format: 'YYYY-MM-DD HH:mm:ss',
+                icons: {
+                    time: 'fas fa-clock',
+                    date: 'fas fa-calendar',
+                    up: 'fas fa-arrow-up',
+                    down: 'fas fa-arrow-down',
+                    previous: 'fas fa-chevron-left',
+                    next: 'fas fa-chevron-right',
+                    today: 'fas fa-calendar-check',
+                    clear: 'fas fa-trash',
+                    close: 'fas fa-times'
+                }
+            });
+        });
+    </script>
+{% endblock %}

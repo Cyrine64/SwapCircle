@@ -46,11 +46,7 @@ final class FrontOfficeController extends AbstractController
     public function contact(): Response
     {
         return $this->render('front_office/contact.html.twig');
-    }
-    // register route 
-    
-    
-    
+    }   
     
     
 }

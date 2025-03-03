@@ -1,0 +1,139 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Statistiques des Objets{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .chart-title {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid py-4">
+        <h1 class="h3 mb-4">Statistiques des Objets</h1>
+
+        <div class="row">
+            <!-- Graphique par catégorie -->
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h2 class="chart-title">Distribution par Catégorie</h2>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Graphique par statut -->
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h2 class="chart-title">Distribution par Statut</h2>
+                    <canvas id="statusChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Graphique par mois -->
+            <div class="col-12">
+                <div class="chart-container">
+                    <h2 class="chart-title">Évolution mensuelle des ajouts d'objets</h2>
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Données pour le graphique par catégorie
+            const categoryData = {{ stats.categoryStats|json_encode|raw }};
+            new Chart(document.getElementById('categoryChart'), {
+                type: 'pie',
+                data: {
+                    labels: categoryData.map(item => item.label),
+                    datasets: [{
+                        data: categoryData.map(item => item.count),
+                        backgroundColor: [
+                            '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+                            '#FF9F40', '#FF6384', '#36A2EB', '#FFCE56'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+
+            // Données pour le graphique par statut
+            const statusData = {{ stats.statusStats|json_encode|raw }};
+            new Chart(document.getElementById('statusChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: statusData.map(item => item.label),
+                    datasets: [{
+                        data: statusData.map(item => item.count),
+                        backgroundColor: ['#36A2EB', '#FF6384', '#FFCE56']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+
+            // Données pour le graphique mensuel
+            const monthlyData = {{ stats.monthlyStats|json_encode|raw }};
+            new Chart(document.getElementById('monthlyChart'), {
+                type: 'line',
+                data: {
+                    labels: monthlyData.map(item => item.month),
+                    datasets: [{
+                        label: 'Nombre d\'objets ajoutés',
+                        data: monthlyData.map(item => item.count),
+                        borderColor: '#36A2EB',
+                        tension: 0.1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+{% endblock %}

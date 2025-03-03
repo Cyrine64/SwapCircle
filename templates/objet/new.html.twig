@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvel Objet{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg animate__animated animate__fadeIn">
+                <div class="card-body p-4">
+                    <h1 class="h3 mb-4 text-center animate__animated animate__slideInDown">Ajouter un nouvel objet</h1>
+
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger animate__animated animate__shakeX">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success animate__animated animate__bounceIn">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    <div class="form-container animate__animated animate__fadeInUp">
+                        {{ include('objet/_form.html.twig', {'button_label': 'Ajouter'}) }}
+                    </div>
+
+                    <div class="text-center mt-4 animate__animated animate__fadeInUp" style="animation-delay: 0.2s;">
+                        <a href="{{ path('app_objet_index') }}" class="btn btn-link custom-link">
+                            <i class="fas fa-arrow-left me-2"></i>Retour à la liste
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+        background: linear-gradient(145deg, #ffffff, #f5f5f5);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-body {
+        padding: 2.5rem;
+    }
+
+    h1 {
+        color: #2c3e50;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    h1::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 3px;
+        background: linear-gradient(90deg, #3498db, #2ecc71);
+        border-radius: 3px;
+    }
+
+    .form-container {
+        padding: 1rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.7);
+    }
+
+    .btn-link {
+        color: #3498db;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-link:hover {
+        color: #2ecc71;
+        text-decoration: none;
+    }
+
+    .alert {
+        border: none;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert-success {
+        background: linear-gradient(45deg, #2ecc71, #27ae60);
+        color: white;
+    }
+
+    .alert-danger {
+        background: linear-gradient(45deg, #e74c3c, #c0392b);
+        color: white;
+    }
+</style>
+{% endblock %}

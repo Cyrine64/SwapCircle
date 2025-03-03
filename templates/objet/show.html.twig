@@ -1,0 +1,161 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Objet{% endblock %}
+
+{% block body %}
+<section class="service_section layout_padding bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow animated-card">
+                    <div class="position-relative">
+                        <img src="{{ asset('uploads/images/' ~ objet.image) }}" alt="{{ objet.nom }}" class="img-fluid rounded-top">
+                        <div class="status-badge-overlay">
+                            <span class="badge {% if objet.etat == 'disponible' %}bg-success{% else %}bg-secondary{% endif %} px-3 py-2">
+                                <i class="fas {% if objet.etat == 'disponible' %}fa-check-circle{% else %}fa-clock{% endif %} me-1"></i>
+                                {{ objet.etat|capitalize }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <h2 class="card-title mb-3">{{ objet.nom }}</h2>
+                        
+                        <div class="meta-info mb-3">
+                            <span class="text-muted">
+                                <i class="far fa-calendar-alt me-2"></i>
+                                Ajouté le {{ objet.dateAjout ? objet.dateAjout|date('d/m/Y à H:i') : '' }}
+                            </span>
+                        </div>
+
+                        <div class="description-box mb-4">
+                            <h5 class="mb-2">Description</h5>
+                            <p class="card-text">{{ objet.description }}</p>
+                        </div>
+
+                        <div class="action-buttons">
+                            {% if objet.etat == 'disponible' %}
+                                <a href="{{ path('app_echange_new', {'id': objet.idObjet}) }}" class="btn btn-success btn-lg w-100 mb-3">
+                                    <i class="fas fa-exchange-alt me-2"></i>
+                                    Proposer un échange
+                                </a>
+                            {% else %}
+                                <button class="btn btn-secondary btn-lg w-100 mb-3" disabled>
+                                    <i class="fas fa-ban me-2"></i>
+                                    Non disponible pour l'échange
+                                </button>
+                            {% endif %}
+                            
+                            <div class="d-flex justify-content-between mt-3">
+                                {% if app.user == objet.idUtilisateur %}
+                                    <div class="btn-group w-100">
+                                        <a href="{{ path('app_objet_edit', {'id': objet.idObjet}) }}" class="btn btn-warning flex-grow-1">
+                                            <i class="fas fa-edit me-2"></i> Modifier
+                                        </a>
+                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <a href="{{ path('app_objet_index') }}" class="btn btn-outline-secondary w-100 mt-3">
+                                <i class="fas fa-arrow-left me-2"></i> Retour à la liste
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if app.user == objet.idUtilisateur %}
+<!-- Modal de confirmation de suppression -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirmer la suppression</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Êtes-vous sûr de vouloir supprimer cet objet ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <form method="post" action="{{ path('app_objet_delete', {'id': objet.idObjet}) }}" style="display: inline-block;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ objet.idObjet) }}">
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% block stylesheets %}
+<style>
+    /* General Styling */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    /* Card Styling */
+    .card {
+        border: none;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        background: white;
+        overflow: hidden;
+    }
+
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.1);
+    }
+
+    .shadow-hover {
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .shadow-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .bg-success-soft {
+        background-color: rgba(46, 204, 113, 0.1);
+        color: #2ecc71;
+    }
+
+    .bg-secondary-soft {
+        background-color: rgba(149, 165, 166, 0.1);
+        color: #95a5a6;
+    }
+
+    .badge {
+        padding: 0.75em 1.2em;
+        font-weight: 500;
+        border-radius: 30px;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+    }
+
+    .meta-info {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock %}
+
+{% endblock %}

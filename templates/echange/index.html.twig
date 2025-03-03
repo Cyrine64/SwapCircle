@@ -1,0 +1,307 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Échanges{% endblock %}
+
+{% block body %}
+<section class="exchange_section layout_padding">
+    <div class="container-fluid px-4">
+        <!-- Header Section -->
+        <div class="section-header text-center mb-5">
+            <h6 class="text-primary text-uppercase mb-3">Plateforme d'Échange</h6>
+            <h2 class="section-title mb-3">Catalogue des Échanges</h2>
+            <div class="divider mx-auto mb-4"></div>
+            <div class="text-center mb-4">
+                <a href="{{ path('app_objet_index') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus-circle me-2"></i> Proposer un nouvel échange
+                </a>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <!-- Main Content -->
+            <div class="col-lg-10">
+                {% if echanges is empty %}
+                    <div class="empty-state p-5 text-center fade-in">
+                        <i class="fas fa-exchange-alt fa-4x empty-state-icon mb-4"></i>
+                        <h4 class="empty-state-title mb-3">Aucun échange n'a encore été proposé</h4>
+                        <p class="text-muted mb-4">Pour proposer un échange, consultez la liste des objets disponibles.</p>
+                        <a href="{{ path('app_objet_index') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-search me-2"></i>
+                            Voir les objets disponibles
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="row g-4">
+                        {% for echange in echanges %}
+                            <div class="col-md-6">
+                                <div class="card h-100 exchange-card shadow-hover">
+                                    <div class="card-header bg-white d-flex align-items-center p-3">
+                                        <div class="exchange-user-avatar me-3">
+                                            <i class="fas fa-user-circle fa-2x text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="card-user mb-0">{{ echange.utilisateur.pseudo ?? 'Utilisateur' }}</h6>
+                                            <small class="text-muted">{{ echange.getDateEchange()|date('d/m/Y à H:i') }}</small>
+                                        </div>
+                                        <div class="ms-auto">
+                                            {% set status_labels = {
+                                                'en_attente': 'En attente',
+                                                'accepte': 'Accepté',
+                                                'refuse': 'Refusé'
+                                            } %}
+                                            
+                                            {% set status_classes = {
+                                                'en_attente': 'bg-warning-soft text-warning',
+                                                'accepte': 'bg-success-soft text-success',
+                                                'refuse': 'bg-danger-soft text-danger'
+                                            } %}
+                                            
+                                            {% set current_status = echange.getStatut() %}
+                                            <span class="badge rounded-pill {{ status_classes[current_status] }}">
+                                                <i class="fas {% if current_status == 'en_attente' %}fa-clock{% elseif current_status == 'accepte' %}fa-check-circle{% else %}fa-times-circle{% endif %} me-1"></i>
+                                                {{ status_labels[current_status] }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row g-0">
+                                        <div class="col-md-4">
+                                            {% if echange.objet.image %}
+                                                <img src="{{ asset('uploads/images/' ~ echange.objet.image) }}" 
+                                                     alt="{{ echange.objet.nom }}" 
+                                                     class="img-fluid exchange-img">
+                                            {% else %}
+                                                <div class="exchange-img-placeholder d-flex align-items-center justify-content-center bg-light">
+                                                    <i class="fas fa-image fa-2x text-muted"></i>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ echange.nameEchange }}</h5>
+                                                <h6 class="card-subtitle mb-2 text-primary">
+                                                    <i class="fas fa-box me-2"></i>{{ echange.objet.nom }}
+                                                </h6>
+                                                <p class="card-text">
+                                                    {{ echange.objet.description|length > 100 ? echange.objet.description|slice(0, 100) ~ '...' : echange.objet.description }}
+                                                </p>
+                                                <div class="d-flex justify-content-end mt-3">
+                                                    <a href="{{ path('app_echange_show', {'id_echange': echange.idEchange}) }}" 
+                                                       class="btn btn-outline-primary me-2">
+                                                        <i class="fas fa-eye me-1"></i> Détails
+                                                    </a>
+                                                    {% if app.user == echange.utilisateur %}
+                                                        <a href="{{ path('app_echange_edit', {'id_echange': echange.idEchange}) }}" 
+                                                           class="btn btn-outline-warning">
+                                                            <i class="fas fa-edit me-1"></i> Modifier
+                                                        </a>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if echanges.haveToPaginate is defined %}
+                    <div class="pagination-wrapper text-center mt-5">
+                        <div class="pagination-info mb-3">
+                            <span class="text-muted">
+                                Page {{ echanges.currentPageNumber }} sur {{ echanges.pageCount }} 
+                                ({{ echanges.totalItemCount }} échanges au total)
+                            </span>
+                        </div>
+                        <div class="navigation">
+                            {{ knp_pagination_render(echanges, 'pagination.html.twig', {}, {
+                                'align': 'center',
+                                'size': 'small',
+                                'rounded': true
+                            }) }}
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Section Styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .divider {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            border-radius: 2px;
+        }
+
+        /* Card Styling */
+        .exchange-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .shadow-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .exchange-img, .exchange-img-placeholder {
+            height: 100%;
+            min-height: 200px;
+            object-fit: cover;
+            border-bottom-left-radius: 15px;
+        }
+
+        .exchange-img-placeholder {
+            background-color: #f8f9fa;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .card-subtitle {
+            font-size: 0.95rem;
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* Badge Styling */
+        .badge {
+            padding: 0.6em 1em;
+            font-weight: 500;
+        }
+
+        .bg-warning-soft {
+            background-color: rgba(255, 193, 7, 0.2);
+        }
+
+        .bg-success-soft {
+            background-color: rgba(40, 167, 69, 0.2);
+        }
+
+        .bg-danger-soft {
+            background-color: rgba(220, 53, 69, 0.2);
+        }
+
+        .text-warning {
+            color: #ffc107 !important;
+        }
+
+        .text-success {
+            color: #28a745 !important;
+        }
+
+        .text-danger {
+            color: #dc3545 !important;
+        }
+
+        /* Button Styling */
+        .btn {
+            border-radius: 8px;
+            padding: 0.6rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            border: none;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #2980b9, #27ae60);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-outline-primary {
+            border-color: #3498db;
+            color: #3498db;
+        }
+
+        .btn-outline-primary:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-outline-warning {
+            border-color: #f39c12;
+            color: #f39c12;
+        }
+
+        .btn-outline-warning:hover {
+            background: #f39c12;
+            color: white;
+        }
+
+        /* Empty State Styling */
+        .empty-state {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-state-icon {
+            color: #95a5a6;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .empty-state-title {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 767.98px) {
+            .exchange-img, .exchange-img-placeholder {
+                height: 200px;
+                border-bottom-left-radius: 0;
+            }
+        }
+    </style>
+</section>
+{% endblock %}

@@ -1,0 +1,292 @@
+{% extends 'back-base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Dropdown Styles */
+        .dropdown-menu {
+            min-width: 160px; /* Adjust width as needed */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem; /* Adjust font size */
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .dropdown-item:hover {
+            background-color: #f8f9fa; /* Lighter background on hover */
+            transform: translateX(3px); /* Slight movement on hover */
+        }
+        .dropdown-item.active {
+            background-color: #e9ecef;
+            color: #212529;
+        }
+        .dropdown-item.active i {
+            color: #0d6efd;
+        }
+        .app-btn-secondary {
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+            color: #212529;
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+        .app-btn-secondary:hover {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+            color: #0d6efd;
+        }
+        .app-btn-secondary.show {
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+            color: #0d6efd;
+        }
+        
+                    /* Smaller Dropdown */
+            .small-dropdown-btn {
+                padding: 5px 12px;
+                font-size: 0.875rem;
+            }
+
+            .small-dropdown {
+                min-width: 150px;
+                transform: scale(0.95);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.2s ease-in-out;
+            }
+
+            /* Open state */
+            .small-dropdown.show {
+                transform: scale(1);
+                opacity: 1;
+                visibility: visible;
+            }
+    </style>
+{% endblock %}
+
+{% block title %}Gestion des Objets{% endblock %}
+
+{% block body %}
+<div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xl">
+        <div class="row g-3 mb-4 align-items-center justify-content-between">
+            <div class="col-auto">
+                <h1 class="app-page-title mb-0">Gestion des Objets</h1>
+            </div>
+            <div class="col-auto">
+                <div class="page-utilities">
+                    <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                        <div class="col-auto">
+                            <a class="btn app-btn-secondary" href="{{ path('app_back_office_objet_stats') }}">
+                                <i class="fas fa-chart-bar me-2"></i>Statistiques
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-auto d-flex align-items-center gap-2">
+                <!-- Search form -->
+                <form class="d-flex me-3" action="{{ path('app_back_office_objet_index') }}" method="get">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Rechercher..." value="{{ app.request.query.get('search') }}">
+                        <button class="btn app-btn-secondary" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </form>
+                <!-- Sort Dropdown -->
+                <div class="dropdown me-3">
+                    <button class="btn app-btn-secondary dropdown-toggle small-dropdown-btn" type="button" id="sortDropdownBtn">
+                        <i class="fas fa-sort-amount-down me-2"></i>
+                        <span id="sortText">
+                            {% if app.request.query.get('sortBy') == 'asc' %}
+                                Plus anciens
+                            {% else %}
+                                Plus récents
+                            {% endif %}
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm small-dropdown" id="sortDropdownMenu">
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center {% if app.request.query.get('sortBy') == 'desc' or app.request.query.get('sortBy') is null %}active{% endif %}" 
+                               href="{{ path('app_back_office_objet_index', {'sortBy': 'desc', 'search': app.request.query.get('search'), 'page': app.request.query.get('page', 1)}) }}">
+                                <i class="fas fa-clock me-2"></i>
+                                <span>Plus récents</span>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item d-flex align-items-center {% if app.request.query.get('sortBy') == 'asc' %}active{% endif %}" 
+                               href="{{ path('app_back_office_objet_index', {'sortBy': 'asc', 'search': app.request.query.get('search'), 'page': app.request.query.get('page', 1)}) }}">
+                                <i class="fas fa-history me-2"></i>
+                                <span>Plus anciens</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="{{ path('app_back_office_objet_new') }}" class="btn app-btn-primary">
+                    <i class="fas fa-plus me-2"></i>Ajouter un objet
+                </a>
+            </div>
+        </div>
+        
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="app-card app-card-orders-table shadow-sm mb-5">
+                    <div class="app-card-header p-3">
+                        <div class="row justify-content-between align-items-center">
+                            <div class="col-auto">
+                                <h4 class="app-card-title">Liste des Objets</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="app-card-body p-3">
+                        <div class="table-responsive">
+                            <table class="table app-table-hover mb-0 text-left">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Image</th>
+                                        <th>Nom</th>
+                                        <th>Catégorie</th>
+                                        <th>État</th>
+                                        <th>Date d'ajout</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for objet in pagination %}
+                                    <tr>
+                                        <td>{{ objet.idObjet }}</td>
+                                        <td>
+                                            {% if objet.image %}
+                                                <img src="{{ asset('uploads/images/' ~ objet.image) }}" alt="{{ objet.nom }}" style="width: 50px; height: 50px; object-fit: cover;">
+                                            {% else %}
+                                                <span class="text-muted">Pas d'image</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ objet.nom }}</td>
+                                        <td>{{ objet.categorie }}</td>
+                                        <td>{{ objet.etat }}</td>
+                                        <td>{{ objet.dateAjout|date('d/m/Y H:i') }}</td>
+                                        <td>
+                                            <a href="{{ path('app_back_office_objet_show', {'id': objet.idObjet}) }}" class="btn btn-info btn-sm">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ path('app_back_office_objet_edit', {'id': objet.idObjet}) }}" class="btn btn-primary btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form method="post" action="{{ path('app_back_office_objet_delete', {'id': objet.idObjet}) }}" style="display: inline-block" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet objet ?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ objet.idObjet) }}">
+                                                <button class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="mt-4" style="text-align: center;">
+    {{ knp_pagination_render(pagination) }}
+</div>
+
+<style>
+    /* Modern Search Bar Styling */
+    .search-form {
+        position: relative;
+        width: 300px;
+    }
+
+    .search-wrapper {
+        display: flex;
+        align-items: center;
+        background: #fff;
+        border: 1px solid #e7e9ed;
+        border-radius: 0.5rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .search-wrapper:focus-within {
+        border-color: #15a362;
+        box-shadow: 0 0 0 0.2rem rgba(21, 163, 98, 0.25);
+    }
+
+    .search-input {
+        flex: 1;
+        border: none;
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        background: transparent;
+        color: #5d6778;
+        outline: none;
+    }
+
+    .search-input::placeholder {
+        color: #9fa7b5;
+    }
+
+    .search-button {
+        background: none;
+        border: none;
+        color: #15a362;
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .search-button:hover {
+        color: #0e724a;
+    }
+
+    .clear-search {
+        position: absolute;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #dc3545;
+        text-decoration: none;
+        font-size: 0.75rem;
+        padding: 0.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+    }
+
+    .clear-search:hover {
+        color: #bd2130;
+        transform: translateY(-50%) scale(1.1);
+    }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const sortBtn = document.getElementById("sortDropdownBtn");
+    const sortMenu = document.getElementById("sortDropdownMenu");
+
+    sortBtn.addEventListener("click", function (event) {
+        event.stopPropagation(); // Prevents unwanted closing
+        sortMenu.classList.toggle("show");
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function (event) {
+        if (!sortMenu.contains(event.target) && !sortBtn.contains(event.target)) {
+            sortMenu.classList.remove("show");
+        }
+    });
+});
+</script>
+
+{% endblock %}
