@@ -15,11 +15,11 @@ class Reclamation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Column(name: 'id_reclamation')]
+    private ?int $idReclamation = null;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
-    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id", nullable: false)]
+    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
     #[ORM\Column(type: 'text')]
@@ -55,9 +55,20 @@ class Reclamation
     private ?Reponse $reponse = null;
 
     // Getters and setters
+    public function getIdReclamation(): ?int
+    {
+        return $this->idReclamation;
+    }
+
+    public function setIdReclamation(?int $idReclamation): self
+    {
+        $this->idReclamation = $idReclamation;
+        return $this;
+    }
+
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->idReclamation;
     }
 
     public function getUtilisateur(): ?Utilisateur
