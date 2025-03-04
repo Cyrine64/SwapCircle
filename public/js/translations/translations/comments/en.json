@@ -1,0 +1,3 @@
+{
+    "translations": {"en":{"comments":{"comment.add":"Add a comment","comment.submit":"Submit","comment.placeholder":"Write your comment here...","comment.success":"Comment added successfully","comment.error":"Error adding comment","comment.empty":"No comments yet","comment.count":"{count} Comments"}}}
+}

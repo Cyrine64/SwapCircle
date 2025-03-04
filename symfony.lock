@@ -26,6 +26,15 @@
             "./migrations/.gitignore"
         ]
     },
+    "friendsofsymfony/elastica-bundle": {
+        "version": "6.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "5.0",
+            "ref": "46c9cd2c1e07f0fcfd97e96f12b03b2e0845c4cd"
+        }
+    },
     "gregwar/captcha-bundle": {
         "version": "v2.3.0"
     },
@@ -303,5 +312,17 @@
     },
     "twig/extra-bundle": {
         "version": "v3.20.0"
+    },
+    "willdurand/js-translation-bundle": {
+        "version": "7.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "2.0",
+            "ref": "02b720a49f6d36b44d557e0b18e48bf09e0a8e07"
+        },
+        "files": [
+            "./config/routes/js_translation.yaml"
+        ]
     }
 }

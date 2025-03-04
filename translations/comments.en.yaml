@@ -1,0 +1,8 @@
+comment:
+    add: Add a comment
+    submit: Submit
+    placeholder: Write your comment here...
+    success: Comment added successfully
+    error: Error adding comment
+    empty: No comments yet
+    count: '{count} Comments'

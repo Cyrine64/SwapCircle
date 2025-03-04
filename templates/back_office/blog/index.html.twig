@@ -1,0 +1,100 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Liste des Articles{% endblock %}
+
+{% block body %}
+<div class="app-content pt-3 p-md-3 p-lg-4">
+    <div class="container-xl">
+        <div class="row g-3 mb-4 align-items-center justify-content-between">
+            <div class="col-auto">
+                <h1 class="app-page-title mb-0">Gestion des Articles</h1>
+            </div>
+            <div class="col-auto">
+                <div class="page-utilities">
+                    <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                        <div class="col-auto">
+                            <a href="{{ path('admin_blog_new') }}" class="btn app-btn-primary">
+                                <i class="fas fa-plus"></i> Nouvel Article
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+
+        <div class="tab-content" id="orders-table-tab-content">
+            <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+                <div class="app-card app-card-orders-table shadow-sm mb-5">
+                    <div class="app-card-body">
+                        <div class="table-responsive">
+                            <table class="table app-table-hover mb-0 text-left">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Image</th>
+                                        <th>Titre</th>
+                                        <th>Date de Publication</th>
+                                        <th>Likes</th>
+                                        <th>Dislikes</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for blog in pagination %}
+                                        <tr>
+                                            <td>{{ blog.idArticle }}</td>
+                                            <td>
+                                                {% if blog.image %}
+                                                    <img src="{{ asset('uploads/blog_images/' ~ blog.image) }}" alt="{{ blog.titre }}" style="max-width: 50px;">
+                                                {% else %}
+                                                    <span class="text-muted">Pas d'image</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ blog.titre }}</td>
+                                            <td>{{ blog.datePublication|date('d/m/Y H:i') }}</td>
+                                            <td>{{ blog.likesCount }}</td>
+                                            <td>{{ blog.dislikesCount }}</td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a href="{{ path('admin_blog_edit', {'id': blog.idArticle}) }}" class="btn btn-sm btn-warning">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form method="post" action="{{ path('admin_blog_delete', {'id': blog.idArticle}) }}" style="display: inline-block" >
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ blog.idArticle) }}">
+                                                        <button class="btn btn-sm btn-danger">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% else %}
+                                        <tr>
+                                            <td colspan="7" class="text-center">Aucun article trouvé</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12">
+                        <div class="navigation d-flex justify-content-center">
+                            {{ knp_pagination_render(pagination, '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

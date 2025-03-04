@@ -66,6 +66,12 @@ class Utilisateur
     #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: BlogLike::class)]
     private Collection $blogLikes;
 
+    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: CommentaireBlog::class)]
+    private Collection $commentairesBlog;
+
+    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Reaction::class)]
+    private Collection $reactions;
+
     // Getters and setters
     public function getIdUtilisateur(): ?int
     {

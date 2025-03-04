@@ -1,0 +1,8 @@
+comment:
+    add: Ajouter un commentaire
+    submit: Envoyer
+    placeholder: Écrivez votre commentaire ici...
+    success: Commentaire ajouté avec succès
+    error: Erreur lors de l'ajout du commentaire
+    empty: Aucun commentaire pour le moment
+    count: '{count} Commentaires'
