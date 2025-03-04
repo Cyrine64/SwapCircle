@@ -1,0 +1,36 @@
+{{ form_start(form) }}
+    <div class="form-group">
+        {{ form_label(form.titre) }}
+        {{ form_widget(form.titre) }}
+        {{ form_errors(form.titre) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.type_reclamation) }}
+        {{ form_widget(form.type_reclamation) }}
+        {{ form_errors(form.type_reclamation) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.message) }}
+        {{ form_widget(form.message) }}
+        {{ form_errors(form.message) }}
+    </div>
+
+    <div class="form-group">
+        {{ form_label(form.utilisateur) }}
+        {{ form_widget(form.utilisateur) }}
+        {{ form_errors(form.utilisateur) }}
+    </div>
+
+    <div class="form-actions">
+        <button type="submit">
+            <i class="fas fa-paper-plane"></i>
+            {{ button_label|default('Envoyer la réclamation') }}
+        </button>
+        <a href="{{ path('app_reclamation_index') }}">
+            <i class="fas fa-arrow-left"></i>
+            Retour à la liste
+        </a>
+    </div>
+{{ form_end(form) }}

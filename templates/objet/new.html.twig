@@ -35,6 +35,7 @@
             </div>
         </div>
     </div>
+<<<<<<< HEAD
 </div>
 
 <style>
@@ -111,3 +112,89 @@
     }
 </style>
 {% endblock %}
+=======
+</section>
+
+<style>
+    .animated-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .animated-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0;
+        padding: 20px;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 15px;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+    }
+
+    .btn-primary {
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(45deg, #2980b9, #27ae60);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation
+        const form = document.querySelector('form');
+        if(form) {
+            form.addEventListener('submit', function(e) {
+                const requiredFields = form.querySelectorAll('[required]');
+                requiredFields.forEach(field => {
+                    if (!field.value) {
+                        e.preventDefault();
+                        field.classList.add('is-invalid');
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+            });
+        }
+
+        // Dynamic feedback
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.classList.add('shadow-sm');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.classList.remove('shadow-sm');
+            });
+        });
+    });
+</script>
+{% endblock %}
+>>>>>>> origin/reclamation

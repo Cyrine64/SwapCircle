@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réclamation Soumise{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<section class="contact_section layout_padding">
+    <div class="container">
+        <div class="heading_container">
+            <h2>Réclamation Enregistrée</h2>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Analyse de votre réclamation</h4>
+                        
+                        <!-- Priorité -->
+                        <div class="mb-4">
+                            <h5>Priorité</h5>
+                            <div class="priority-badge badge {% if analysis.priority == 'HAUTE' %}badge-danger{% elseif analysis.priority == 'MOYENNE' %}badge-warning{% else %}badge-info{% endif %}">
+                                {{ analysis.priority }}
+                            </div>
+                        </div>
+                        
+                        <!-- Catégorie -->
+                        <div class="mb-4">
+                            <h5>Catégorie</h5>
+                            <div class="category-badge badge badge-primary">
+                                {{ analysis.category }}
+                            </div>
+                        </div>
+                        
+                        <!-- Réponse Suggérée -->
+                        <div class="mb-4">
+                            <h5>Notre Engagement</h5>
+                            <p class="suggested-response">{{ analysis.suggested_response }}</p>
+                        </div>
+                        
+                        <!-- Météo -->
+                        {% if weather.temperature is not null %}
+                        <div class="weather-info">
+                            <h5>Météo actuelle à Tunis</h5>
+                            <p>
+                                <img src="{{ weather.icon }}" alt="Météo">
+                                {{ weather.temperature }}°C - {{ weather.condition }}
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="{{ path('app_reclamation_index') }}" class="btn btn-primary">
+                        Retour à la liste des réclamations
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .priority-badge {
+        font-size: 1.1em;
+        padding: 8px 16px;
+    }
+    
+    .category-badge {
+        font-size: 1.1em;
+        padding: 8px 16px;
+    }
+    
+    .suggested-response {
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #007bff;
+    }
+    
+    .weather-info {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #e9ecef;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .weather-info img {
+        width: 50px;
+        height: 50px;
+        margin-right: 10px;
+    }
+</style>
+{% endblock %}

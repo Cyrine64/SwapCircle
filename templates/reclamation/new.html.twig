@@ -1,0 +1,225 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Réclamation{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .dashboard {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .dashboard-title {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .dashboard-subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Style des groupes de formulaire */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            background: white;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%232c3e50' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        /* Style des erreurs */
+        .form-error {
+            color: #e74c3c;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .form-error ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* Style des boutons d'action */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #edf2f7;
+        }
+
+        .form-actions button,
+        .form-actions a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .form-actions button {
+            background: #3498db;
+            color: white;
+            border: none;
+            box-shadow: 0 4px 6px rgba(52, 152, 219, 0.2);
+        }
+
+        .form-actions button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(52, 152, 219, 0.3);
+        }
+
+        .form-actions a {
+            background: #e2e8f0;
+            color: #2c3e50;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-actions a:hover {
+            background: #cbd5e0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                padding: 1rem;
+            }
+
+            .dashboard-title {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .form-actions button,
+            .form-actions a {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Nouvelle Réclamation</h1>
+            <p class="dashboard-subtitle">Nous sommes là pour vous aider. Décrivez votre problème en détail.</p>
+        </div>
+
+        <div class="form-container">
+            {{ form_start(form, {'attr': {'class': 'claim-form', 'novalidate': 'novalidate'}}) }}
+                <div class="form-group">
+                    {{ form_label(form.titre, "Titre de la réclamation", {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.titre, {'attr': {'class': 'form-control', 'placeholder': 'Entrez un titre descriptif'}}) }}
+                    {{ form_errors(form.titre, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.type_reclamation, "Type de réclamation", {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.type_reclamation, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.type_reclamation, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.message, "Description détaillée", {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.message, {'attr': {'class': 'form-control', 'placeholder': 'Décrivez votre réclamation en détail...'}}) }}
+                    {{ form_errors(form.message, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.utilisateur, "Utilisateur concerné", {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.utilisateur, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.utilisateur, {'attr': {'class': 'form-error'}}) }}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="action-button">
+                        <i class="fas fa-paper-plane"></i> Envoyer la réclamation
+                    </button>
+                    <a href="{{ path('app_reclamation_index') }}" class="action-button secondary">
+                        <i class="fas fa-arrow-left"></i> Retour à la liste
+                    </a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

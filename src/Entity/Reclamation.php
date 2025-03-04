@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\ReclamationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Entity\TypeReclamation;
+use App\Entity\Utilisateur;
+use App\Entity\Reponse;
 
 #[ORM\Entity(repositoryClass: ReclamationRepository::class)]
 #[ORM\Table(name: "reclamation")]
@@ -13,32 +16,48 @@ class Reclamation
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id_reclamation = null;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
-    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
+    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id", nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
     #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank(message: 'ce champs est obligatoire')]
+    #[Assert\Length(
+        min: 10,
+        minMessage: 'veillez introduire 10 caractères au minimum',)]
     private ?string $message = null;
 
     #[ORM\Column(length: 50)]
-    private ?string $statut = null;
+    private ?string $statut = 'En attente';
 
-    #[ORM\Column(length: 50)]
-    private ?string $type_reclamation = null;
+    #[ORM\Column(enumType: TypeReclamation::class)]
+    private TypeReclamation $type_reclamation;
 
-    #[ORM\Column(type: 'datetime')]
-    private ?\DateTimeInterface $date_reclamation = null;
+    #[ORM\Column(type: 'datetime', options :['default' => 'CURRENT_TIMESTAMP'])]
+    private ?\DateTimeInterface $date_reclamation;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: 'ce champs est obligatoire')]
+    #[Assert\Length(
+        min: 5,
+        minMessage: 'veillez introduire 5 caractères au minimum',)]
     private ?string $titre = null;
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $priorite = null;
+
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $categorie = null;
+
+    #[ORM\OneToOne(targetEntity: Reponse::class, mappedBy: "reclamation", cascade: ["persist", "remove"])]
+    private ?Reponse $reponse = null;
+
     // Getters and setters
-    public function getIdReclamation(): ?int
+    public function getId(): ?int
     {
-        return $this->id_reclamation;
+        return $this->id;
     }
 
     public function getUtilisateur(): ?Utilisateur
@@ -74,12 +93,12 @@ class Reclamation
         return $this;
     }
 
-    public function getTypeReclamation(): ?string
+    public function getTypeReclamation(): ?TypeReclamation
     {
         return $this->type_reclamation;
     }
 
-    public function setTypeReclamation(string $type_reclamation): self
+    public function setTypeReclamation(TypeReclamation $type_reclamation): self
     {
         $this->type_reclamation = $type_reclamation;
         return $this;
@@ -106,4 +125,37 @@ class Reclamation
         $this->titre = $titre;
         return $this;
     }
-} 
+
+    public function getPriorite(): ?string
+    {
+        return $this->priorite;
+    }
+
+    public function setPriorite(?string $priorite): self
+    {
+        $this->priorite = $priorite;
+        return $this;
+    }
+
+    public function getCategorie(): ?string
+    {
+        return $this->categorie;
+    }
+
+    public function setCategorie(?string $categorie): self
+    {
+        $this->categorie = $categorie;
+        return $this;
+    }
+
+    public function getReponse(): ?Reponse
+    {
+        return $this->reponse;
+    }
+
+    public function setReponse(?Reponse $reponse): self
+    {
+        $this->reponse = $reponse;
+        return $this;
+    }
+}

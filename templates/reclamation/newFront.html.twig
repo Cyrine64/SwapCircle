@@ -1,0 +1,336 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Réclamation - SwapCircle{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .reclamation-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 3rem 1rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            color: #2c3e50;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            color: #5a6c7d;
+            max-width: 600px;
+            margin: 1.5rem auto 0;
+            line-height: 1.6;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            position: relative;
+            animation: slideUpIn 0.6s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.75rem;
+            text-align: left;
+            width: 100%;
+        }
+
+        .form-group > div > label {
+            display: none;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #2c3e50;
+            background-color: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #3498db;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+
+        select.form-control {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%232c3e50' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            padding-right: 2.5rem;
+        }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .help-text {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+
+        .form-error {
+            color: #e74c3c;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-error::before {
+            content: '⚠';
+            font-size: 1rem;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f1f5f9;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.5;
+            text-align: center;
+            text-decoration: none;
+            vertical-align: middle;
+            cursor: pointer;
+            user-select: none;
+            border: 1px solid transparent;
+            border-radius: 8px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+
+        .btn-secondary {
+            color: #2c3e50;
+            background-color: #e2e8f0;
+            border-color: #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+            border-color: #cbd5e1;
+        }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideInDown 0.5s ease-out;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUpIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .reclamation-page {
+                padding: 2rem 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        .tox-tinymce {
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="reclamation-page">
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="page-header">
+            <h1 class="page-title">Nous sommes à votre écoute</h1>
+            <p class="page-subtitle">Notre équipe est là pour vous aider. Décrivez votre problème et nous vous répondrons dans les plus brefs délais.</p>
+        </div>
+
+        <div class="form-container">
+            {{ form_start(form) }}
+                <div class="form-group">
+                    <label for="{{ form.titre.vars.id }}">Titre</label>
+                    {{ form_widget(form.titre, {
+                        'attr': {
+                            'class': 'form-control',
+                            'placeholder': 'Ex: Problème avec ma commande #12345'
+                        }
+                    }) }}
+                    <div class="help-text">Un titre clair nous aide à mieux comprendre votre demande</div>
+                    {{ form_errors(form.titre) }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.message.vars.id }}">Message</label>
+                    {{ form_widget(form.message, {
+                        'attr': {
+                            'class': 'form-control tinymce',
+                            'rows': '8'
+                        }
+                    }) }}
+                    <div class="help-text">Plus votre description est détaillée, plus nous pourrons vous apporter une réponse précise</div>
+                    {{ form_errors(form.message) }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.type_reclamation.vars.id }}">Type réclamation</label>
+                    {{ form_widget(form.type_reclamation, {
+                        'attr': {
+                            'class': 'form-control'
+                        }
+                    }) }}
+                    <div class="help-text">Sélectionnez la catégorie qui correspond le mieux à votre demande</div>
+                    {{ form_errors(form.type_reclamation) }}
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i>
+                        Envoyer
+                    </button>
+                    <a href="{{ path('app_reclamation_index') }}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Retour
+                    </a>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: '.tinymce',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+        language: 'fr_FR',
+        height: 300,
+        menubar: false,
+        branding: false,
+        promotion: false,
+        skin: 'oxide',
+        content_css: 'default',
+        setup: function(editor) {
+            editor.on('change', function() {
+                editor.save();
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Réclamations{% endblock %}
+
+{% block body %}
+<section class="service_section layout_padding" style="background-color: #f4f7fa; padding: 50px 0;">
+    <div class="container mt-5">
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="section-header text-center">
+                    <h6 class="text-primary text-uppercase mb-3">Gestion des Réclamations</h6>
+                    <h2 class="section-title mb-3">Liste des Réclamations</h2>
+                    <div class="divider mx-auto mb-4" style="width: 80px; height: 4px; background: #3498db; border-radius: 2px;"></div>
+                </div>
+                <div class="text-center mb-4">
+                    <a href="{{ path('app_reclamation_new') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus-circle me-2"></i> Ajouter une Réclamation
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            {% for reclamation in reclamations %}
+                <div class="col-lg-4 col-md-6 mb-4 fade-in">
+                    <div class="card h-100 shadow-hover animated-card" style="border-radius: 15px; border: none;">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-3" style="color: #2c3e50; font-weight: 600;">{{ reclamation.titre }}</h4>
+                            <p class="card-text text-muted mb-4">{{ reclamation.message|length > 100 ? reclamation.message|slice(0, 100) ~ '...' : reclamation.message }}</p>
+                            <div class="meta-info mb-4">
+                                <span class="text-muted">
+                                    <i class="far fa-calendar-alt me-2"></i>
+                                    {{ reclamation.dateReclamation ? reclamation.dateReclamation|date('d/m/Y H:i') : '' }}
+                                </span>
+                            </div>
+                            <div class="status-badge mb-3">
+                                <span class="badge {% if reclamation.statut == 'En attente' %}bg-warning{% elseif reclamation.statut == 'En cours' %}bg-info{% elseif reclamation.statut == 'Résolu' %}bg-success{% endif %}" style="border-radius: 20px; padding: 0.5em 1em;">
+                                    {{ reclamation.statut|capitalize }}
+                                </span>
+                            </div>
+                            <div class="card-actions mt-auto">
+                                <a href="{{ path('app_reclamation_show', {'id': reclamation.id}) }}" class="btn btn-outline-primary btn-sm me-2">
+                                    <i class="fas fa-eye me-1"></i> Voir
+                                </a>
+                                <a href="{{ path('app_reclamation_edit', {'id': reclamation.id}) }}" class="btn btn-outline-warning btn-sm">
+                                    <i class="fas fa-edit me-1"></i> Modifier
+                                </a>
+                                <a href="{{ path('app_reclamation_delete', {'id': reclamation.id}) }}" class="btn btn-outline-danger btn-sm">
+                                    <i class="fas fa-trash me-1"></i> Supprimer
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 fade-in">
+                    <div class="empty-state text-center py-5">
+                        <div class="empty-state-icon mb-4">
+                            <i class="fas fa-box-open fa-3x text-muted"></i>
+                        </div>
+                        <h3 class="empty-state-title">Aucune réclamation disponible</h3>
+                        <p class="empty-state-description text-muted">
+                            Commencez par ajouter votre première réclamation.
+                        </p>
+                        <a href="{{ path('app_reclamation_new') }}" class="btn btn-primary mt-3">
+                            <i class="fas fa-plus-circle me-2"></i> Ajouter une réclamation
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<style>
+    /* General Styling */
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f4f7fa;
+    }
+
+    .section-header {
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .divider {
+        width: 80px;
+        height: 4px;
+        background: #3498db;
+        border-radius: 2px;
+    }
+
+    /* Card Styling */
+    .card {
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        background: white;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .shadow-hover {
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .shadow-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .badge {
+        padding: 0.5em 1em;
+        margin-right: 0.5em;
+        border-radius: 20px;
+    }
+
+    /* Button Styling */
+    .btn {
+        border-radius: 8px;
+        padding: 0.6rem 1.2rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: #3498db;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+    }
+
+    .empty-state {
+        background: white;
+        border-radius: 16px;
+        padding: 3rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+</style>
+{% endblock %}

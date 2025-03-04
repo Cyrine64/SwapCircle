@@ -1,0 +1,44 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Reclamation index{% endblock %}
+
+{% block body %}
+    <h1>Reclamation index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th> Id utilisateur</th>
+                <th>Message</th>
+                <th>Type Reclamation</th>
+                <th>Date Reclamation</th>
+                <th>Titre</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for reclamation in reclamations %}
+            <tr>
+                <td>{{ reclamation.utilisateur.id }}</td>
+                <td>{{ reclamation.message }}</td>
+                <td>{{ reclamation.typeReclamation.value }}</td>
+                <td>{{ reclamation.dateReclamation ? reclamation.dateReclamation|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ reclamation.titre }}</td>
+                <td>
+                    <a href="{{ path('app_reclamation_show', {'id': reclamation.getId()}) }}">Voir</a> 
+                    <a href="{{ path('app_reclamation_edit', {'id': reclamation.getId()}) }}">Éditer</a>
+                    <a href="{{ path('app_reclamation_delete', {'id': reclamation.getId()}) }}">Supprimer</a>     
+                    <a href="{{ path('app_reponse_new') }}">Répondre</a>
+
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_reclamation_new') }}">Create new</a>
+{% endblock %}

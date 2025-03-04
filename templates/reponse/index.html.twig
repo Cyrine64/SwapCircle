@@ -1,0 +1,38 @@
+{% extends 'back-base.html.twig' %}
+
+{% block title %}Reponse index{% endblock %}
+
+{% block body %}
+    <h1>Reponse index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Titre Reclamation</th>
+                <th>Contenu</th>
+                <th>Date_reponse</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for reponse in reponses %}
+            <tr>
+                <td>{{ reponse.reclamation.titre }}</td>
+                <td>{{ reponse.contenu }}</td>
+                <td>{{ reponse.dateReponse ? reponse.dateReponse|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_reponse_show', {'id_reponse': reponse.getIdReponse()}) }}">show</a>
+                    <a href="{{ path('app_reponse_edit', {'id_reponse': reponse.getIdReponse()}) }}">edit</a>
+                    <a href="{{ path('app_reponse_delete', {'id_reponse': reponse.getIdReponse()}) }}">Supprimer</a>     
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_reponse_new') }}">Create new</a>
+{% endblock %}
