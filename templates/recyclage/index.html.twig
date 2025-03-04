@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Recyclages{% endblock %}
+
+{% block body %}
+<div class="hero_area">
+    <div class="relative">
+        <!-- Image de fond -->
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('/images/background.jpg'); filter: brightness(0.5);"></div>
+
+        <!-- Contenu principal -->
+        <div class="relative z-10 p-8">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-white text-center">Liste des Recyclages</h1>
+                
+
+
+               
+
+            </div>
+ <!-- Bouton Ajouter Recyclage -->
+<a href="{{ path('recyclage_new') }}" 
+   class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow no-underline flex items-center">
+    <i class="fa fa-plus mr-1"></i> Ajouter Recyclage
+</a>
+
+
+
+
+
+
+            <!-- Tableau -->
+            <div class="overflow-x-auto shadow-lg rounded-lg bg-white bg-opacity-90 backdrop-blur-sm">
+                <table class="table-auto w-full border-collapse border border-gray-300">
+                    <thead>
+                        <tr class="bg-blue-500 text-green">
+                            <th class="border px-4 py-2">#</th>
+                            <th class="border px-4 py-2">Utilisateur</th>
+                            <th class="border px-4 py-2">Objet</th>
+                            <th class="border px-4 py-2">Type de Recyclage</th>
+                            <th class="border px-4 py-2">Date</th>
+                            <th class="border px-4 py-2">Commentaire</th>
+                            <th class="border px-4 py-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for recyclage in recyclages %}
+                            <tr class="hover:bg-blue-50 transition-colors duration-200">
+                                <td class="border px-4 py-2">{{ recyclage.idRecyclage }}</td>
+                                <td class="border px-4 py-2">{{ recyclage.utilisateur.nom }}</td>
+                                <td class="border px-4 py-2">{{ recyclage.objet.nom }}</td>
+                                <td class="border px-4 py-2">{{ recyclage.typeRecyclage }}</td>
+                                <td class="border px-4 py-2">{{ recyclage.dateRecyclage ? recyclage.dateRecyclage|date('d/m/Y') : '' }}</td>
+                                <td class="border px-4 py-2 max-w-xs truncate" title="{{ recyclage.commentaire }}">
+                                    {{ recyclage.commentaire }}
+                                </td>
+                                <td class="border px-4 py-2 flex space-x-2">
+                                    <!-- Bouton Détails -->
+                                    <a href="{{ path('recyclage_show', { 'id': recyclage.idRecyclage }) }}"
+                                       class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded shadow no-underline flex items-center">
+                                        <i class="fa fa-eye mr-1"></i>
+                                        Détails
+                                    </a>
+
+                                    <!-- Bouton Modifier -->
+                                    <a href="{{ path('recyclage_edit', { 'id': recyclage.idRecyclage }) }}"
+                                       class="bg-yellow-500 text-white font-bold py-1 px-2 rounded shadow no-underline flex items-center">
+                                        <i class="fa fa-edit mr-1"></i>
+                                        Modifier
+                                    </a>
+
+                                    <!-- Bouton Supprimer -->
+                                    <form method="post"
+                                          action="{{ path('recyclage_delete', { 'id': recyclage.idRecyclage }) }}"
+                                          style="display:inline;" 
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recyclage.idRecyclage) }}">
+                                        <button type="submit"
+                                                class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded shadow flex items-center">
+                                            <i class="fa fa-trash mr-1"></i>
+                                            Supprimer
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td class="border px-4 py-2 text-center" colspan="7">Aucun recyclage trouvé.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

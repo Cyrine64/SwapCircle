@@ -17,20 +17,23 @@ class Recyclage
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
+    #[Assert\NotNull(message: "L'utilisateur est requis.")]
     private ?Utilisateur $utilisateur = null;
 
     #[ORM\ManyToOne(targetEntity: Objet::class)]
     #[ORM\JoinColumn(name: "id_objet", referencedColumnName: "id_objet", nullable: false)]
+    #[Assert\NotNull(message: "L'objet est requis.")]
     private ?Objet $objet = null;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: "Le type de recyclage est requis.")]
     private ?string $type_recyclage = null;
 
     #[ORM\Column(type: 'datetime')]
+    #[Assert\NotNull(message: "La date de recyclage est requise.")]
     private ?\DateTimeInterface $date_recyclage = null;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(type: 'text', nullable: true)] 
     private ?string $commentaire = null;
 
     // Getters and setters
@@ -38,6 +41,8 @@ class Recyclage
     {
         return $this->id_recyclage;
     }
+
+
 
     public function getUtilisateur(): ?Utilisateur
     {
@@ -77,7 +82,7 @@ class Recyclage
         return $this->date_recyclage;
     }
 
-    public function setDateRecyclage(\DateTimeInterface $date_recyclage): self
+    public function setDateRecyclage(?\DateTimeInterface $date_recyclage): self
     {
         $this->date_recyclage = $date_recyclage;
         return $this;
@@ -88,9 +93,9 @@ class Recyclage
         return $this->commentaire;
     }
 
-    public function setCommentaire(string $commentaire): self
+    public function setCommentaire(?string $commentaire): self
     {
         $this->commentaire = $commentaire;
         return $this;
     }
-} 
+}

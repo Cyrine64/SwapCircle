@@ -42,7 +42,7 @@ final class BackOfficeController extends AbstractController
         $this->logger->info('This is a log message.'); 
     }
 
-    #[Route('/dashboard', name: 'app_back_office')]
+    #[Route('', name: 'app_back_office')]
     public function index(): Response
     {
         return $this->render('back_office/index.html.twig', [

@@ -72,4 +72,26 @@ class Tutorial
         $this->date_creation = $date_creation;
         return $this;
     }
-} 
+
+    public function getRecyclage(): ?Recyclage
+    {
+        return $this->recyclage;
+    }
+
+    public function setRecyclage(?Recyclage $recyclage): self
+    {
+        $this->recyclage = $recyclage;
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): self
+    {
+        $this->utilisateur = $utilisateur;
+        return $this;
+    }
+}

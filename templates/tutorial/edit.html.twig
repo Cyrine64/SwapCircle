@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le Tutoriel{% endblock %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto mt-15 p-9 bg-white shadow-md rounded-lg">
+    <h1 class="text-2xl font-bold mb-6 text-center text-blue-600">Modifier le Tutoriel</h1>
+
+    {{ form_start(form) }}
+
+    <div class="mb-4">
+        {{ form_label(form.description, 'Description', {'label_attr': {'class': 'block font-semibold mb-2'}}) }}
+        {{ form_widget(form.description, {'attr': {'class': 'border rounded w-full p-2'}}) }}
+        {{ form_errors(form.description) }}
+    </div>
+
+    <div class="mb-4">
+        {{ form_label(form.vid_URL, 'Lien de la vidéo', {'label_attr': {'class': 'block font-semibold mb-2'}}) }}
+        {{ form_widget(form.vid_URL, {'attr': {'class': 'border rounded w-full p-2'}}) }}
+        {{ form_errors(form.vid_URL) }}
+    </div>
+
+    <div class="mb-6">
+        {{ form_label(form.date_creation, 'Date de création', {'label_attr': {'class': 'block font-semibold mb-2'}}) }}
+        {{ form_widget(form.date_creation, {'attr': {'class': 'border rounded w-full p-2'}}) }}
+        {{ form_errors(form.date_creation) }}
+    </div>
+
+    <div class="flex justify-between">
+       
+     
+    </div>
+
+    {{ form_end(form) }}
+     <a href="{{ path('tutorial_index') }}" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded">
+            Annuler
+        </a>
+</div>
+{% endblock %}

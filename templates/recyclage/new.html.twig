@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un Recyclage{% endblock %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
+
+    <h1 class="text-xl font-bold mb-4 text-blue-600 text-center">Ajouter un Recyclage</h1>
+
+    {% for message in app.flashes('error') %}
+        <div class="bg-red-100 text-red-700 p-2 rounded mb-4">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in app.flashes('success') %}
+        <div class="bg-green-100 text-green-700 p-2 rounded mb-4">{{ message }}</div>
+    {% endfor %}
+
+    <form method="post">
+   <div class="space-y-4">
+        <label class="block mb-2 font-semibold">Objet :</label>
+        <select name="objet" class="border rounded w-full p-4 mb-4" required>
+            <option value="">-- Sélectionner un objet --</option>
+            {% for objet in objets %}
+                <option value="{{ objet.idObjet }}">{{ objet.nom }}</option>
+            {% endfor %}
+        </select>
+        </div>
+
+    <div>
+        <label class="block mb-2 font-semibold">Type de Recyclage :</label>
+        <select name="typeRecyclage" id="typeRecyclage" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+            <option value="">-- Sélectionner un type --</option>
+            <option value="Plastique">Plastique</option>
+            <option value="Verre">Verre</option>
+            <option value="Papier">Papier</option>
+            <option value="Métal">Métal</option>
+            <option value="Organique">Organique</option>
+        </select>
+    </div>
+
+<div>
+    <label class="block mb-2 font-semibold">Commentaire :</label>
+    <textarea name="commentaire" class="border rounded w-full p-2 mb-4"></textarea>
+    </div>
+
+<div>
+    <label class="block mb-2 font-semibold">Date de Recyclage :</label>
+    <input type="datetime-local" name="dateRecyclage" class="border rounded w-full p-2 mb-4" required></div>
+
+<div>
+    <label class="block mb-2 font-semibold">Utilisateur :</label>
+    <select name="utilisateur" class="border rounded w-full p-2 mb-4" required>
+        <option value="">-- Sélectionner un utilisateur --</option>
+        {% for utilisateur in utilisateurs %}
+            <option value="{{ utilisateur.idUtilisateur }}">{{ utilisateur.nom }}</option>
+        {% endfor %}
+    </select>
+    </div>
+
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Enregistrer</button>
+    <a href="{{ path('recyclage_index') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+        Annuler
+    </a>
+    </form>
+</div>
+{% endblock %}

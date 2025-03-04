@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Tutoriels{% endblock %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto mt-10 p-6 bg-white shadow-md rounded-lg">
+    <h1 class="text-2xl font-bold mb-4">Liste des Tutoriels</h1>
+
+    {% for message in app.flashes('success') %}
+        <div class="bg-green-100 text-green-700 p-2 rounded mb-4">{{ message }}</div>
+    {% endfor %}
+
+    <!-- Formulaire de recherche -->
+    <form method="get" action="{{ path('tutorial_index') }}" class="mb-4">
+        <input type="text" name="search" placeholder="Rechercher par description" value="{{ app.request.get('search') }}"
+               class="border px-4 py-2 rounded w-3/4" />
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-red font-bold py-2 px-4 rounded">
+            Rechercher
+        </button>
+    </form>
+
+    
+
+    <a href="{{ path('tutorial_new') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-4 inline-block">
+        Ajouter un Tutoriel
+    </a>
+
+    <table class="table-auto w-full border-collapse border border-gray-300">
+        <thead>
+            <tr class="bg-blue-500 text-red">
+                <th class="border px-4 py-2">#</th>
+                <th class="border px-4 py-2">Description</th>
+                <th class="border px-4 py-2">Vidéo</th>
+                <th class="border px-4 py-2">Recyclage</th>
+                <th class="border px-4 py-2">Utilisateur</th>
+                <th class="border px-4 py-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tutorial in tutorials %}
+                <tr class="hover:bg-gray-100">
+                    <td class="border px-4 py-2">{{ tutorial.idTutorial }}</td>
+                    <td class="border px-4 py-2">{{ tutorial.description }}</td>
+                    <td class="border px-4 py-2">
+                        <a href="{{ tutorial.vidURL }}" target="_blank" class="text-blue-600 underline">Voir la vidéo</a>
+                    </td>
+                    <td class="border px-4 py-2">{{ tutorial.recyclage.idRecyclage }}</td>
+                    <td class="border px-4 py-2">{{ tutorial.utilisateur.nom }}</td>
+                    <td class="border px-4 py-2">
+    <a href="{{ path('tutorial_edit', { 'id': tutorial.idTutorial }) }}" class="bg-blue-500 text-white px-2 py-1 rounded">Modifier</a>
+    
+    <form method="post" action="{{ path('tutorial_delete', { 'id': tutorial.idTutorial }) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr ?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ tutorial.idTutorial) }}">
+        <button class="bg-red-500 text-white px-2 py-1 rounded">Supprimer</button>
+    </form>
+</td>
+
+                </tr>
+            {% else %}
+                <tr>
+                    <td class="border px-4 py-2 text-center" colspan="6">Aucun tutoriel trouvé.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+{% endblock %}
