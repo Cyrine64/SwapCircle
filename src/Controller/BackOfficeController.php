@@ -27,7 +27,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 
 
-
+#[Route('/dashboard')]
 final class BackOfficeController extends AbstractController
 {
     private $entityManager;
