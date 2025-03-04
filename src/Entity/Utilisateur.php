@@ -13,8 +13,8 @@ class Utilisateur
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(name: 'id_utilisateur')]
-    private ?int $id = null;
+    #[ORM\Column]
+    private ?int $id_utilisateur = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
@@ -67,9 +67,9 @@ class Utilisateur
     private Collection $blogLikes;
 
     // Getters and setters
-    public function getId(): ?int
+    public function getIdUtilisateur(): ?int
     {
-        return $this->id;
+        return $this->id_utilisateur;
     }
 
     public function getNom(): ?string
