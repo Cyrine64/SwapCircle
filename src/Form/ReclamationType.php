@@ -34,7 +34,7 @@ class ReclamationType extends AbstractType
             ->add('titre')
             ->add('utilisateur', EntityType::class, [
                 'class' => Utilisateur::class,
-                'choice_label' => 'id',
+                'choice_label' => 'id_utilisateur',
             ])
         ;
     }

@@ -63,7 +63,6 @@ final class BackOfficeController extends AbstractController
     ]);
 }
 
-
   #[Route('/admin/admins', name:'admins_list')]
  
 public function listAdmins(UserRepository $userRepository): Response

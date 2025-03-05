@@ -48,8 +48,9 @@ class Echange
     private ?\DateTimeInterface $date_echange = null;
 
     #[ORM\Column(length: 20)]
+    #[Assert\NotBlank(message: 'Le statut ne peut pas être vide')]
     #[Assert\Choice(choices: ['en_attente', 'accepte', 'refuse'])]
-    private ?string $statut = 'en_attente';
+    private string $statut = 'en_attente';
 
     // Getters and setters
     public function getIdEchange(): ?int

@@ -16,7 +16,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: "integer")]
-    private ?int $id = null;
+    private ?int $id_user = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Name cannot be empty.")]
@@ -38,26 +38,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(type: "json")]
-    private array $roles = [];
-    #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $lastActivity = null;
+    private array $role = [];
+    // #[ORM\Column(type: 'datetime', nullable: true)]
+    // private ?\DateTimeInterface $lastActivity = null;
 
-    #[ORM\PrePersist]
-    #[ORM\PreUpdate]
-    public function syncRolesAndAdminVerified(): void
-    {
-        if (in_array('ROLE_ADMIN', $this->roles)) {
-            $this->adminVerified = true;
-        } else {
-            $this->adminVerified = false;
-        }
-    }
+    // #[ORM\PrePersist]
+    // #[ORM\PreUpdate]
+    // public function syncRolesAndAdminVerified(): void
+    // {
+    //     if (in_array('ROLE_ADMIN', $this->role)) {
+    //         $this->adminVerified = true;
+    //     } else {
+    //         $this->adminVerified = false;
+    //     }
+    // }
 
-    #[ORM\Column(type: "boolean", options: ["default" => true])]
-    private bool $isEnabled = true;
+    // #[ORM\Column(type: "boolean", options: ["default" => true])]
+    // private bool $isEnabled = true;
 
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
-    private bool $adminVerified = false;
+    // #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    // private bool $adminVerified = false;
 
     public function __construct()
     {
@@ -67,7 +67,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getId(): ?int
     {
-        return $this->id;
+        return $this->id_user;
     }
 
     public function getName(): ?string
@@ -116,7 +116,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        $roles = $this->roles; // Get stored roles
+        $roles = $this->role; // Get stored roles
     
         if ($this->adminVerified && !in_array('ROLE_ADMIN', $roles)) {
             $roles[] = 'ROLE_ADMIN'; // Ensure ROLE_ADMIN is included
@@ -125,7 +125,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }public function setRoles(array $roles): self
     {
-        $this->roles = $roles;
+        $this->role = $roles;
     
         // Ensure admin_verified matches ROLE_ADMIN presence
         $this->admin_verified = in_array('ROLE_ADMIN', $roles);
@@ -133,48 +133,48 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getLastActivity(): ?\DateTimeInterface
-    {
-        return $this->lastActivity;
-    }
+    // public function getLastActivity(): ?\DateTimeInterface
+    // {
+    //     return $this->lastActivity;
+    // }
 
-    public function setLastActivity(?\DateTimeInterface $lastActivity): self
-    {
-        $this->lastActivity = $lastActivity;
-        return $this;
-    }
-    public function getIsEnabled(): bool
-    {
-        return $this->isEnabled;
-    }
+    // public function setLastActivity(?\DateTimeInterface $lastActivity): self
+    // {
+    //     $this->lastActivity = $lastActivity;
+    //     return $this;
+    // }
+    // public function getIsEnabled(): bool
+    // {
+    //     return $this->isEnabled;
+    // }
 
-    public function setIsEnabled(bool $isEnabled): self
-    {
-        $this->isEnabled = $isEnabled;
-        return $this;
-    }
+    // public function setIsEnabled(bool $isEnabled): self
+    // {
+    //     $this->isEnabled = $isEnabled;
+    //     return $this;
+    // }
 
-    public function isAdminVerified(): bool
-    {
-        return $this->adminVerified;
-    }
+    // public function isAdminVerified(): bool
+    // {
+    //     return $this->adminVerified;
+    // }
 
-    public function setAdminVerified(bool $adminVerified): self
-    {
-        $this->admin_verified = $adminVerified;
+    // public function setAdminVerified(bool $adminVerified): self
+    // {
+    //     $this->admin_verified = $adminVerified;
     
-        if ($adminVerified) {
-            // Ensure the user has ROLE_ADMIN if verified
-            if (!in_array('ROLE_ADMIN', $this->roles)) {
-                $this->roles[] = 'ROLE_ADMIN';
-            }
-        } else {
-            // Remove ROLE_ADMIN if not verified
-            $this->roles = array_diff($this->roles, ['ROLE_ADMIN']);
-        }
+    //     if ($adminVerified) {
+    //         // Ensure the user has ROLE_ADMIN if verified
+    //         if (!in_array('ROLE_ADMIN', $this->role)) {
+    //             $this->role[] = 'ROLE_ADMIN';
+    //         }
+    //     } else {
+    //         // Remove ROLE_ADMIN if not verified
+    //         $this->role = array_diff($this->role, ['ROLE_ADMIN']);
+    //     }
     
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function eraseCredentials(): void
     {

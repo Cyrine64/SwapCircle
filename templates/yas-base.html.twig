@@ -58,40 +58,49 @@
                       <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <img id="logo" class="small-logo" src="{{ asset('frontOffice/images/logo.png') }}" alt="Logo">
           
-                        <ul class="navbar-nav  ">
-                         
-                          <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('app_front_office') }}">Acceuil <span class="sr-only">(current)</span></a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_objet_index') }}">Objet</a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="{{ path('front_office_about') }}">A propos</a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="{{ path('front_office_blog') }}">Blog</a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="{{ path('app_reclamation_index') }}">Réclamation</a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="{{ path('front_office_contact') }}">Contact</a>
-                          </li>
-                          <li class="nav-item">
-                            <a class="nav-link" href="">
-                              <i class="fa fa-user" aria-hidden="true"></i>
-                              <span>
-                                Se connecter
-                              </span>
-                            </a>
-                          </li>
-                          <form class="form-inline">
-                            <button class="btn  my-2 my-sm-0 nav_search-btn" type="submit">
-                              <i class="fa fa-search" aria-hidden="true"></i>
-                            </button>
-                          </form>
-                        </ul>
+                                <ul class="navbar-nav">
+                                    <li class="nav-item active">
+                                        <a class="nav-link" href="{{ path('app_front_office') }}">Acceuil <span class="sr-only">(current)</span></a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_objet_index') }}">Objet</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('front_office_about') }}">A propos</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('front_office_blog') }}">Blog</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('app_reclamation_index') }}">Réclamation</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="{{ path('front_office_contact') }}">Contact</a>
+                                    </li>
+
+                                    {% if app.user %}
+                                        <!-- Display logged-in user -->
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('user_profile') }}">
+                                                <i class="fa fa-user-circle" aria-hidden="true"></i> 
+                                                {{ app.user.name }}
+                                              
+                                            </a>
+                                        </li>
+                                        <a href="{{ path('app_logout') }}">
+                                        <li>log out</li>
+                                        </a>
+                                    {% else %}
+                                        <!-- Display login button when user is not logged in -->
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="{{ path('app_login') }}">
+                                                <i class="fa fa-user" aria-hidden="true"></i>
+                                                Se connecter
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    
+                                </ul>
                       </div>
                     </nav>
                   </div>

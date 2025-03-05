@@ -4,9 +4,27 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+      
 
+
+      {% block stylesheets %}
+    <!-- Tailwind CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- FontAwesome via CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('frontOffice/css/bootstrap.css') }}" />
+    <!-- Autres styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/css/nice-select.min.css" integrity="sha256-mLBIhmBvigTFWPSCtvdu6a76T+3Xyt+K571hupeFLg4=" crossorigin="anonymous" />
+    <link href="{{ asset('frontOffice/css/font-awesome.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('frontOffice/css/style.css') }}" rel="stylesheet" />
+    <link href="{{ asset('frontOffice/css/responsive.css') }}" rel="stylesheet" />
+{% endblock %}
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
         <link rel="stylesheet" type="text/css" href="{{ asset('frontOffice/css/bootstrap.css') }}" />
 
@@ -23,12 +41,12 @@
         <link href="{{ asset('frontOffice/css/style.css') }}" rel="stylesheet" />
         <!-- responsive style -->
         <link href="{{ asset('frontOffice/css/responsive.css') }}" rel="stylesheet" />
-        <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+ 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-        <body class="sub_page">
+        <body>
             <div class="hero_area">
               <!-- header section strats -->
               <header class="header_section">
@@ -93,7 +111,6 @@
                 </div>
               </header>
               <!-- end header section -->
-            </div>
            
         {% block body %}{% endblock %}
         <!-- info section -->

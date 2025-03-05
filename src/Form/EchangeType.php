@@ -68,7 +68,7 @@ class EchangeType extends AbstractType
                     'Refusé' => 'refuse'
                 ],
                 'required' => true,
-                'data' => 'en_attente'
+                'empty_data' => 'en_attente'
             ]);
     }
 

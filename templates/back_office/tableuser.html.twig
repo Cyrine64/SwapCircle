@@ -38,16 +38,16 @@
                 <td class="text-center text-sm">{{ user.lastActivity|date('d/m/Y') }}</td>
                 <td><span class="badge {{ user.isEnabled ? 'bg-success' : 'bg-danger' }}">{{ user.isEnabled ? 'Active' : 'Disabled' }}</span></td>
                 <td>
-                    <button class="btn {{ user.isEnabled ? 'btn-danger' : 'btn-success' }} toggle-status" data-user-id="{{ user.id }}">
+                    <button class="btn {{ user.isEnabled ? 'btn-danger' : 'btn-success' }} toggle-status" data-user-id="{{ user.id_user }}">
                         {{ user.isEnabled ? 'Disable' : 'Enable' }}
                     </button>
                 </td>
                  <td>
             {% if 'ROLE_ADMIN' not in user.roles %}
-                <form action="{{ path('admin_update_user_roles', {id: user.id}) }}" method="POST">
-                    <input type="hidden" name="_token" value="{{ csrf_token('update_roles' ~ user.id) }}">
+                <form action="{{ path('admin_update_user_roles', {id: user.id_user}) }}" method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token('update_roles' ~ user.id_user) }}">
                     <input type="hidden" name="roles[]" value="ROLE_ADMIN">
-<button onclick="makeAdmin({{ user.id }})" {% if not user.isEnabled %} disabled {% endif %}>Make Admin</button>
+<button onclick="makeAdmin({{ user.id_user }})" {% if not user.isEnabled %} disabled {% endif %}>Make Admin</button>
                 </form>
             {% else %}
                 <span class="text-success">Already Admin</span>
