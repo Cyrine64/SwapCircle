@@ -51,8 +51,9 @@ class Reclamation
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $categorie = null;
 
-    #[ORM\OneToOne(targetEntity: Reponse::class, mappedBy: "reclamation", cascade: ["persist", "remove"])]
+    #[ORM\OneToOne(targetEntity: Reponse::class, mappedBy: "reclamation", cascade: ["persist", "remove"], orphanRemoval: true)]
     private ?Reponse $reponse = null;
+    
 
     // Getters and setters
     public function getId(): ?int

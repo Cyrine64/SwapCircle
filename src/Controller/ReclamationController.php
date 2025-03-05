@@ -150,6 +150,22 @@ class ReclamationController extends AbstractController
         ]);
     }
 
+    #[Route('/back/toggle-status/{id}', name: 'app_reclamation_toggle_status', methods: ['POST'])]
+    public function toggleStatus(Reclamation $reclamation, EntityManagerInterface $entityManager): Response
+    {
+        if ($reclamation->getStatut() !== 'Approved') {
+            $reclamation->setStatut('Approved');
+            $this->addFlash('success', 'La réclamation a été approuvée!');
+        } else {
+            $reclamation->setStatut('En attente');
+            $this->addFlash('info', 'La réclamation est de nouveau en attente.');
+        }
+        
+        $entityManager->flush();
+
+        return $this->redirectToRoute('backoffice_reclamation_index');
+    }
+
     #[Route('/back/new', name: 'backoffice_reclamation_new', methods: ['GET', 'POST'])]
     public function backofficenew(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -246,13 +262,34 @@ class ReclamationController extends AbstractController
     public function delete(Request $request, Reclamation $reclamation, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$reclamation->getId(), $request->getPayload()->getString('_token'))) {
+            if ($reclamation->getReponse()) {
+                $entityManager->remove($reclamation->getReponse());
+                $reclamation->setReponse(null);
+            }
+    
             $entityManager->remove($reclamation);
             $entityManager->flush();
         }
-
-        return $this->redirectToRoute('app_reclamation_index', [], Response::HTTP_SEE_OTHER);
+    
+        return $this->redirectToRoute('backoffice_reclamation_index', [], Response::HTTP_SEE_OTHER);
     }
 
+    #[Route('/delete/{id}', name: 'front_reclamation_delete', methods: ['POST'])]
+    public function forntdelete(Request $request, Reclamation $reclamation, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$reclamation->getId(), $request->getPayload()->getString('_token'))) {
+            if ($reclamation->getReponse()) {
+                $entityManager->remove($reclamation->getReponse());
+                $reclamation->setReponse(null);
+            }
+    
+            $entityManager->remove($reclamation);
+            $entityManager->flush();
+        }
+    
+        return $this->redirectToRoute('app_reclamation_index', [], Response::HTTP_SEE_OTHER);
+    }
+ 
     #[Route('/{id}/status/{status}', name: 'app_reclamation_status', methods: ['POST'])]
     public function updateStatus(Reclamation $reclamation, string $status, EntityManagerInterface $entityManager): Response
     {

@@ -58,9 +58,12 @@
                                 <a href="{{ path('app_reponse_edit', {'id_reponse': reponse.getIdReponse()}) }}" class="btn btn-outline-warning btn-sm me-2">
                                     <i class="fas fa-edit"></i> Modifier
                                 </a>
-                                <a href="{{ path('app_reponse_delete', {'id_reponse': reponse.getIdReponse()}) }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réponse ?');">
-                                    <i class="fas fa-trash"></i> Supprimer
-                                </a>
+                                <form action="{{ path('app_reponse_delete', {'id_reponse': reponse.getIdReponse()}) }}" method="POST" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette réponse ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reponse.getIdReponse()) }}">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     {% else %}

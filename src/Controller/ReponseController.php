@@ -161,12 +161,18 @@ final class ReponseController extends AbstractController
     public function delete(Request $request, Reponse $reponse, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$reponse->getIdReponse(), $request->getPayload()->getString('_token'))) {
+            $reclamation = $reponse->getReclamation();
+            if ($reclamation) {
+                $reclamation->setReponse(null);
+            }
+    
             $entityManager->remove($reponse);
             $entityManager->flush();
         }
-
+    
         return $this->redirectToRoute('app_reponse_index', [], Response::HTTP_SEE_OTHER);
     }
+    
 
     #[Route('/stats', name: 'reponse_stats')]
     public function getReponseStatistics(ReponseRepository $responseRepository): Response

@@ -13,7 +13,11 @@
                 <p class="card-text"><strong>Date de Réclamation:</strong> {{ reclamation.dateReclamation|date('d/m/Y H:i') }}</p>
                 <p class="card-text"><strong>Statut:</strong> <span class="badge {% if reclamation.statut == 'En attente' %}bg-warning{% elseif reclamation.statut == 'En cours' %}bg-info{% elseif reclamation.statut == 'Résolu' %}bg-success{% endif %}">{{ reclamation.statut|capitalize }}</span></p>
                 <a href="{{ path('app_reclamation_edit', {'id': reclamation.id}) }}" class="btn btn-warning">Modifier</a>
-                <a href="{{ path('app_reclamation_index') }}" class="btn btn-secondary">Retour à la Liste</a>
+                <form action="{{ path('app_reclamation_delete', {id: reclamation.id}) }}" method="POST" onsubmit="return confirm('Voulez-vous vraiment supprimer cette réclamation ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ reclamation.id) }}">
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </form>
+                <a href="{{ path('front_reclamation_delete') }}" class="btn btn-secondary">Retour à la Liste</a>
             </div>
         </div>
     </div>
