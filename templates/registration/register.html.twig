@@ -48,13 +48,8 @@
 </div>
 {# Display CAPTCHA #}
    <div class="form-group mb-3">
-                            <label>CAPTCHA</label>
-                            <img src="{{ path('captcha_image') }}" alt="CAPTCHA" id="captcha-image" class="mb-2">
-                            <a href="#" id="refresh-captcha" class="btn btn-sm btn-link">Refresh CAPTCHA</a>
-                            {{ form_widget(registrationForm.captcha, {'attr': {'class': 'form-control', 'placeholder': 'Enter CAPTCHA'}}) }}
-                            {{ form_errors(registrationForm.captcha) }}
-                        </div>       
-                       
+
+                       <div class="g-recaptcha" data-sitekey="6LeDMNwqAAAAAF_qBAwCHL4V2FA9uq-d2pGa-oq0" ></div>
 
                         <div class="form-group text-center">
                             <button class="btn btn-lg btn-success w-100 btn-primary btn-lg" type="submit">Register</button>
@@ -71,4 +66,5 @@
         </div>
     </div>
 </section>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 {% endblock %}

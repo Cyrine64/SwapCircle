@@ -60,13 +60,13 @@ class RegistrationFormType extends AbstractType
             ->add('role', HiddenType::class, [
                 'data' => 'ROLE_USER', // Default role for new users
                 'mapped' => false, // Prevents this from being directly mapped to the entity
-            ])
-            ->add('captcha', CaptchaType::class, [
-                'label' => 'Enter the CAPTCHA',
-                'mapped' => false,
-
-                'constraints' => [new NotBlank(['message' => 'Please enter the CAPTCHA'])],
             ]);
+            // ->add('captcha', CaptchaType::class, [
+            //     'label' => 'Enter the CAPTCHA',
+            //     'mapped' => false,
+
+            //     'constraints' => [new NotBlank(['message' => 'Please enter the CAPTCHA'])],
+            // ]);
         
     }
 

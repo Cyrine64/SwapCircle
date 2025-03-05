@@ -39,9 +39,9 @@ class RegistrationController extends AbstractController
             $session->start();
         }
 
-        if (!$session->has('gregwar_captcha')) {
-            $this->generateCaptcha($session);
-        }
+        // if (!$session->has('gregwar_captcha')) {
+        //     $this->generateCaptcha($session);
+        // }
 
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -52,18 +52,18 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted()) {
             $this->logger->info('Form submitted.');
 
-            $captchaInput = $form->get('captcha')->getData();
-            $captchaStored = $session->get('gregwar_captcha');
+            // $captchaInput = $form->get('captcha')->getData();
+            // $captchaStored = $session->get('gregwar_captcha');
        
 
-            $this->logger->info("User-entered CAPTCHA: $captchaInput");
-            $this->logger->info("Stored CAPTCHA: $captchaStored");
+            // $this->logger->info("User-entered CAPTCHA: $captchaInput");
+            // $this->logger->info("Stored CAPTCHA: $captchaStored");
 
-            if ($captchaInput !== $captchaStored) {
-                $this->logger->error("CAPTCHA mismatch. Registration failed.");
-                $this->addFlash('error', 'Invalid CAPTCHA, please try again.');
-                return $this->render('registration/register.html.twig', ['registrationForm' => $form]);
-            }
+            // if ($captchaInput !== $captchaStored) {
+            //     $this->logger->error("CAPTCHA mismatch. Registration failed.");
+            //     $this->addFlash('error', 'Invalid CAPTCHA, please try again.');
+            //     return $this->render('registration/register.html.twig', ['registrationForm' => $form]);
+            // }
 
             if ($form->isValid()) {
                 $this->logger->info('Form is valid, processing registration.');
@@ -75,7 +75,7 @@ class RegistrationController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                $session->remove('gregwar_captcha');
+                // $session->remove('gregwar_captcha');
 
                 return $userAuthenticator->authenticateUser($user, $authenticator, $request);
             } else {

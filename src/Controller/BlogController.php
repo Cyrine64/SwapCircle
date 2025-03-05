@@ -18,9 +18,18 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use App\Entity\Utilisateur;
+use Doctrine\Persistence\ManagerRegistry;
 
 class BlogController extends AbstractController
 {
+
+    private $doctrine;
+
+    public function __construct(ManagerRegistry $doctrine)
+    {
+        $this->doctrine = $doctrine;
+    }
+
     #[Route('/blog', name: 'blog_index', methods: ['GET'])]
     public function index(BlogRepository $blogRepository, PaginatorInterface $paginator, Request $request): Response
     {
@@ -179,6 +188,9 @@ public function react(Blog $blog, Request $request, EntityManagerInterface $enti
     #[Route('/admin/blog/new', name: 'admin_blog_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
+
+        $this->doctrine->resetManager();
+
         $blog = new Blog();
         $form = $this->createForm(BlogType::class, $blog);
         $form->handleRequest($request);
