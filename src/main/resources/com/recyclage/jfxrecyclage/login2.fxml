@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.recyclage.jfxrecyclage.controllers.LoginController"
+      alignment="CENTER" spacing="15"
+      style="-fx-padding: 40; -fx-background-color: #f4f6f9; -fx-border-radius: 10; -fx-background-radius: 10;">
+
+    <Label text="Connexion Admin"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" />
+
+    <TextField fx:id="usernameField" promptText="Nom d'utilisateur"
+               style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5;"
+               maxWidth="250" />
+
+    <PasswordField fx:id="passwordField" promptText="Mot de passe"
+                   style="-fx-font-size: 14px; -fx-padding: 10; -fx-background-radius: 5; -fx-border-radius: 5;"
+                   maxWidth="250" />
+
+    <Button text="Se connecter" onAction="#handleLogin"
+            style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14px;
+                   -fx-font-weight: bold; -fx-background-radius: 5; -fx-border-radius: 5;
+                   -fx-padding: 10 20;" maxWidth="250" />
+
+    <Label fx:id="errorLabel" textFill="red" style="-fx-font-size: 12px;" />
+
+</VBox>

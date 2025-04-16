@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.recyclage.jfxrecyclage.controllers.MainController">
+
+    <!-- Barre supérieure -->
+    <top>
+        <HBox spacing="10" alignment="CENTER_LEFT"
+              style="-fx-background-color: #3F51B5; -fx-padding: 15;">
+            <Label fx:id="welcomeLabel"
+                   style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="Déconnexion" onAction="#handleLogout"
+                    style="-fx-text-fill: white; -fx-font-size: 14px;
+                           -fx-background-color: #E53935; -fx-background-radius: 5;
+                           -fx-padding: 5 15;" />
+        </HBox>
+    </top>
+
+    <!-- Centre de la page -->
+    <center>
+        <VBox alignment="CENTER" spacing="30" style="-fx-padding: 40;">
+            <Text text="Tableau de bord"
+                  style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-fill: #2c3e50;" />
+
+            <HBox spacing="30" alignment="CENTER">
+                <Button text="Gestion des Recyclages" onAction="#handleRecyclageManagement"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white;
+                               -fx-font-size: 16px; -fx-font-weight: bold;
+                               -fx-background-radius: 10; -fx-pref-width: 220;
+                               -fx-pref-height: 100;" />
+
+                <Button text="Gestion des Tutoriels" onAction="#handleTutorielManagement"
+                        style="-fx-background-color: #2196F3; -fx-text-fill: white;
+                               -fx-font-size: 16px; -fx-font-weight: bold;
+                               -fx-background-radius: 10; -fx-pref-width: 220;
+                               -fx-pref-height: 100;" />
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
