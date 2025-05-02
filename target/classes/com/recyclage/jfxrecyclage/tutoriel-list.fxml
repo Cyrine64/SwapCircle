@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.recyclage.jfxrecyclage.controllers.TutorielController"
+      spacing="20" style="-fx-padding: 30; -fx-background-color: #f4f6f9;">
+
+    <!-- Titre -->
+    <Text text="Gestion des Tutoriels"
+          style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-fill: #2c3e50;" />
+
+    <!-- Bouton Retour -->
+    <HBox alignment="CENTER_LEFT">
+        <Button text="← Retour" onAction="#handleBackToDashboard"
+                style="-fx-background-color: #e53935; -fx-text-fill: white;
+                       -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;
+                       -fx-padding: 6 15;" />
+    </HBox>
+
+    <!-- Formulaire -->
+    <GridPane hgap="15" vgap="15" style="-fx-padding: 10;">
+        <Label text="Nom :" GridPane.rowIndex="0" GridPane.columnIndex="0"
+               style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+        <TextField fx:id="nameField" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="250"/>
+
+        <Label text="Description :" GridPane.rowIndex="1" GridPane.columnIndex="0"
+               style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+        <TextArea fx:id="descriptionField" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                  prefRowCount="3" wrapText="true" />
+
+        <Label text="URL Vidéo :" GridPane.rowIndex="2" GridPane.columnIndex="0"
+               style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+        <TextField fx:id="videoUrlField" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+        <Label text="Recyclage associé :" GridPane.rowIndex="3" GridPane.columnIndex="0"
+               style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+        <ComboBox fx:id="recyclageCombo" GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="200"/>
+
+        <Label text="Utilisateur :" GridPane.rowIndex="4" GridPane.columnIndex="0"
+               style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+        <ComboBox fx:id="userCombo" GridPane.rowIndex="4" GridPane.columnIndex="1" prefWidth="200"/>
+    </GridPane>
+
+    <!-- Boutons -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="Ajouter" onAction="#handleAddTutoriel"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;
+                       -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;
+                       -fx-padding: 8 20;" />
+        <Button text="Modifier" onAction="#handleUpdateTutoriel"
+                style="-fx-background-color: #FFC107; -fx-text-fill: black;
+                       -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;
+                       -fx-padding: 8 20;" />
+        <Button text="Supprimer" onAction="#handleDeleteTutoriel"
+                style="-fx-background-color: #f44336; -fx-text-fill: white;
+                       -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;
+                       -fx-padding: 8 20;" />
+    </HBox>
+    
+    <!-- Ajoutez cette section avant le TableView -->
+<HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 0 0 10 0;">
+    <Label text="Filtrer par utilisateur:" 
+           style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+    <ComboBox fx:id="filterUserCombo" prefWidth="200"/>
+    <Button text="Filtrer" onAction="#handleFilterByUser"
+            style="-fx-background-color: #2196F3; -fx-text-fill: white;
+                   -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;
+                   -fx-padding: 6 15;"/>
+    <Button text="Réinitialiser" onAction="#handleResetFilter"
+            style="-fx-background-color: #9E9E9E; -fx-text-fill: white;
+                   -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;
+                   -fx-padding: 6 15;"/>
+</HBox>
+
+    <!-- Tableau -->
+    <TableView fx:id="tutorielTable" style="-fx-padding: 10;" prefHeight="300">
+        <columns>
+            <TableColumn fx:id="nameColumn" text="Nom"
+                         style="-fx-font-weight: bold; -fx-alignment: CENTER_LEFT;" />
+            <TableColumn fx:id="descriptionColumn" text="Description"
+                         style="-fx-font-weight: bold; -fx-alignment: CENTER_LEFT;" />
+            <TableColumn fx:id="videoColumn" text="Vidéo"
+                         style="-fx-font-weight: bold; -fx-alignment: CENTER_LEFT;" />
+            <TableColumn fx:id="recyclageColumn" text="Recyclage"
+                         style="-fx-font-weight: bold; -fx-alignment: CENTER_LEFT;" />
+            <TableColumn fx:id="userColumn" text="Utilisateur"
+                         style="-fx-font-weight: bold; -fx-alignment: CENTER_LEFT;" />
+        </columns>
+    </TableView>
+</VBox>

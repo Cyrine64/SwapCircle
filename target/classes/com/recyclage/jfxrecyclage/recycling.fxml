@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.cell.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.recyclage.jfxrecyclage.controllers.RecyclingController"
+      spacing="15" style="-fx-padding: 20; -fx-background-color: #f5f5f5;">
+
+    <!-- Titre -->
+    <Label text="Trouver des points de recyclage" 
+           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+    
+    <!-- Formulaire de recherche -->
+    <GridPane hgap="10" vgap="10" style="-fx-padding: 10; -fx-background-color: white; -fx-background-radius: 5;">
+        <Label text="Latitude:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="latField" GridPane.rowIndex="0" GridPane.columnIndex="1" 
+                   promptText="ex: 48.8566"/>
+        
+        <Label text="Longitude:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="lonField" GridPane.rowIndex="1" GridPane.columnIndex="1" 
+                   promptText="ex: 2.3522"/>
+        
+        <Label text="Rayon (km):" GridPane.rowIndex="2" GridPane.columnIndex="0"
+               style="-fx-font-weight: bold;"/>
+        <TextField fx:id="radiusField" GridPane.rowIndex="2" GridPane.columnIndex="1" 
+                   text="5"/>
+        
+        <Button text="Rechercher" onAction="#handleSearch" GridPane.rowIndex="3" GridPane.columnIndex="1"
+               style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;"/>
+    </GridPane>
+
+    <!-- Résultats -->
+    <TableView fx:id="pointsTable" style="-fx-background-color: white;">
+        <columns>
+            <TableColumn text="Nom" prefWidth="150">
+                <cellValueFactory>
+                    <PropertyValueFactory property="name"/>
+                </cellValueFactory>
+            </TableColumn>
+            
+            <TableColumn text="Adresse" prefWidth="250">
+                <cellValueFactory>
+                    <PropertyValueFactory property="address"/>
+                </cellValueFactory>
+            </TableColumn>
+            
+         <TableColumn text="Matériaux acceptés" prefWidth="200">
+    <cellValueFactory>
+        <PropertyValueFactory property="materialsString"/>
+    </cellValueFactory>
+</TableColumn>
+        </columns>
+    </TableView>
+
+    <!-- Boutons d'action -->
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Voir sur la carte" onAction="#handleViewOnMap"
+               style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        <Button text="Effacer les résultats" onAction="#handleClearResults"
+               style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;"/>
+    </HBox>
+    
+    <!-- Statut -->
+    <Label fx:id="statusLabel" style="-fx-font-style: italic; -fx-text-fill: #7f8c8d;"/>
+</VBox>

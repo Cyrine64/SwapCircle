@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.recyclage.jfxrecyclage.controllers.DashboardController">
+
+    <top>
+    <VBox spacing="10">
+        <HBox spacing="10" alignment="CENTER_LEFT"
+              style="-fx-background-color: #3F51B5; -fx-padding: 15;">
+            <Label text="Dashboard - Statistiques des Recyclages"
+                   style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;" />
+            <Region HBox.hgrow="ALWAYS" />
+        </HBox>
+        
+        <HBox alignment="CENTER_LEFT">
+            <Button text="← Retour" onAction="#handleBackToDashboard"
+                    style="-fx-background-color: #e53935; -fx-text-fill: white;
+                           -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;
+                           -fx-padding: 6 15;" />
+        </HBox>
+    </VBox>
+</top>
+
+
+    <center>
+        <VBox spacing="20" style="-fx-padding: 40;" alignment="CENTER">
+            <!-- Un seul PieChart correctement positionné -->
+            <PieChart fx:id="recyclagePieChart" title="Répartition des Types de Recyclage" 
+                      legendVisible="true" labelsVisible="true"
+                      prefWidth="500" prefHeight="400"/>
+        </VBox>
+    </center>
+
+</BorderPane>

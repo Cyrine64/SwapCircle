@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.recyclage.jfxrecyclage.controllers.RecyclageController"
+      spacing="20" style="-fx-padding: 30; -fx-background-color: #f4f6f9;" prefWidth="700">
+
+    <!-- Titre -->
+    <Text text="Gestion des Recyclages"
+          style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-fill: #2c3e50;" />
+
+    <!-- Bouton retour -->
+    <HBox alignment="CENTER_LEFT">
+        <Button text="← Retour" onAction="#handleBackToDashboard"
+                style="-fx-background-color: #e53935; -fx-text-fill: white;
+                       -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;
+                       -fx-padding: 6 15;" />
+    </HBox>
+
+    <!-- Formulaire -->
+    <GridPane hgap="15" vgap="15" style="-fx-padding: 10;">
+        <Label text="Type :" GridPane.rowIndex="0" GridPane.columnIndex="0"
+               style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+        <ComboBox fx:id="typeCombo" GridPane.rowIndex="0" GridPane.columnIndex="1" prefWidth="200"/>
+
+        <Label text="Commentaire :" GridPane.rowIndex="1" GridPane.columnIndex="0"
+               style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+        <TextArea fx:id="commentaireField" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                  prefRowCount="3" prefColumnCount="20" wrapText="true" />
+
+        <Label text="Date :" GridPane.rowIndex="2" GridPane.columnIndex="0"
+               style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+        <DatePicker fx:id="datePicker" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+        <Label text="Utilisateur :" GridPane.rowIndex="3" GridPane.columnIndex="0"
+               style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+        <ComboBox fx:id="userCombo" GridPane.rowIndex="3" GridPane.columnIndex="1" prefWidth="200"/>
+    </GridPane>
+
+    <!-- Boutons d'action -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="Ajouter" onAction="#handleAddRecyclage"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;
+                       -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;
+                       -fx-padding: 8 20;" />
+        <Button text="Modifier" onAction="#handleUpdateRecyclage"
+                style="-fx-background-color: #FFC107; -fx-text-fill: black;
+                       -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;
+                       -fx-padding: 8 20;" />
+        <Button text="Supprimer" onAction="#handleDeleteRecyclage"
+                style="-fx-background-color: #f44336; -fx-text-fill: white;
+                       -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;
+                       -fx-padding: 8 20;" />
+    </HBox>
+
+    <!-- Tableau -->
+    <TableView fx:id="recyclageTable" style="-fx-padding: 10;" prefHeight="300">
+        <columns>
+            <TableColumn fx:id="idColumn" text="ID"
+                         style="-fx-font-weight: bold; -fx-alignment: CENTER;" />
+            <TableColumn fx:id="typeColumn" text="Type"
+                         style="-fx-font-weight: bold; -fx-alignment: CENTER_LEFT;" />
+            <TableColumn fx:id="commentaireColumn" text="Commentaire"
+                         style="-fx-font-weight: bold; -fx-alignment: CENTER_LEFT;" />
+            <TableColumn fx:id="dateColumn" text="Date"
+                         style="-fx-font-weight: bold; -fx-alignment: CENTER;" />
+            <TableColumn fx:id="userColumn" text="Utilisateur"
+                         style="-fx-font-weight: bold; -fx-alignment: CENTER_LEFT;" />
+        </columns>
+    </TableView>
+</VBox>
