@@ -19,11 +19,11 @@ class Commentaire
     #[ORM\JoinColumn(name: "id_article", referencedColumnName: "id_article", nullable: false)]
     private ?Blog $article = null;
 
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "commentaires")]
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
-    #[ORM\ManyToOne(targetEntity: Objet::class)]
+    #[ORM\ManyToOne(targetEntity: Objet::class, inversedBy: "commentaires")]
     #[ORM\JoinColumn(name: "id_objet", referencedColumnName: "id_objet", nullable: false)]
     private ?Objet $objet = null;
 

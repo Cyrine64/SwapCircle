@@ -7,7 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Entity\TypeReclamation;
 use App\Entity\Utilisateur;
-use App\Entity\Reponse;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: ReclamationRepository::class)]
 #[ORM\Table(name: "reclamation")]
@@ -18,7 +19,7 @@ class Reclamation
     #[ORM\Column(name: 'id_reclamation')]
     private ?int $idReclamation = null;
 
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "reclamations")]
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
@@ -51,8 +52,14 @@ class Reclamation
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $categorie = null;
 
-    #[ORM\OneToOne(targetEntity: Reponse::class, mappedBy: "reclamation", cascade: ["persist", "remove"])]
-    private ?Reponse $reponse = null;
+    #[ORM\OneToMany(mappedBy: "reclamation", targetEntity: Reponse::class)]
+    private Collection $reponses;
+
+    public function __construct()
+    {
+        // Constructor
+        $this->reponses = new ArrayCollection();
+    }
 
     // Getters and setters
     public function getIdReclamation(): ?int
@@ -159,14 +166,12 @@ class Reclamation
         return $this;
     }
 
-    public function getReponse(): ?Reponse
+    /**
+     * @return Collection<int, Reponse>
+     */
+    public function getReponses(): Collection
     {
-        return $this->reponse;
+        return $this->reponses;
     }
-
-    public function setReponse(?Reponse $reponse): self
-    {
-        $this->reponse = $reponse;
-        return $this;
-    }
+    
 }

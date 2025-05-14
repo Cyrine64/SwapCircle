@@ -15,10 +15,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: "integer")]
-    private ?int $id_user = null;
+    #[ORM\Column(name: "id", type: "integer")]
+    private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: "name", length: 255)]
     #[Assert\NotBlank(message: "Name cannot be empty.")]
     #[Assert\Length(min: 2, max: 255)]
     private ?string $name = null;
@@ -28,46 +28,49 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 2, max: 255)]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(name: "email", length: 255, unique: true)]
     #[Assert\NotBlank(message: "Email is required.")]
     #[Assert\Email()]
     private ?string $email = null;
 
-    #[ORM\Column(type: "string", length: 255)]
+    #[ORM\Column(name: "password", type: "string", length: 255)]
     #[Assert\NotBlank(message: "Password is required.")]
     private ?string $password = null;
-
-    #[ORM\Column(type: "json")]
-    private array $roles = [];
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    
+    #[ORM\Column(name: "role", type: "string", length: 50)]
+    private string $role = '["ROLE_USER"]';
+    
+    #[ORM\Column(name: "last_activity", type: 'datetime', nullable: true)]
     private ?\DateTimeInterface $lastActivity = null;
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function syncRolesAndAdminVerified(): void
     {
-        if (in_array('ROLE_ADMIN', $this->roles)) {
+        if (in_array('ROLE_ADMIN', $this->getRoles())) {
             $this->adminVerified = true;
         } else {
             $this->adminVerified = false;
         }
     }
 
-    #[ORM\Column(type: "boolean", options: ["default" => true])]
+    #[ORM\Column(name: "is_enabled", type: "boolean", options: ["default" => true])]
     private bool $isEnabled = true;
 
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    #[ORM\Column(name: "admin_verified", type: 'boolean', options: ['default' => false])]
     private bool $adminVerified = false;
+    
+    #[ORM\Column(name: "reset_token", type: "string", length: 255, nullable: true)]
+    private ?string $resetToken = null;
 
     public function __construct()
     {
-        $this->roles = ['ROLE_USER'];
-      
+        $this->role = '["ROLE_USER"]';
     }
 
     public function getId(): ?int
     {
-        return $this->id_user;
+        return $this->id;
     }
 
     public function getName(): ?string
@@ -116,20 +119,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        $roles = $this->roles; // Get stored roles
-    
-        if ($this->adminVerified && !in_array('ROLE_ADMIN', $roles)) {
-            $roles[] = 'ROLE_ADMIN'; // Ensure ROLE_ADMIN is included
+        if ($this->role === 'admin') {
+            return ['ROLE_ADMIN', 'ROLE_USER'];
         }
+        
+        try {
+            $roles = json_decode($this->role, true) ?: [];
+            if (!is_array($roles)) {
+                return ['ROLE_USER'];
+            }
+            return $roles;
+        } catch (\Exception $e) {
+            return ['ROLE_USER'];
+        }
+    }
     
-        return array_unique($roles);
-    }public function setRoles(array $roles): self
+    public function setRoles(array $roles): self
     {
-        $this->roles = $roles;
-    
-        // Ensure admin_verified matches ROLE_ADMIN presence
-        $this->admin_verified = in_array('ROLE_ADMIN', $roles);
-    
+        if (in_array('ROLE_ADMIN', $roles)) {
+            $this->role = 'admin';
+        } else {
+            $this->role = json_encode($roles);
+        }
+        
+        $this->adminVerified = in_array('ROLE_ADMIN', $roles);
         return $this;
     }
 
@@ -143,6 +156,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->lastActivity = $lastActivity;
         return $this;
     }
+    
     public function getIsEnabled(): bool
     {
         return $this->isEnabled;
@@ -161,18 +175,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setAdminVerified(bool $adminVerified): self
     {
-        $this->admin_verified = $adminVerified;
-    
+        $this->adminVerified = $adminVerified;
+        
         if ($adminVerified) {
-            // Ensure the user has ROLE_ADMIN if verified
-            if (!in_array('ROLE_ADMIN', $this->roles)) {
-                $this->roles[] = 'ROLE_ADMIN';
-            }
-        } else {
-            // Remove ROLE_ADMIN if not verified
-            $this->roles = array_diff($this->roles, ['ROLE_ADMIN']);
+            $this->role = 'admin';
+        } elseif ($this->role === 'admin') {
+            $this->role = '["ROLE_USER"]';
         }
+        
+        return $this;
+    }
     
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+    
+    public function setResetToken(?string $resetToken): self
+    {
+        $this->resetToken = $resetToken;
         return $this;
     }
 

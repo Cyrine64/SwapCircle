@@ -9,4 +9,5 @@ enum TypeReclamation : string
     case Objet = 'sur objet';
     case Echange = 'sur échange';
     case Recyclage = 'sur recyclage';
+    case EchangeNonHonore = 'Échange non honoré';
 }

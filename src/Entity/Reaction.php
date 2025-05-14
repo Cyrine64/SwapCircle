@@ -6,6 +6,7 @@ use App\Repository\ReactionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ReactionRepository::class)]
+#[ORM\Table(name: "reaction")]
 class Reaction
 {
     #[ORM\Id]
@@ -17,7 +18,7 @@ class Reaction
     #[ORM\JoinColumn(name: "blog_id", referencedColumnName: "id_article", nullable: false)]
     private ?Blog $blog = null;
 
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "reactions")]
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?Utilisateur $user = null;
 

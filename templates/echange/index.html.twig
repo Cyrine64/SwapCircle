@@ -47,18 +47,24 @@
                                             {% set status_labels = {
                                                 'en_attente': 'En attente',
                                                 'accepte': 'Accepté',
-                                                'refuse': 'Refusé'
+                                                'refuse': 'Refusé',
+                                                'En attente': 'En attente',
+                                                'Accepté': 'Accepté',
+                                                'Refusé': 'Refusé'
                                             } %}
                                             
                                             {% set status_classes = {
                                                 'en_attente': 'bg-warning-soft text-warning',
                                                 'accepte': 'bg-success-soft text-success',
-                                                'refuse': 'bg-danger-soft text-danger'
+                                                'refuse': 'bg-danger-soft text-danger',
+                                                'En attente': 'bg-warning-soft text-warning',
+                                                'Accepté': 'bg-success-soft text-success',
+                                                'Refusé': 'bg-danger-soft text-danger'
                                             } %}
                                             
                                             {% set current_status = echange.getStatut() %}
                                             <span class="badge rounded-pill {{ status_classes[current_status] }}">
-                                                <i class="fas {% if current_status == 'en_attente' %}fa-clock{% elseif current_status == 'accepte' %}fa-check-circle{% else %}fa-times-circle{% endif %} me-1"></i>
+                                                <i class="fas {% if current_status == 'en_attente' or current_status == 'En attente' %}fa-clock{% elseif current_status == 'accepte' or current_status == 'Accepté' %}fa-check-circle{% else %}fa-times-circle{% endif %} me-1"></i>
                                                 {{ status_labels[current_status] }}
                                             </span>
                                         </div>

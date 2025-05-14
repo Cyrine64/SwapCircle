@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: ObjetRepository::class)]
-#[ORM\Table(name: "objet")]
+#[ORM\Table(name: "objets")]
 class Objet
 {
     #[ORM\Id]
@@ -64,13 +64,13 @@ class Objet
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?Utilisateur $id_utilisateur = null;
 
-    #[ORM\OneToMany(mappedBy: "id_objet", targetEntity: Echange::class)]
+    #[ORM\OneToMany(mappedBy: "objet", targetEntity: Echange::class)]
     private Collection $echanges;
 
-    #[ORM\OneToMany(mappedBy: "id_objet", targetEntity: Recyclage::class)]
+    #[ORM\OneToMany(mappedBy: "objet", targetEntity: Recyclage::class)]
     private Collection $recyclages;
 
-    #[ORM\OneToMany(mappedBy: "id_objet", targetEntity: Commentaire::class)]
+    #[ORM\OneToMany(mappedBy: "objet", targetEntity: Commentaire::class)]
     private Collection $commentaires;
 
     // Getters and setters

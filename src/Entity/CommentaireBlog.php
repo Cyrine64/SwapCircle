@@ -9,6 +9,7 @@ use App\Entity\Utilisateur;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CommentaireBlogRepository::class)]
+#[ORM\Table(name: "commentaire_blog")]
 class CommentaireBlog
 {
     #[ORM\Id]
@@ -27,9 +28,9 @@ class CommentaireBlog
     #[ORM\JoinColumn(name: 'blog_id', referencedColumnName: 'id_article', nullable: false)]
     private ?Blog $blog = null;
 
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
-#[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
-private ?Utilisateur $user = null;
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "commentairesBlog")]
+    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
+    private ?Utilisateur $user = null;
 
 
     public function __construct()

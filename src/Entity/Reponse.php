@@ -19,7 +19,7 @@ class Reponse
     #[ORM\JoinColumn(name: "id_reclamation", referencedColumnName: "id_reclamation", nullable: false)]
     private ?Reclamation $reclamation = null;
 
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "reponses")]
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?Utilisateur $utilisateur = null;
 

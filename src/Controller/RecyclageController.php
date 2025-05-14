@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Recyclage;
 use App\Repository\RecyclageRepository;
 use App\Repository\ObjetRepository;
-
+use App\Form\RecyclageType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use App\Repository\UtilisateurRepository;
+use App\Repository\UserRepository;
+use App\Entity\User;
 
 class RecyclageController extends AbstractController
 {
@@ -156,7 +158,7 @@ public function edit(Request $request, Recyclage $recyclage, EntityManagerInterf
 */
 
 #[Route('/recyclages/{id}/edit', name: 'recyclage_edit', methods: ['GET', 'POST'])]
-public function edit(Request $request, Recyclage $recyclage, EntityManagerInterface $entityManager, ObjetRepository $objetRepository): Response
+public function edit(Request $request, Recyclage $recyclage, EntityManagerInterface $entityManager): Response
 {
     // Vérifie si le recyclage existe
     if (!$recyclage) {
@@ -164,35 +166,19 @@ public function edit(Request $request, Recyclage $recyclage, EntityManagerInterf
         return $this->redirectToRoute('recyclage_index');
     }
 
-    if ($request->isMethod('POST')) {
-        // Récupère l'ID de l'objet depuis le formulaire
-        $objetId = $request->request->get('objet');
-        $objet = $objetRepository->find($objetId);
+    $form = $this->createForm(RecyclageType::class, $recyclage);
+    $form->handleRequest($request);
 
-        if (!$objet) {
-            $this->addFlash('error', 'Objet non trouvé.');
-            return $this->redirectToRoute('recyclage_edit', ['id' => $recyclage->getIdRecyclage()]);
-        }
-
-        // Mise à jour des données du recyclage
-        $recyclage->setObjet($objet);
-        $recyclage->setTypeRecyclage($request->request->get('typeRecyclage'));
-        $recyclage->setCommentaire($request->request->get('commentaire'));
-
-        // Sauvegarde en base de données
-        $entityManager->persist($recyclage);
+    if ($form->isSubmitted() && $form->isValid()) {
         $entityManager->flush();
 
         $this->addFlash('success', 'Recyclage mis à jour avec succès.');
         return $this->redirectToRoute('recyclage_index');
     }
 
-    // Récupère tous les objets pour la liste déroulante
-    $objets = $objetRepository->findAll();
-
     return $this->render('recyclage/edit.html.twig', [
         'recyclage' => $recyclage,
-        'objets' => $objets,
+        'form' => $form->createView(),
     ]);
 }
 
@@ -201,7 +187,7 @@ public function edit(Request $request, Recyclage $recyclage, EntityManagerInterf
     #[Route('/recyclages/{id}/delete', name: 'recyclage_delete', methods: ['POST'])]
     public function delete(Request $request, Recyclage $recyclage, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $recyclage->getIdRecyclage(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $recyclage->getId(), $request->request->get('_token'))) {
             $entityManager->remove($recyclage);
             $entityManager->flush();
         }
@@ -210,45 +196,27 @@ public function edit(Request $request, Recyclage $recyclage, EntityManagerInterf
     }
 
     #[Route('/recyclage/new', name: 'recyclage_new')]
-    public function new(Request $request, EntityManagerInterface $em, UtilisateurRepository $utilisateurRepo, ObjetRepository $objetRepo): Response
+    public function new(Request $request, EntityManagerInterface $em): Response
     {
         $recyclage = new Recyclage();
+        $form = $this->createForm(RecyclageType::class, $recyclage);
+        $form->handleRequest($request);
 
-        // Récupérer tous les utilisateurs et objets
-        $utilisateurs = $utilisateurRepo->findAll();
-        $objets = $objetRepo->findAll();
-
-        if ($request->isMethod('POST')) {
-            $idUtilisateur = $request->request->get('utilisateur');
-            $idObjet = $request->request->get('objet');
-            $typeRecyclage = $request->request->get('typeRecyclage');
-            $commentaire = $request->request->get('commentaire');
-            $dateRecyclage = new \DateTime(); // Date actuelle
-
-            $utilisateur = $utilisateurRepo->find($idUtilisateur);
-            $objet = $objetRepo->find($idObjet);
-
-            if ($utilisateur && $objet) {
-                $recyclage->setUtilisateur($utilisateur)
-                          ->setObjet($objet)
-                          ->setTypeRecyclage($typeRecyclage)
-                          ->setCommentaire($commentaire)
-                          ->setDateRecyclage($dateRecyclage);
-
-                $em->persist($recyclage);
-                $em->flush();
-
-                $this->addFlash('success', 'Recyclage ajouté avec succès !');
-                return $this->redirectToRoute('recyclage_index');
-            } else {
-                $this->addFlash('error', 'Utilisateur ou Objet non trouvé.');
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Set date to current date if not provided
+            if (!$recyclage->getDateRecyclage()) {
+                $recyclage->setDateRecyclage(new \DateTime());
             }
+            
+            $em->persist($recyclage);
+            $em->flush();
+
+            $this->addFlash('success', 'Recyclage ajouté avec succès !');
+            return $this->redirectToRoute('recyclage_index');
         }
 
-        // Transmettre les utilisateurs et objets au template
         return $this->render('recyclage/new.html.twig', [
-            'utilisateurs' => $utilisateurs,
-            'objets' => $objets,
+            'form' => $form->createView(),
         ]);
     }
     

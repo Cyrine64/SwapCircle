@@ -6,6 +6,7 @@ use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ORM\Table(name: "utilisateur")]
@@ -42,35 +43,38 @@ class Utilisateur
     #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Objet::class)]
     private Collection $objets;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Reclamation::class)]
+    #[ORM\OneToMany(mappedBy: "utilisateur", targetEntity: Reclamation::class)]
     private Collection $reclamations;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Blog::class)]
-    private Collection $blogs;
-
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Commentaire::class)]
+    #[ORM\OneToMany(mappedBy: "utilisateur", targetEntity: Commentaire::class)]
     private Collection $commentaires;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Reponse::class)]
+    #[ORM\OneToMany(mappedBy: "utilisateur", targetEntity: Reponse::class)]
     private Collection $reponses;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Recyclage::class)]
-    private Collection $recyclages;
-
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Echange::class)]
+    #[ORM\OneToMany(mappedBy: "utilisateur", targetEntity: Echange::class)]
     private Collection $echanges;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Tutorial::class)]
-    private Collection $tutorials;
-
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: BlogLike::class)]
+    #[ORM\OneToMany(mappedBy: "utilisateur", targetEntity: BlogLike::class)]
     private Collection $blogLikes;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: CommentaireBlog::class)]
+    #[ORM\OneToMany(mappedBy: "user", targetEntity: CommentaireBlog::class)]
     private Collection $commentairesBlog;
 
-    #[ORM\OneToMany(mappedBy: "id_utilisateur", targetEntity: Reaction::class)]
+    #[ORM\OneToMany(mappedBy: "user", targetEntity: Reaction::class)]
     private Collection $reactions;
+
+    public function __construct()
+    {
+        $this->objets = new ArrayCollection();
+        $this->reclamations = new ArrayCollection();
+        $this->commentaires = new ArrayCollection();
+        $this->reponses = new ArrayCollection();
+        $this->echanges = new ArrayCollection();
+        $this->blogLikes = new ArrayCollection();
+        $this->commentairesBlog = new ArrayCollection();
+        $this->reactions = new ArrayCollection();
+    }
 
     // Getters and setters
     public function getIdUtilisateur(): ?int

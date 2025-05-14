@@ -42,8 +42,8 @@
                     <tbody>
                         {% for recyclage in recyclages %}
                             <tr class="hover:bg-blue-50 transition-colors duration-200">
-                                <td class="border px-4 py-2">{{ recyclage.idRecyclage }}</td>
-                                <td class="border px-4 py-2">{{ recyclage.utilisateur.nom }}</td>
+                                <td class="border px-4 py-2">{{ recyclage.id }}</td>
+                                <td class="border px-4 py-2">{{ recyclage.user.name }}</td>
                                 <td class="border px-4 py-2">{{ recyclage.objet.nom }}</td>
                                 <td class="border px-4 py-2">{{ recyclage.typeRecyclage }}</td>
                                 <td class="border px-4 py-2">{{ recyclage.dateRecyclage ? recyclage.dateRecyclage|date('d/m/Y') : '' }}</td>
@@ -52,14 +52,14 @@
                                 </td>
                                 <td class="border px-4 py-2 flex space-x-2">
                                     <!-- Bouton Détails -->
-                                    <a href="{{ path('recyclage_show', { 'id': recyclage.idRecyclage }) }}"
+                                    <a href="{{ path('recyclage_show', { 'id': recyclage.id }) }}"
                                        class="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-2 rounded shadow no-underline flex items-center">
                                         <i class="fa fa-eye mr-1"></i>
                                         Détails
                                     </a>
 
                                     <!-- Bouton Modifier -->
-                                    <a href="{{ path('recyclage_edit', { 'id': recyclage.idRecyclage }) }}"
+                                    <a href="{{ path('recyclage_edit', { 'id': recyclage.id }) }}"
                                        class="bg-yellow-500 text-white font-bold py-1 px-2 rounded shadow no-underline flex items-center">
                                         <i class="fa fa-edit mr-1"></i>
                                         Modifier
@@ -67,10 +67,10 @@
 
                                     <!-- Bouton Supprimer -->
                                     <form method="post"
-                                          action="{{ path('recyclage_delete', { 'id': recyclage.idRecyclage }) }}"
+                                          action="{{ path('recyclage_delete', { 'id': recyclage.id }) }}"
                                           style="display:inline;" 
                                           onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recyclage.idRecyclage) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ recyclage.id) }}">
                                         <button type="submit"
                                                 class="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded shadow flex items-center">
                                             <i class="fa fa-trash mr-1"></i>

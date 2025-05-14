@@ -7,32 +7,32 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TutorialRepository::class)]
-#[ORM\Table(name: "tutorial")]
+#[ORM\Table(name: "tutoriel")]
 class Tutorial
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(name: "id_tutorial")]
     private ?int $id_tutorial = null;
 
-    #[ORM\Column(type: 'text')]
+    #[ORM\Column(name: "description", type: 'text')]
     #[Assert\NotBlank]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: "vid_url", length: 255)]
     #[Assert\NotBlank]
     private ?string $vid_URL = null;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(name: "date_creation", type: 'datetime')]
     private ?\DateTimeInterface $date_creation = null;
 
     #[ORM\ManyToOne(targetEntity: Recyclage::class)]
-    #[ORM\JoinColumn(name: "id_recyclage", referencedColumnName: "id_recyclage", nullable: false)]
+    #[ORM\JoinColumn(name: "id_recyclage", referencedColumnName: "id", nullable: false)]
     private ?Recyclage $recyclage = null;
 
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
-    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
-    private ?Utilisateur $utilisateur = null;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false)]
+    private ?User $user = null;
 
     // Getters and setters
     public function getIdTutorial(): ?int
@@ -84,14 +84,14 @@ class Tutorial
         return $this;
     }
 
-    public function getUtilisateur(): ?Utilisateur
+    public function getUser(): ?User
     {
-        return $this->utilisateur;
+        return $this->user;
     }
 
-    public function setUtilisateur(?Utilisateur $utilisateur): self
+    public function setUser(?User $user): self
     {
-        $this->utilisateur = $utilisateur;
+        $this->user = $user;
         return $this;
     }
 }

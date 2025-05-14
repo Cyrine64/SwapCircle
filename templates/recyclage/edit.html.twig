@@ -6,21 +6,34 @@
 <div class="p-8 bg-white shadow-md rounded-lg">
     <h1 class="text-3xl font-bold mb-4">Modifier le Recyclage</h1>
 
-    <form method="post">
+    {% for message in app.flashes('error') %}
+        <div class="bg-red-100 text-red-700 p-2 rounded mb-4">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in app.flashes('success') %}
+        <div class="bg-green-100 text-green-700 p-2 rounded mb-4">{{ message }}</div>
+    {% endfor %}
+
+    {{ form_start(form) }}
         <div class="space-y-4">
             <div>
-                <label class="block font-medium">Objet</label>
-                <input type="text" name="objet" value="{{ recyclage.objet.nom }}" class="w-full border border-gray-300 p-2 rounded">
+                {{ form_row(form.objet, {'attr': {'class': 'w-full border border-gray-300 p-2 rounded'}}) }}
             </div>
 
             <div>
-                <label class="block font-medium">Type de Recyclage</label>
-                <input type="text" name="typeRecyclage" value="{{ recyclage.typeRecyclage }}" class="w-full border border-gray-300 p-2 rounded">
+                {{ form_row(form.type_recyclage, {'attr': {'class': 'w-full border border-gray-300 p-2 rounded'}}) }}
             </div>
 
             <div>
-                <label class="block font-medium">Commentaire</label>
-                <textarea name="commentaire" class="w-full border border-gray-300 p-2 rounded">{{ recyclage.commentaire }}</textarea>
+                {{ form_row(form.commentaire, {'attr': {'class': 'w-full border border-gray-300 p-2 rounded'}}) }}
+            </div>
+            
+            <div>
+                {{ form_row(form.date_recyclage, {'attr': {'class': 'w-full border border-gray-300 p-2 rounded'}}) }}
+            </div>
+            
+            <div>
+                {{ form_row(form.user, {'attr': {'class': 'w-full border border-gray-300 p-2 rounded'}}) }}
             </div>
         </div>
 
@@ -32,6 +45,6 @@
                 Annuler
             </a>
         </div>
-    </form>
+    {{ form_end(form) }}
 </div>
 {% endblock %}

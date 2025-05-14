@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EchangeRepository::class)]
-#[ORM\Table(name: "echange")]
+#[ORM\Table(name: "echanges")]
 class Echange
 {
     #[ORM\Id]
@@ -15,11 +15,11 @@ class Echange
     #[ORM\Column]
     private ?int $id_echange = null;
 
-    #[ORM\ManyToOne(targetEntity: Objet::class)]
+    #[ORM\ManyToOne(targetEntity: Objet::class, inversedBy: "echanges")]
     #[ORM\JoinColumn(name: "id_objet", referencedColumnName: "id_objet", nullable: false)]
     private ?Objet $objet = null;
 
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: "echanges")]
     #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
     private ?Utilisateur $utilisateur = null;
 
@@ -49,7 +49,7 @@ class Echange
 
     #[ORM\Column(length: 20)]
     #[Assert\NotBlank(message: 'Le statut ne peut pas être vide')]
-    #[Assert\Choice(choices: ['en_attente', 'accepte', 'refuse'])]
+    #[Assert\Choice(choices: ['en_attente', 'accepte', 'refuse', 'En attente', 'Accepté', 'Refusé'])]
     private string $statut = 'en_attente';
 
     // Getters and setters

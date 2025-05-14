@@ -12,47 +12,64 @@ class Recyclage
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id_recyclage = null;
+    #[ORM\Column(name: "id")]
+    private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
-    #[ORM\JoinColumn(name: "id_utilisateur", referencedColumnName: "id_utilisateur", nullable: false)]
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: "user_id", referencedColumnName: "id", nullable: false)]
     #[Assert\NotNull(message: "L'utilisateur est requis.")]
-    private ?Utilisateur $utilisateur = null;
+    private ?User $user = null;
 
-    #[ORM\ManyToOne(targetEntity: Objet::class)]
+    #[ORM\ManyToOne(targetEntity: Objet::class, inversedBy: "recyclages")]
     #[ORM\JoinColumn(name: "id_objet", referencedColumnName: "id_objet", nullable: false)]
     #[Assert\NotNull(message: "L'objet est requis.")]
     private ?Objet $objet = null;
 
-    #[ORM\Column(length: 50)]
+    #[ORM\Column(name: "type_recyclage", length: 50)]
     #[Assert\NotBlank(message: "Le type de recyclage est requis.")]
     private ?string $type_recyclage = null;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column(name: "date_recyclage", type: 'datetime')]
     #[Assert\NotNull(message: "La date de recyclage est requise.")]
     private ?\DateTimeInterface $date_recyclage = null;
 
-    #[ORM\Column(type: 'text', nullable: true)] 
+    #[ORM\Column(name: "commentaire", type: 'text', nullable: true)] 
     private ?string $commentaire = null;
 
     // Getters and setters
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+    
+    // Alias method for maintaining compatibility
+    public function getUtilisateur(): ?User
+    {
+        return $this->user;
+    }
+    
+    // Alias method for maintaining compatibility
+    public function setUtilisateur(?User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
+    
+    // Alias method for maintaining compatibility
     public function getIdRecyclage(): ?int
     {
-        return $this->id_recyclage;
-    }
-
-
-
-    public function getUtilisateur(): ?Utilisateur
-    {
-        return $this->utilisateur;
-    }
-
-    public function setUtilisateur(?Utilisateur $utilisateur): self
-    {
-        $this->utilisateur = $utilisateur;
-        return $this;
+        return $this->id;
     }
 
     public function getObjet(): ?Objet

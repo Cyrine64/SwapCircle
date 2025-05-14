@@ -25,6 +25,7 @@ class ReclamationType extends AbstractType
                     TypeReclamation::Objet => 'Problème Objet',
                     TypeReclamation::Echange => 'Problème Échange',
                     TypeReclamation::Recyclage => 'Problème Recyclage',
+                    TypeReclamation::EchangeNonHonore => 'Échange Non Honoré',
                 },
                 'expanded' => false, // Utiliser true pour des boutons radio
                 'multiple' => false, // true si plusieurs sélections autorisées

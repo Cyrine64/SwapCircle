@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Reclamation;
+use App\Entity\Reponse;
 use App\Form\ReclamationType;
 use App\Repository\ReclamationRepository;
 use App\Service\ReclamationAnalyzer;
@@ -30,7 +31,7 @@ class ReclamationController extends AbstractController
     public function index(ReclamationRepository $reclamationRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $query = $reclamationRepository->createQueryBuilder('r')
-            ->leftJoin('r.reponse', 'rep')
+            ->leftJoin('r.reponses', 'rep')
             ->addSelect('rep')
             ->orderBy('r.date_reclamation', 'DESC')
             ->getQuery();
