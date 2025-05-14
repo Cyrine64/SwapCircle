@@ -136,11 +136,11 @@ Explorez l’application selon votre rôle attribué.
 
 | Nom              | Profile  Github                                            |
 |-------------------|--------------------------------------------------------------|
-| [oussema zemzem](https://github.com/souhekh)         | 🔗 |
-| [yassine saoud](https://github.com/rayenayed2002)       | 🔗 |
-| [cyrine merie](https://github.com/iborntowin)       | 🔗 |
-| [chaima fraj](https://github.com/MalikGACHAR)       | 🔗 |
-| [hamza omar](https://github.com/Khalil-Lm)         | 🔗 |
+| [oussema zemzem](https://github.com/oussemazemzem)         | 🔗 |
+| [yassine saoud](https://github.com/yassinesaoud)       | 🔗 |
+| [cyrine merie](https://github.com/cyrine64)       | 🔗 |
+| [chaima fraj](https://github.com/chaimafraj)       | 🔗 |
+| [hamza omar](https://github.com/OmarHamza044)         | 🔗 |
 | **Coach:** [belkneni maroua](https://github.com/BenKhalifaGHADA) | 🔗 |
 
 ---
@@ -149,7 +149,7 @@ Explorez l’application selon votre rôle attribué.
 
 **ESPRIT - École Supérieure Privée d'Ingénierie et de Technologies**
 
-![Logo ESPRIT](public/uploads/esprit.jpg)
+![Logo ESPRIT](esprit.jpg)
 
 
 ## 📄 License
