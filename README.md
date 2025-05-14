@@ -46,8 +46,8 @@ EcoSwap est une application complète de gestion d'échange d'objets et de recyc
 
 ```bash
 # 1. Cloner le dépôt
-git clone https://github.com/rayenayed2002/GoldenTouch-Symfony.git
-cd GoldenTouch-Symfony
+git clone https://github.com/Cyrine64/SwapCircle.git
+cd SwapCircle-Symfony
 
 # 2. Installer les dépendances PHP
 composer install
