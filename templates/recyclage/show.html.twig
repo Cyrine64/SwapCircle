@@ -13,31 +13,56 @@
             <div class="max-w-3xl mx-auto bg-white bg-opacity-90 backdrop-blur-sm rounded-lg shadow-lg p-6">
                 <h1 class="text-3xl font-bold text-gray-800 mb-6">Détails du Recyclage</h1>
 
-                <!-- Liste des détails -->
-                <div class="space-y-4">
-                    <div class="border-b border-gray-200 pb-4">
-                        <strong class="block text-gray-700">ID :</strong>
-                        <span class="text-gray-900">{{ recyclage.id }}</span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Colonne gauche: informations de recyclage -->
+                    <div class="space-y-4">
+                        <div class="border-b border-gray-200 pb-4">
+                            <strong class="block text-gray-700">ID :</strong>
+                            <span class="text-gray-900">{{ recyclage.id }}</span>
+                        </div>
+                        <div class="border-b border-gray-200 pb-4">
+                            <strong class="block text-gray-700">Utilisateur :</strong>
+                            <span class="text-gray-900">{{ recyclage.user.name }}</span>
+                        </div>
+                        <div class="border-b border-gray-200 pb-4">
+                            <strong class="block text-gray-700">Objet :</strong>
+                            <span class="text-gray-900">{{ recyclage.objet.nom }}</span>
+                        </div>
+                        <div class="border-b border-gray-200 pb-4">
+                            <strong class="block text-gray-700">Type de Recyclage :</strong>
+                            <span class="text-gray-900">{{ recyclage.typeRecyclage }}</span>
+                        </div>
+                        <div class="border-b border-gray-200 pb-4">
+                            <strong class="block text-gray-700">Date :</strong>
+                            <span class="text-gray-900">{{ recyclage.dateRecyclage ? recyclage.dateRecyclage|date('d/m/Y') : 'Non spécifiée' }}</span>
+                        </div>
+                        <div class="border-b border-gray-200 pb-4">
+                            <strong class="block text-gray-700">Commentaire :</strong>
+                            <span class="text-gray-900">{{ recyclage.commentaire }}</span>
+                        </div>
                     </div>
-                    <div class="border-b border-gray-200 pb-4">
-                        <strong class="block text-gray-700">Utilisateur :</strong>
-                        <span class="text-gray-900">{{ recyclage.user.name }}</span>
-                    </div>
-                    <div class="border-b border-gray-200 pb-4">
-                        <strong class="block text-gray-700">Objet :</strong>
-                        <span class="text-gray-900">{{ recyclage.objet.nom }}</span>
-                    </div>
-                    <div class="border-b border-gray-200 pb-4">
-                        <strong class="block text-gray-700">Type de Recyclage :</strong>
-                        <span class="text-gray-900">{{ recyclage.typeRecyclage }}</span>
-                    </div>
-                    <div class="border-b border-gray-200 pb-4">
-                        <strong class="block text-gray-700">Date :</strong>
-                        <span class="text-gray-900">{{ recyclage.dateRecyclage ? recyclage.dateRecyclage|date('d/m/Y') : 'Non spécifiée' }}</span>
-                    </div>
-                    <div class="border-b border-gray-200 pb-4">
-                        <strong class="block text-gray-700">Commentaire :</strong>
-                        <span class="text-gray-900">{{ recyclage.commentaire }}</span>
+
+                    <!-- Colonne droite: QR code -->
+                    <div class="flex flex-col items-center justify-center p-4 bg-gray-100 rounded-lg">
+                        {% if qr_code_data %}
+                            <div class="text-center mb-4">
+                                <h3 class="text-lg font-medium text-gray-800 mb-2">Code QR du Recyclage</h3>
+                                <p class="text-sm text-gray-600">Scannez ce code pour accéder aux informations</p>
+                            </div>
+                            <img src="{{ qr_code_data }}" alt="QR Code du Recyclage" class="w-48 h-48 border border-gray-300 p-2 bg-white rounded-lg shadow-sm">
+                            <div class="mt-4">
+                                <a href="{{ qr_code_data }}" download="recyclage-{{ recyclage.id }}.png" class="text-blue-600 hover:text-blue-800 text-sm flex items-center mt-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    Télécharger
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="text-center p-4 bg-yellow-100 rounded-lg">
+                                <p class="text-yellow-700">Impossible de générer le code QR pour ce recyclage.</p>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 

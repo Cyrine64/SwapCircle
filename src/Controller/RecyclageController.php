@@ -15,6 +15,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use App\Repository\UtilisateurRepository;
 use App\Repository\UserRepository;
 use App\Entity\User;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class RecyclageController extends AbstractController
 {
@@ -75,17 +77,62 @@ public function index(RecyclageRepository $recyclageRepository): Response
 
 
     #[Route('/recyclages/{id<\d+>}', name: 'recyclage_show', methods: ['GET'])]
-    public function show(RecyclageRepository $recyclageRepository, int $id): Response
+    public function show(RecyclageRepository $recyclageRepository, int $id, HttpClientInterface $httpClient): Response
     {
         $recyclage = $recyclageRepository->find($id);
     
         if (!$recyclage) {
             throw $this->createNotFoundException('Recyclage non trouvé.');
         }
+        
+        // Generate QR code data
+        $qrCodeData = $this->generateQrCodeData($recyclage, $httpClient);
     
         return $this->render('recyclage/show.html.twig', [
             'recyclage' => $recyclage,
+            'qr_code_data' => $qrCodeData
         ]);
+    }
+    
+    /**
+     * Generate QR code data for a recyclage
+     */
+    private function generateQrCodeData(Recyclage $recyclage, HttpClientInterface $httpClient): string
+    {
+        // Create data string to encode in QR code
+        $recyclageData = [
+            'id' => $recyclage->getId(),
+            'objet' => $recyclage->getObjet()->getNom(),
+            'type' => $recyclage->getTypeRecyclage(),
+            'date' => $recyclage->getDateRecyclage() ? $recyclage->getDateRecyclage()->format('Y-m-d') : null,
+            'user' => $recyclage->getUser()->getName()
+        ];
+        
+        $jsonData = json_encode($recyclageData);
+        
+        // Generate absolute URL for this recyclage
+        $recyclageUrl = $this->generateUrl(
+            'recyclage_show', 
+            ['id' => $recyclage->getId()], 
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+        
+        try {
+            // Call external QR code API
+            $response = $httpClient->request('GET', 'https://api.qrserver.com/v1/create-qr-code/', [
+                'query' => [
+                    'size' => '200x200',
+                    'data' => $jsonData
+                ]
+            ]);
+            
+            // Return the image URL directly
+            return 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' . $jsonData;
+            
+        } catch (\Exception $e) {
+            // Return empty string if QR code generation fails
+            return '';
+        }
     }
     
     
